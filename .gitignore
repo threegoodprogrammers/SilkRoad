@@ -4,9 +4,8 @@
 #IntelliJ Folder
 .idea/
 .idea/*
-/.idea/
-/.idea/*
-/.idea
+Graph/.idea/
+Graph/.idea/*
 
 # Log file
 *.log
