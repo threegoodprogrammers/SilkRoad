@@ -1,39 +1,96 @@
 package elements;
 
-import com.jfoenix.controls.JFXButton;
+import javafx.scene.control.Button;
 
 import java.util.HashMap;
 
-public class GraphNode extends JFXButton {
+public class GraphNode extends Button {
     private GraphNode previousNodeInPath;
     private String identifier;
-    private HashMap<GraphNode, GraphEdge> arrachedNodes = new HashMap<>();
+    private HashMap<GraphNode, GraphEdge> attachedNodes = new HashMap<>();
+
+    /**
+     * Instantiates a new Graph node.
+     *
+     * @param text       the text
+     * @param identifier the identifier
+     */
 
     public GraphNode(String text, String identifier) {
         super(text);
         this.identifier = identifier;
     }
 
-    //    public GraphNode(String identifier) {
-//        this.identifier = identifier;
-//        this.arrachedNodes = new HashMap<>();
-//    }
+    /**
+     * Gets attached nodes hash map
+     *
+     * @return the attached nodes
+     */
+
+    public HashMap<GraphNode, GraphEdge> getAttachedNodes() {
+        return attachedNodes;
+    }
+
+    /**
+     * Gets edge connecting the current node to a specific node
+     *
+     * @param targetNode the target node
+     * @return the edge to target node
+     */
+
+    public GraphEdge getEdgeToTargetNode(GraphNode targetNode) {
+        return this.attachedNodes.get(targetNode);
+    }
+
+    /**
+     * Add node to attached nodes hash map
+     *
+     * @param targetNode     the target node
+     * @param connectingEdge the connecting edge
+     */
+
+    public void addNodeToAttachedNodes(GraphNode targetNode, GraphEdge connectingEdge) {
+        this.attachedNodes.put(targetNode, connectingEdge);
+    }
+
+    /**
+     * Gets previous node in path
+     *
+     * @return the previous node in path
+     */
 
     public GraphNode getPreviousNodeInPath() {
         return previousNodeInPath;
     }
 
+    /**
+     * Sets previous node in path
+     *
+     * @param previousNodeInPath the previous node in path
+     */
+
     public void setPreviousNodeInPath(GraphNode previousNodeInPath) {
         this.previousNodeInPath = previousNodeInPath;
     }
+
+    /**
+     * Gets the node ID
+     *
+     * @return the identifier
+     */
 
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     * Sets the node ID
+     *
+     * @param identifier the identifier
+     */
+
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
-
 
 }

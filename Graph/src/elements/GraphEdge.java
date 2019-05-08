@@ -3,36 +3,23 @@ package elements;
 import javafx.scene.shape.Line;
 
 public class GraphEdge extends Line {
-    private String identifier;
     private double weight;
     private GraphNode sourceNode;
     private GraphNode targetNode;
 
-    public GraphEdge(double startX, double startY, double endX, double endY, String identifier, double weight,
+    /**
+     * Instantiates a new Graph edge.
+     *
+     * @param weight     the weight
+     * @param sourceNode the source node
+     * @param targetNode the target node
+     */
+
+    public GraphEdge(double weight,
                      GraphNode sourceNode, GraphNode targetNode) {
-//        super(startX, startY, endX, endY);
-        this.identifier = identifier;
         this.weight = weight;
         this.sourceNode = sourceNode;
         this.targetNode = targetNode;
-    }
-
-    /**
-     * Gets identifier.
-     *
-     * @return the identifier
-     */
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    /**
-     * Sets identifier.
-     *
-     * @param identifier the identifier
-     */
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
     }
 
     /**
@@ -40,6 +27,7 @@ public class GraphEdge extends Line {
      *
      * @return the weight
      */
+
     public double getWeight() {
         return weight;
     }
@@ -49,6 +37,7 @@ public class GraphEdge extends Line {
      *
      * @param weight the weight
      */
+
     public void setWeight(double weight) {
         this.weight = weight;
     }
@@ -58,6 +47,7 @@ public class GraphEdge extends Line {
      *
      * @return the source node
      */
+
     public GraphNode getSourceNode() {
         return sourceNode;
     }
@@ -76,6 +66,7 @@ public class GraphEdge extends Line {
      *
      * @return the target node
      */
+
     public GraphNode getTargetNode() {
         return targetNode;
     }
@@ -85,6 +76,7 @@ public class GraphEdge extends Line {
      *
      * @param targetNode the target node
      */
+
     public void setTargetNode(GraphNode targetNode) {
         this.targetNode = targetNode;
     }
@@ -92,5 +84,5 @@ public class GraphEdge extends Line {
     public void invertDirection() {
 
     }
-    
+
 }

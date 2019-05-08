@@ -6,6 +6,198 @@ Button, JFXButton {
     -fx-cursor: hand;
 }
 
+.node {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#6bc0e6 0%, #70d2fa 50%);
+    -fx-background-radius: 50%;
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: #4b4b4b;
+    -fx-font-size: 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+}
+
+.node:hover {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#66bde1 0%, #71cdf5 50%);
+}
+
+/*.buttonBlue {*/
+/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
+/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
+/*linear-gradient(#6bc0e6 0%, #70d2fa 50%);*/
+
+/*-fx-background-radius: 8, 7, 6;*/
+/*!*-fx-background-radius: 50%;*!*/
+/*-fx-background-insets: 0, 1, 2;*/
+/*-fx-text-fill: #4b4b4b;*/
+/*-fx-font-size: 24;*/
+/*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);*/
+/*}*/
+
+/*.buttonBlue:hover {*/
+/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
+/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
+/*linear-gradient(#66bde1 0%, #71cdf5 50%);*/
+/*}*/
+
+/*.buttonBlue {*/
+/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
+/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
+/*linear-gradient(#dddddd 0%, #f6f6f6 50%);*/
+/*-fx-background-radius: 8, 7, 6;*/
+/*-fx-background-insets: 0, 1, 2;*/
+/*-fx-text-fill: black;*/
+/*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);*/
+/*-fx-font-size: 16;*/
+/*}*/
+.buttonBlue {
+    -fx-background-color: #c3c4c4,
+    linear-gradient(#d6d6d6 50%, white 100%),
+    radial-gradient(center 50% -40%, radius 200%, #e6e6e6 45%, rgba(230, 230, 230, 0) 50%);
+    -fx-background-radius: 10;
+    -fx-background-insets: 0, 1, 1;
+    -fx-text-fill: black;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 3, 0.0, 0, 1);
+    -fx-font-size: 16;
+}
+
+.buttonBlue:hover {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#66bde1 0%, #71cdf5 50%);
+}
+
+.menuTitle {
+    -fx-font-size: 26;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #f5f5f5;
+}
+
+.menuTitlePane {
+    -fx-background-color: #72c1dd;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.buttonOrange {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+        /*linear-gradient(#eb862d 0%, #f7942b 50%);*/ linear-gradient(#f3a72a 0%, #ffae2c 50%);
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 8, 7, 6;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+    -fx-text-fill: black;
+    -fx-font-size: 14;
+}
+
+.buttonOrange:hover {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#eba02a 0%, #faaa2b 50%);
+}
+
+.hand {
+    -fx-fill: rgb(250, 250, 250);
+    /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 20, .5, 0, 2);*/
+    -fx-effect: dropshadow(three-pass-box, rgba(106, 187, 225, 0.4), 20, .5, 0, 2);
+}
+
+.handPane {
+    -fx-background-color: rgba(245, 245, 245, .5);
+    -fx-background-radius: 50%;
+}
+
+.dark-overlay {
+    -fx-background-color: rgba(0, 0, 0, .2);
+    /*-fx-background-color: rgba(98, 158, 255, 0.21);*/
+}
+
+.menu {
+    /*-fx-background-color: linear-gradient(to bottom right, rgba(210, 120, 225, 0.7), rgba(221, 128, 237, 0.7));*/
+    -fx-background-color: linear-gradient(to bottom right, rgba(250, 250, 250, .9), rgba(253, 253, 253, .9));
+
+    -fx-background-radius: 10;
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: #4b4b4b;
+    -fx-font-size: 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0.0, 0, 1);
+}
+
+.noPadding {
+    -fx-end-margin: 0;
+    -fx-start-margin: 0;
+}
+
+.noMargin {
+    -fx-padding: 0;
+}
+
+.operationOption {
+    -fx-border-width: 3;
+    -fx-border-style: ridge;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-pref-width: 70;
+    -fx-pref-height: 70;
+    -fx-cursor: hand;
+}
+
+.operationOptionIdle {
+    -fx-background-color: transparent;
+    -fx-border-color: #666;
+}
+
+.operationOptionIdle:hover {
+    -fx-background-color: transparent;
+    -fx-border-color: #72c1dd;
+}
+
+.operationOptionIdle FontAwesomeIconView {
+    -fx-text-fill: #666;
+    -fx-fill: #666;
+}
+
+.operationOptionIdle:hover FontAwesomeIconView {
+    -fx-text-fill: #72c1dd;
+    -fx-fill: #72c1dd;
+}
+
+/*.operationOptionSelected {*/
+/*-fx-background-color: #e1e1e1;*/
+/*-fx-border-color: #61a4cd;*/
+/*}*/
+
+/*.operationOptionSelected FontAwesomeIconView {*/
+/*-fx-text-fill: #61a4cd;*/
+/*-fx-fill: #61a4cd;*/
+/*}*/
+
+.operationOptionSelected {
+    /*-fx-background-color: #e1e1e1;*/
+    -fx-border-color: #72c1dd;
+    -fx-background-color: #76c6e1;
+    /*-fx-border-color: #61a4cd;*/
+}
+
+.operationOptionSelected FontAwesomeIconView {
+    /*-fx-text-fill: #61a4cd;*/
+    /*-fx-fill: #61a4cd;*/
+    -fx-text-fill: #f5f5f5;
+    -fx-fill: #f5f5f5;
+}
+
+.background {
+
+}
+
+.grayBackground {
+    /*-fx-background-color: rgb(248, 248, 248);*/
+    -fx-background-color: rgba(24, 147, 235, 0.15);
+}
+
 .root {
     -fx-focus-color: transparent;
 }
@@ -162,10 +354,6 @@ Button, JFXButton {
 
 .top-user-status-icon-box {
     -fx-pref-width: 14;
-}
-
-.dark-overlay {
-    -fx-background-color: rgba(0, 0, 0, .4);
 }
 
 .loading {
@@ -596,3 +784,4 @@ Button, JFXButton {
 .materialDesign-red .arc {
     -fx-stroke: #d50000;
 }
+

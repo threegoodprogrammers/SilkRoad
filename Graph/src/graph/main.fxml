@@ -1,9 +1,191 @@
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import elements.OperationOption?>
+<?import elements.PannableCanvas?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import elements.GraphNode?>
-<GridPane fx:controller="graph.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+
+<GridPane fx:id="window" alignment="center" stylesheets="@main.css, @jfoenix-main.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graph.App">
+    <GridPane fx:id="background" alignment="center" styleClass="background">
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="ALWAYS" />
+        </rowConstraints>
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+        </columnConstraints>
+        <children>
+            <Pane styleClass="grayBackground" />
+            <Pane layoutX="10.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="2" />
+            <Pane layoutX="314.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="4" />
+            <Pane layoutX="616.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="6" />
+            <Pane layoutX="10.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Pane layoutX="314.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Pane layoutX="616.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+            <Pane layoutX="918.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+            <Pane layoutX="162.0" layoutY="112.0" styleClass="grayBackground" GridPane.rowIndex="2" />
+            <Pane layoutX="465.0" layoutY="112.0" styleClass="grayBackground" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <Pane layoutX="767.0" layoutY="112.0" styleClass="grayBackground" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+            <Pane layoutX="1069.0" layoutY="112.0" styleClass="grayBackground" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+            <Pane layoutX="10.0" layoutY="214.0" styleClass="grayBackground" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Pane layoutX="314.0" layoutY="214.0" styleClass="grayBackground" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+            <Pane layoutX="616.0" layoutY="214.0" styleClass="grayBackground" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+            <Pane layoutX="918.0" layoutY="214.0" styleClass="grayBackground" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+            <Pane layoutX="162.0" layoutY="315.0" styleClass="grayBackground" GridPane.rowIndex="4" />
+            <Pane layoutX="465.0" layoutY="315.0" styleClass="grayBackground" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <Pane layoutX="767.0" layoutY="315.0" styleClass="grayBackground" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+            <Pane layoutX="1069.0" layoutY="315.0" styleClass="grayBackground" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+            <Pane layoutX="10.0" layoutY="416.0" styleClass="grayBackground" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Pane layoutX="314.0" layoutY="416.0" styleClass="grayBackground" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+            <Pane layoutX="616.0" layoutY="416.0" styleClass="grayBackground" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+            <Pane layoutX="918.0" layoutY="416.0" styleClass="grayBackground" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+            <Pane layoutX="162.0" layoutY="517.0" styleClass="grayBackground" GridPane.rowIndex="6" />
+            <Pane layoutX="465.0" layoutY="517.0" styleClass="grayBackground" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+            <Pane layoutX="767.0" layoutY="517.0" styleClass="grayBackground" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+            <Pane layoutX="1069.0" layoutY="517.0" styleClass="grayBackground" GridPane.columnIndex="6" GridPane.rowIndex="6" />
+            <Pane layoutX="10.0" layoutY="618.0" styleClass="grayBackground" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <Pane layoutX="314.0" layoutY="618.0" styleClass="grayBackground" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+            <Pane layoutX="616.0" layoutY="618.0" styleClass="grayBackground" GridPane.columnIndex="5" GridPane.rowIndex="7" />
+            <Pane layoutX="918.0" layoutY="618.0" styleClass="grayBackground" GridPane.columnIndex="7" GridPane.rowIndex="7" />
+        </children>
+    </GridPane>
+    <Pane fx:id="overlay" prefHeight="800" prefWidth="1200" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+        <StackPane fx:id="panIconPane" prefHeight="80" prefWidth="80" visible="false">
+            <FontAwesomeIconView fx:id="panIcon" glyphName="ARROWS" glyphSize="60" styleClass="hand" />
+        </StackPane>
+    </Pane>
+    <PannableCanvas fx:id="canvas" prefHeight="800" prefWidth="1200" />
+    <GridPane visible="false">
+        <columnConstraints>
+            <ColumnConstraints minWidth="10.0" prefWidth="20.0" />
+            <ColumnConstraints minWidth="10.0" prefWidth="200.0" />
+            <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
+            <ColumnConstraints minWidth="10.0" prefWidth="200.0" />
+            <ColumnConstraints minWidth="10.0" prefWidth="20.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints prefHeight="20.0" />
+            <RowConstraints minHeight="10.0" prefHeight="40.0" />
+            <RowConstraints minHeight="10.0" prefHeight="20.0" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="20.0" />
+        </rowConstraints>
+        <children>
+            <Pane fx:id="leftPane" prefHeight="200.0" prefWidth="200.0" styleClass="leftPane" GridPane.rowSpan="2147483647" />
+            <Pane fx:id="rightPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" styleClass="rightPane" GridPane.columnIndex="6" GridPane.rowSpan="2147483647" />
+            <Pane fx:id="bottomPane" layoutX="1190.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" styleClass="bottomPane" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+            <Pane fx:id="topPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" styleClass="topPane" GridPane.columnSpan="2147483647" />
+            <Pane fx:id="topActionPane" layoutX="10.0" layoutY="10.0" styleClass="topActionPane" visible="false" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2" />
+            <Pane fx:id="actionLabelPane" styleClass="test" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+        </children>
+    </GridPane>
+    <GridPane>
+        <columnConstraints>
+            <ColumnConstraints minWidth="10.0" prefWidth="20.0" />
+            <ColumnConstraints minWidth="10.0" prefWidth="200.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="20.0" />
+            <RowConstraints minHeight="10.0" prefHeight="160.0" />
+            <RowConstraints minHeight="10.0" prefHeight="20.0" />
+            <RowConstraints minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="20.0" />
+            <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="20.0" />
+        </rowConstraints>
+        <children>
+            <GridPane styleClass="menu, noPadding, noMargin" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <columnConstraints>
+                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+                <children>
+               <HBox spacing="20.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                  <padding>
+                     <Insets left="18.0" />
+                  </padding>
+               </HBox>
+                    <GridPane alignment="CENTER" styleClass="noPadding, noMargin" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                        <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                        </rowConstraints>
+                  <children>
+                            <OperationOption operation="DIJKSTRA" styleClass="operationOption, operationOptionIdle">
+                                <tooltip>
+                                    <Tooltip text="Dijkstra" />
+                                </tooltip>
+                                <graphic>
+                                    <FontAwesomeIconView glyphName="STAR" glyphSize="35" textAlignment="CENTER" />
+                                </graphic>
+                        <GridPane.margin>
+                           <Insets left="12.0" />
+                        </GridPane.margin>
+                            </OperationOption>
+                            <OperationOption operation="DIJKSTRA" styleClass="operationOption, operationOptionSelected" GridPane.columnIndex="1">
+                                <tooltip>
+                                    <Tooltip text="Ant Colony" />
+                                </tooltip>
+                                <graphic>
+                                    <FontAwesomeIconView glyphName="BUG" glyphSize="35" />
+                                </graphic>
+                        <GridPane.margin>
+                           <Insets right="12.0" />
+                        </GridPane.margin>
+                            </OperationOption>
+                  </children>
+                    </GridPane>
+               <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePane" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
+                    <Label styleClass="menuTitle" text="Method" />
+                </children>
+            </GridPane>
+            <GridPane styleClass="menu" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                <columnConstraints>
+                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="40.0" valignment="CENTER" />
+                    <RowConstraints minHeight="10.0" prefHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
+                </rowConstraints>
+            </GridPane>
+        </children>
+    </GridPane>
+
+    <columnConstraints>
+        <ColumnConstraints />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints />
+    </rowConstraints>
+
 </GridPane>

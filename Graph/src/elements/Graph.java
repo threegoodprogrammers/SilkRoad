@@ -57,6 +57,7 @@ public class Graph {
      */
 
     public void addNode(String id) {
+
     }
 
     /**
@@ -73,12 +74,13 @@ public class Graph {
     /**
      * Add non directional edge.
      *
+     * @param weight the weight
      * @param source the source
      * @param target the target
      */
 
-    public void addNonDirectionalEdge(GraphNode source, GraphNode target) {
-
+    public void addNonDirectionalEdge(double weight, GraphNode source, GraphNode target) {
+        GraphEdge newEdge = new GraphEdge(weight, source, target);
     }
 
     /**
@@ -88,7 +90,10 @@ public class Graph {
      */
 
     public void removeNode(GraphNode node) {
-
+        /* TODO: 5/9/2019
+        Remove from main graph nodes array list, remove node from the canvas, remove the connected edges to
+        node and finally remove the node from the connected nodes "attachedNodes" array list
+         */
     }
 
     /**
