@@ -6,9 +6,7 @@ public class NonDirectionalEdge extends Line {
     private GraphEdge firstEdge;
     private GraphEdge secondEdge;
 
-    public NonDirectionalEdge(double startX, double startY, double endX, double endY, GraphEdge firstEdge,
-                              GraphEdge secondEdge) {
-        super(startX, startY, endX, endY);
+    public NonDirectionalEdge(GraphEdge firstEdge, GraphEdge secondEdge) {
         this.firstEdge = firstEdge;
         this.secondEdge = secondEdge;
     }

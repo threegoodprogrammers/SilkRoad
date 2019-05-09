@@ -54,6 +54,16 @@ public class GraphNode extends Button {
     }
 
     /**
+     * Remove node from attached nodes.
+     *
+     * @param targetNode the target node
+     */
+
+    public void removeNodeFromAttachedNodes(GraphNode targetNode) {
+        this.attachedNodes.remove(targetNode);
+    }
+
+    /**
      * Gets previous node in path
      *
      * @return the previous node in path
