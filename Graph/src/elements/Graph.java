@@ -56,8 +56,18 @@ public class Graph {
      * @param id the id
      */
 
-    public void addNode(String id) {
+    public GraphNode addNode(String id) {
+        /*
+         * Instantiate new graph node and add it
+         * to the main nodes array list
+         */
+        GraphNode newNode = new GraphNode(id, id);
+        nodes.add(newNode);
 
+        /*
+         * Return the new node
+         */
+        return newNode;
     }
 
     /**
@@ -67,8 +77,24 @@ public class Graph {
      * @param target the target
      */
 
-    public void addDirectionalEdge(GraphNode source, GraphNode target) {
+    public GraphEdge addDirectionalEdge(double weight, GraphNode source, GraphNode target) {
+        /*
+         * Instantiate a new graph edge and
+         * add it to the main edges array list
+         */
+        GraphEdge newEdge = new GraphEdge(weight, source, target);
+        edges.add(newEdge);
 
+        /*
+         * Add the target node to the attached nodes array list
+         * of the source node
+         */
+        source.addNodeToAttachedNodes(target, newEdge);
+
+        /*
+         * Return the new graph edge
+         */
+        return newEdge;
     }
 
     /**
