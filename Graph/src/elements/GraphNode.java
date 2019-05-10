@@ -12,12 +12,11 @@ public class GraphNode extends Button {
     /**
      * Instantiates a new Graph node.
      *
-     * @param text       the text
      * @param identifier the identifier
      */
 
-    public GraphNode(String text, String identifier) {
-        super(text);
+    public GraphNode(String identifier) {
+        super(identifier);
         this.identifier = identifier;
     }
 
