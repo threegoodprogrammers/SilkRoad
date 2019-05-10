@@ -61,7 +61,7 @@ public class Graph {
          * Instantiate new graph node and add it
          * to the main nodes array list
          */
-        GraphNode newNode = new GraphNode(id, id);
+        GraphNode newNode = new GraphNode(id);
         nodes.add(newNode);
 
         /*
@@ -185,7 +185,7 @@ public class Graph {
          */
         detachNodes(edge.getSourceNode(), edge.getTargetNode());
 
-        
+
     }
 
     /**

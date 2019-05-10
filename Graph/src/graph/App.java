@@ -1,8 +1,10 @@
 package graph;
 
-import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import elements.*;
+import elements.GraphNode;
+import elements.NodeGestures;
+import elements.PannableCanvas;
+import elements.SceneGestures;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -61,7 +63,7 @@ public class App {
          */
         interactMode();
 
-        GraphNode graphNode = new GraphNode("1", "1");
+        GraphNode graphNode = new GraphNode("1");
         graphNode.setTranslateX(50);
         graphNode.setTranslateY(50);
         graphNode.setPrefHeight(70);
@@ -70,7 +72,7 @@ public class App {
         graphNode.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
         graphNode.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
-        GraphNode graphNode2 = new GraphNode("2", "2");
+        GraphNode graphNode2 = new GraphNode("2");
         graphNode2.setTranslateX(200);
         graphNode2.setTranslateY(200);
         graphNode2.setPrefHeight(70);
