@@ -16,7 +16,7 @@ public class GraphBuilder {
 
     public GraphBuilder WithNodes(int nodeCount) {
         for (int index = 0; index < nodeCount; index++)
-            graph.addNode(String.format("%d", nodeCount));
+            graph.addNode(index + "");
 
         return this;
     }

@@ -1,14 +1,13 @@
 package elements;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The type Graph.
  */
 public class Graph {
-    private List<GraphNode> nodes = new ArrayList<>();
-    private List<GraphEdge> edges = new ArrayList<>();
+    private ArrayList<GraphNode> nodes = new ArrayList<>();
+    private ArrayList<GraphEdge> edges = new ArrayList<>();
 
     /**
      * Gets nodes.
@@ -16,7 +15,7 @@ public class Graph {
      * @return the nodes
      */
 
-    public List<GraphNode> getNodes() {
+    public ArrayList<GraphNode> getNodes() {
         return nodes;
     }
 
@@ -26,7 +25,7 @@ public class Graph {
      * @param nodes the nodes
      */
 
-    public void setNodes(List<GraphNode> nodes) {
+    public void setNodes(ArrayList<GraphNode> nodes) {
         this.nodes = nodes;
     }
 
@@ -36,7 +35,7 @@ public class Graph {
      * @return the edges
      */
 
-    public List<GraphEdge> getEdges() {
+    public ArrayList<GraphEdge> getEdges() {
         return edges;
     }
 
@@ -46,7 +45,7 @@ public class Graph {
      * @param edges the edges
      */
 
-    public void setEdges(List<GraphEdge> edges) {
+    public void setEdges(ArrayList<GraphEdge> edges) {
         this.edges = edges;
     }
 
@@ -57,16 +56,9 @@ public class Graph {
      */
 
     public GraphNode addNode(String id) {
-        /*
-         * Instantiate new graph node and add it
-         * to the main nodes array list
-         */
         GraphNode newNode = new GraphNode(id);
         nodes.add(newNode);
 
-        /*
-         * Return the new node
-         */
         return newNode;
     }
 
@@ -78,22 +70,11 @@ public class Graph {
      */
 
     public GraphEdge addDirectionalEdge(double weight, GraphNode source, GraphNode target) {
-        /*
-         * Instantiate a new graph edge and
-         * add it to the main edges array list
-         */
         GraphEdge newEdge = new GraphEdge(weight, source, target);
         edges.add(newEdge);
 
-        /*
-         * Add the target node to the attached nodes array list
-         * of the source node
-         */
         attachNodes(source, target, newEdge);
 
-        /*
-         * Return the new graph edge
-         */
         return newEdge;
     }
 
@@ -106,26 +87,15 @@ public class Graph {
      */
 
     public NonDirectionalEdge addNonDirectionalEdge(double weight, GraphNode source, GraphNode target) {
-        /*
-         * Instantiate two new graph edges, one from the source node to the target
-         * and the other one from target node to the source.
-         * Then add both of the edges to the main edges array list
-         */
+
         GraphEdge edgeOne = addDirectionalEdge(weight, source, target);
         GraphEdge edgeTwo = addDirectionalEdge(weight, target, source);
         edges.add(edgeOne);
         edges.add(edgeTwo);
 
-        /*
-         * Attach the nodes together
-         */
         attachNodes(source, target, edgeOne);
         attachNodes(target, source, edgeTwo);
 
-        /*
-         * Instantiate a new non-directional edge
-         * with the two directional edges already instantiated and return the edge
-         */
         return new NonDirectionalEdge(edgeOne, edgeTwo);
     }
 
@@ -174,18 +144,9 @@ public class Graph {
      */
 
     public void removeDirectionalEdge(GraphEdge edge) {
-        /*
-         * Remove the edge from the main graph edges array list
-         */
         edges.remove(edge);
 
-        /*
-         * Remove the target node from the attached nodes array list
-         * of the source node
-         */
         detachNodes(edge.getSourceNode(), edge.getTargetNode());
-
-
     }
 
     /**
@@ -196,5 +157,11 @@ public class Graph {
 
     public void removeNonDirectionalEdge(NonDirectionalEdge edge) {
 
+    }
+
+    public GraphNode getNode(String nodeIdentifier) {
+        for (GraphNode node : nodes)
+            if (node.getIdentifier().equals(nodeIdentifier)) return node;
+        return null;
     }
 }
