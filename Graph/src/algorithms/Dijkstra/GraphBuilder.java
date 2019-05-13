@@ -29,7 +29,7 @@ public class GraphBuilder {
         return this;
     }
 
-    public GraphBuilder SomeConnected(String[] sourceIDs, String[] targetIDs, int... weights) {
+    public GraphBuilder SomeConnected(String[] sourceIDs, String[] targetIDs, double... weights) {
         if (sourceIDs.length != targetIDs.length || targetIDs.length != weights.length)
             throw new IllegalArgumentException("Lengths Are Not Equal");
 

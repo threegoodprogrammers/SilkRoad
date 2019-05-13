@@ -70,6 +70,26 @@ class DijkstraAlgorithmTest {
         Assertions.assertEquals(0, pathData.GetDistanceToNode(graph.getNode("0")));
         Assertions.assertEquals(2, pathData.GetDistanceToNode(graph.getNode("1")));
         Assertions.assertEquals(2, pathData.GetDistanceToNode(graph.getNode("2")));
+    }
 
+
+    @Test
+    void GraphWith6Nodes_StartIs1To5_Some() {
+        String[] sourceIDs = {"1", "1", "0", "4", "3", "3", "3", "2", "2"};
+        String[] targetIDs = {"0", "3", "4", "0", "0", "4", "5", "3", "5"};
+        double[] weights = {4, 1, 2, 3, 5, 2, 1, 3, 4};
+        graph = GraphBuilder.Build().WithNodes(6).SomeConnected(sourceIDs, targetIDs, weights).getGraph();
+        PathDataObject pathData = DijkstraAlgorithm.FindShortestPath(graph, "1", "5");
+
+        Assertions.assertEquals(6, pathData.distances.size());
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, pathData.GetDistanceToNode(graph.getNode("2")));
+        Assertions.assertEquals(4, pathData.GetDistanceToNode(graph.getNode("0")));
+        Assertions.assertEquals(0, pathData.GetDistanceToNode(graph.getNode("1")));
+        Assertions.assertEquals(1, pathData.GetDistanceToNode(graph.getNode("3")));
+        Assertions.assertEquals(3, pathData.GetDistanceToNode(graph.getNode("4")));
+        Assertions.assertEquals(2, pathData.GetDistanceToNode(graph.getNode("5")));
+        NodeGraphObject[] nodes = {graph.getNode("1"), graph.getNode("3"), graph.getNode("5")};
+        Assertions.assertArrayEquals(nodes, pathData.GetPathNodesToNode(graph.getNode("5")).toArray());
+        Assertions.assertArrayEquals(nodes, pathData.GetPathNodesToTargetNode().toArray());
     }
 }
