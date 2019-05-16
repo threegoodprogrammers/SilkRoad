@@ -3,9 +3,9 @@ package algorithms.Dijkstra;
 import java.util.HashMap;
 
 public class NodeGraphObject {
-    public NodeGraphObject PreviousNodeInPath;
-    public String iD;
-    public HashMap<NodeGraphObject, EdgeGraphObject> attachedNodes = new HashMap<>();
+    private NodeGraphObject PreviousNodeInPath;
+    private String iD;
+    private HashMap<NodeGraphObject, EdgeGraphObject> attachedNodes = new HashMap<>();
 
     public NodeGraphObject getPreviousNodeInPath() {
         return PreviousNodeInPath;

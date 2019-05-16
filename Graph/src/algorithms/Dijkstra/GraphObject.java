@@ -3,8 +3,8 @@ package algorithms.Dijkstra;
 import java.util.ArrayList;
 
 public class GraphObject {
-    ArrayList<NodeGraphObject> nodes = new ArrayList<>();
-    ArrayList<EdgeGraphObject> edges = new ArrayList<>();
+    private ArrayList<NodeGraphObject> nodes = new ArrayList<>();
+    private ArrayList<EdgeGraphObject> edges = new ArrayList<>();
 
     public ArrayList<NodeGraphObject> getNodes() {
         return nodes;
@@ -41,7 +41,7 @@ public class GraphObject {
 
     public NodeGraphObject getNode(String iD) {
         for (NodeGraphObject node : nodes) {
-            if (node.iD.equals(iD)) return node;
+            if (node.getiD().equals(iD)) return node;
         }
         return null;
     }

@@ -19,8 +19,8 @@ public class GraphBuilder {
     }
 
     public GraphBuilder AllConnected(double weight) {
-        for (NodeGraphObject graphNode1 : graph.nodes) {
-            for (NodeGraphObject graphNode2 : graph.nodes) {
+        for (NodeGraphObject graphNode1 : graph.getNodes()) {
+            for (NodeGraphObject graphNode2 : graph.getNodes()) {
                 if (graphNode1 != graphNode2) {
                     graph.connect(weight, graphNode1, graphNode2);
                 }
