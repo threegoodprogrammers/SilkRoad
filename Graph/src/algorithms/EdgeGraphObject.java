@@ -1,4 +1,4 @@
-package algorithms.Dijkstra;
+package algorithms;
 
 public class EdgeGraphObject {
     private NodeGraphObject sourceNode;

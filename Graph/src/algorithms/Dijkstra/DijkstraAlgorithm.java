@@ -1,5 +1,7 @@
 package algorithms.Dijkstra;
 
+import algorithms.GraphObject;
+import algorithms.NodeGraphObject;
 import elements.Graph;
 import elements.GraphNode;
 

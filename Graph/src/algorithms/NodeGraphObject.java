@@ -1,4 +1,4 @@
-package algorithms.Dijkstra;
+package algorithms;
 
 import java.util.HashMap;
 

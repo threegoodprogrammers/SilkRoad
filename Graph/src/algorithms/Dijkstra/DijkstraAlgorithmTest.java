@@ -1,5 +1,7 @@
 package algorithms.Dijkstra;
 
+import algorithms.GraphObject;
+import algorithms.NodeGraphObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

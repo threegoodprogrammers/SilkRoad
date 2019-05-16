@@ -1,5 +1,8 @@
 package algorithms.Dijkstra;
 
+import algorithms.GraphObject;
+import algorithms.NodeGraphObject;
+
 public class GraphBuilder {
     private GraphObject graph;
 
