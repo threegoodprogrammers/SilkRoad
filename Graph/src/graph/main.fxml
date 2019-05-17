@@ -3,6 +3,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import elements.OperationOption?>
 <?import elements.PannableCanvas?>
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tooltip?>
@@ -12,180 +13,445 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<GridPane fx:id="window" alignment="center" stylesheets="@main.css, @jfoenix-main.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graph.App">
-    <GridPane fx:id="background" alignment="center" styleClass="background">
+<?import elements.PannableGridPane?>
+<GridPane fx:id="window" alignment="center" stylesheets="@main.css, @jfoenix-main.css"
+          xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graph.App">
+    <PannableGridPane fx:id="background" alignment="center" styleClass="background">
         <rowConstraints>
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
         </rowConstraints>
         <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>
         <children>
-            <Pane styleClass="grayBackground" />
-            <Pane layoutX="10.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="2" />
-            <Pane layoutX="314.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="4" />
-            <Pane layoutX="616.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="6" />
-            <Pane layoutX="10.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Pane layoutX="314.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <Pane layoutX="616.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-            <Pane layoutX="918.0" layoutY="10.0" styleClass="grayBackground" GridPane.columnIndex="7" GridPane.rowIndex="1" />
-            <Pane layoutX="162.0" layoutY="112.0" styleClass="grayBackground" GridPane.rowIndex="2" />
-            <Pane layoutX="465.0" layoutY="112.0" styleClass="grayBackground" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <Pane layoutX="767.0" layoutY="112.0" styleClass="grayBackground" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-            <Pane layoutX="1069.0" layoutY="112.0" styleClass="grayBackground" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-            <Pane layoutX="10.0" layoutY="214.0" styleClass="grayBackground" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Pane layoutX="314.0" layoutY="214.0" styleClass="grayBackground" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-            <Pane layoutX="616.0" layoutY="214.0" styleClass="grayBackground" GridPane.columnIndex="5" GridPane.rowIndex="3" />
-            <Pane layoutX="918.0" layoutY="214.0" styleClass="grayBackground" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-            <Pane layoutX="162.0" layoutY="315.0" styleClass="grayBackground" GridPane.rowIndex="4" />
-            <Pane layoutX="465.0" layoutY="315.0" styleClass="grayBackground" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <Pane layoutX="767.0" layoutY="315.0" styleClass="grayBackground" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-            <Pane layoutX="1069.0" layoutY="315.0" styleClass="grayBackground" GridPane.columnIndex="6" GridPane.rowIndex="4" />
-            <Pane layoutX="10.0" layoutY="416.0" styleClass="grayBackground" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Pane layoutX="314.0" layoutY="416.0" styleClass="grayBackground" GridPane.columnIndex="3" GridPane.rowIndex="5" />
-            <Pane layoutX="616.0" layoutY="416.0" styleClass="grayBackground" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-            <Pane layoutX="918.0" layoutY="416.0" styleClass="grayBackground" GridPane.columnIndex="7" GridPane.rowIndex="5" />
-            <Pane layoutX="162.0" layoutY="517.0" styleClass="grayBackground" GridPane.rowIndex="6" />
-            <Pane layoutX="465.0" layoutY="517.0" styleClass="grayBackground" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-            <Pane layoutX="767.0" layoutY="517.0" styleClass="grayBackground" GridPane.columnIndex="4" GridPane.rowIndex="6" />
-            <Pane layoutX="1069.0" layoutY="517.0" styleClass="grayBackground" GridPane.columnIndex="6" GridPane.rowIndex="6" />
-            <Pane layoutX="10.0" layoutY="618.0" styleClass="grayBackground" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <Pane layoutX="314.0" layoutY="618.0" styleClass="grayBackground" GridPane.columnIndex="3" GridPane.rowIndex="7" />
-            <Pane layoutX="616.0" layoutY="618.0" styleClass="grayBackground" GridPane.columnIndex="5" GridPane.rowIndex="7" />
-            <Pane layoutX="918.0" layoutY="618.0" styleClass="grayBackground" GridPane.columnIndex="7" GridPane.rowIndex="7" />
+            <Pane styleClass="blue-cells-background"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="5" GridPane.rowIndex="1"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="7" GridPane.rowIndex="1"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="9" GridPane.rowIndex="1"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="11" GridPane.rowIndex="1"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="13" GridPane.rowIndex="1"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="15" GridPane.rowIndex="1"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="17" GridPane.rowIndex="1"/>
+            <Pane styleClass="blue-cells-background" GridPane.rowIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4" GridPane.rowIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6" GridPane.rowIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8" GridPane.rowIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10" GridPane.rowIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12" GridPane.rowIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14" GridPane.rowIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="2"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="5" GridPane.rowIndex="3"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="7" GridPane.rowIndex="3"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="9" GridPane.rowIndex="3"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="11" GridPane.rowIndex="3"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="13" GridPane.rowIndex="3"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="15" GridPane.rowIndex="3"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="17" GridPane.rowIndex="3"/>
+            <Pane styleClass="blue-cells-background" GridPane.rowIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4" GridPane.rowIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6" GridPane.rowIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8" GridPane.rowIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10" GridPane.rowIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12" GridPane.rowIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14" GridPane.rowIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="4"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="3" GridPane.rowIndex="5"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="5" GridPane.rowIndex="5"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="7" GridPane.rowIndex="5"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="9" GridPane.rowIndex="5"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="11" GridPane.rowIndex="5"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="13" GridPane.rowIndex="5"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="15" GridPane.rowIndex="5"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="17" GridPane.rowIndex="5"/>
+            <Pane styleClass="blue-cells-background" GridPane.rowIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2" GridPane.rowIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4" GridPane.rowIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6" GridPane.rowIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8" GridPane.rowIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10" GridPane.rowIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12" GridPane.rowIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14" GridPane.rowIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="6"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="3" GridPane.rowIndex="7"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="5" GridPane.rowIndex="7"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="7" GridPane.rowIndex="7"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="9" GridPane.rowIndex="7"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="11" GridPane.rowIndex="7"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="13" GridPane.rowIndex="7"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="15" GridPane.rowIndex="7"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="17" GridPane.rowIndex="7"/>
+            <Pane styleClass="blue-cells-background" GridPane.rowIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2" GridPane.rowIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4" GridPane.rowIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6" GridPane.rowIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8" GridPane.rowIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10" GridPane.rowIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12" GridPane.rowIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14" GridPane.rowIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="8"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="3" GridPane.rowIndex="9"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="5" GridPane.rowIndex="9"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="7" GridPane.rowIndex="9"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="9" GridPane.rowIndex="9"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="11" GridPane.rowIndex="9"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="13" GridPane.rowIndex="9"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="15" GridPane.rowIndex="9"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="17" GridPane.rowIndex="9"/>
+            <Pane styleClass="blue-cells-background" GridPane.rowIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2" GridPane.rowIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4" GridPane.rowIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6" GridPane.rowIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8" GridPane.rowIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10" GridPane.rowIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12" GridPane.rowIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14" GridPane.rowIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="10"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="1" GridPane.rowIndex="11"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="3" GridPane.rowIndex="11"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="5" GridPane.rowIndex="11"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="7" GridPane.rowIndex="11"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="9" GridPane.rowIndex="11"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="11" GridPane.rowIndex="11"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="13" GridPane.rowIndex="11"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="15" GridPane.rowIndex="11"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="17" GridPane.rowIndex="11"/>
+            <Pane styleClass="blue-cells-background" GridPane.rowIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2" GridPane.rowIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4" GridPane.rowIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6" GridPane.rowIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8" GridPane.rowIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10" GridPane.rowIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12" GridPane.rowIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14" GridPane.rowIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="12"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="1" GridPane.rowIndex="13"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="3" GridPane.rowIndex="13"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="5" GridPane.rowIndex="13"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="7" GridPane.rowIndex="13"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="9" GridPane.rowIndex="13"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="11" GridPane.rowIndex="13"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="13" GridPane.rowIndex="13"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="15" GridPane.rowIndex="13"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="17" GridPane.rowIndex="13"/>
+            <Pane styleClass="blue-cells-background" GridPane.rowIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2" GridPane.rowIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4" GridPane.rowIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6" GridPane.rowIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8" GridPane.rowIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10" GridPane.rowIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12" GridPane.rowIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14" GridPane.rowIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="14"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="1" GridPane.rowIndex="15"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="3" GridPane.rowIndex="15"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="5" GridPane.rowIndex="15"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="7" GridPane.rowIndex="15"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="9" GridPane.rowIndex="15"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="11" GridPane.rowIndex="15"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="13" GridPane.rowIndex="15"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="15" GridPane.rowIndex="15"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="17" GridPane.rowIndex="15"/>
+            <Pane styleClass="blue-cells-background" GridPane.rowIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2" GridPane.rowIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4" GridPane.rowIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6" GridPane.rowIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8" GridPane.rowIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10" GridPane.rowIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12" GridPane.rowIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14" GridPane.rowIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="16"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="1" GridPane.rowIndex="17"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="3" GridPane.rowIndex="17"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="5" GridPane.rowIndex="17"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="7" GridPane.rowIndex="17"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="9" GridPane.rowIndex="17"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="11" GridPane.rowIndex="17"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="13" GridPane.rowIndex="17"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="15" GridPane.rowIndex="17"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="17" GridPane.rowIndex="17"/>
+            <Pane styleClass="blue-cells-background" GridPane.rowIndex="18"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="2" GridPane.rowIndex="18"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="4" GridPane.rowIndex="18"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="6" GridPane.rowIndex="18"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="8" GridPane.rowIndex="18"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="10" GridPane.rowIndex="18"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="12" GridPane.rowIndex="18"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="14" GridPane.rowIndex="18"/>
+            <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="18"/>
         </children>
-    </GridPane>
+    </PannableGridPane>
     <Pane fx:id="overlay" prefHeight="800" prefWidth="1200" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
         <StackPane fx:id="panIconPane" prefHeight="80" prefWidth="80" visible="false">
-            <FontAwesomeIconView fx:id="panIcon" glyphName="ARROWS" glyphSize="60" styleClass="hand" />
+            <FontAwesomeIconView fx:id="panIcon" glyphName="ARROWS" glyphSize="60" styleClass="hand"/>
         </StackPane>
     </Pane>
-    <PannableCanvas fx:id="canvas" prefHeight="800" prefWidth="1200" />
-    <GridPane visible="false">
-        <columnConstraints>
-            <ColumnConstraints minWidth="10.0" prefWidth="20.0" />
-            <ColumnConstraints minWidth="10.0" prefWidth="200.0" />
-            <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints minWidth="10.0" prefWidth="80.0" />
-            <ColumnConstraints minWidth="10.0" prefWidth="200.0" />
-            <ColumnConstraints minWidth="10.0" prefWidth="20.0" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints prefHeight="20.0" />
-            <RowConstraints minHeight="10.0" prefHeight="40.0" />
-            <RowConstraints minHeight="10.0" prefHeight="20.0" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="20.0" />
-        </rowConstraints>
-        <children>
-            <Pane fx:id="leftPane" prefHeight="200.0" prefWidth="200.0" styleClass="leftPane" GridPane.rowSpan="2147483647" />
-            <Pane fx:id="rightPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" styleClass="rightPane" GridPane.columnIndex="6" GridPane.rowSpan="2147483647" />
-            <Pane fx:id="bottomPane" layoutX="1190.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" styleClass="bottomPane" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-            <Pane fx:id="topPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" styleClass="topPane" GridPane.columnSpan="2147483647" />
-            <Pane fx:id="topActionPane" layoutX="10.0" layoutY="10.0" styleClass="topActionPane" visible="false" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="1" GridPane.rowSpan="2" />
-            <Pane fx:id="actionLabelPane" styleClass="test" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-        </children>
-    </GridPane>
+    <PannableCanvas fx:id="canvas" prefHeight="800" prefWidth="1200"/>
     <GridPane>
         <columnConstraints>
-            <ColumnConstraints minWidth="10.0" prefWidth="20.0" />
-            <ColumnConstraints minWidth="10.0" prefWidth="200.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints minWidth="10.0" prefWidth="20.0"/>
+            <ColumnConstraints minWidth="10.0" prefWidth="200.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="20.0" />
-            <RowConstraints minHeight="10.0" prefHeight="160.0" />
-            <RowConstraints minHeight="10.0" prefHeight="20.0" />
-            <RowConstraints minHeight="10.0" prefHeight="150.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="20.0" />
-            <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="20.0" />
+            <RowConstraints minHeight="10.0" prefHeight="20.0"/>
+            <RowConstraints minHeight="10.0" prefHeight="160.0"/>
+            <RowConstraints minHeight="10.0" prefHeight="20.0"/>
+            <RowConstraints maxHeight="350.0" minHeight="10.0" prefHeight="350.0"/>
+            <RowConstraints minHeight="10.0" prefHeight="20.0"/>
+            <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="20.0"/>
         </rowConstraints>
         <children>
             <GridPane styleClass="menu, noPadding, noMargin" GridPane.columnIndex="1" GridPane.rowIndex="1">
                 <columnConstraints>
-                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" />
+                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0"/>
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" />
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                 </rowConstraints>
                 <children>
-               <HBox spacing="20.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-                  <padding>
-                     <Insets left="18.0" />
-                  </padding>
-               </HBox>
-                    <GridPane alignment="CENTER" styleClass="noPadding, noMargin" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                    <HBox spacing="20.0" GridPane.halignment="CENTER" GridPane.rowIndex="1"
+                          GridPane.valignment="CENTER">
+                        <padding>
+                            <Insets left="18.0"/>
+                        </padding>
+                    </HBox>
+                    <GridPane alignment="CENTER" styleClass="noPadding, noMargin" GridPane.halignment="CENTER"
+                              GridPane.rowIndex="1" GridPane.valignment="CENTER">
                         <columnConstraints>
-                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                         </columnConstraints>
                         <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
                         </rowConstraints>
-                  <children>
-                            <OperationOption operation="DIJKSTRA" styleClass="operationOption, operationOptionIdle">
+                        <children>
+                            <OperationOption operation="DIJKSTRA">
                                 <tooltip>
-                                    <Tooltip text="Dijkstra" />
+                                    <Tooltip text="Shortest Path"/>
                                 </tooltip>
                                 <graphic>
-                                    <FontAwesomeIconView glyphName="STAR" glyphSize="35" textAlignment="CENTER" />
+                                    <FontAwesomeIconView glyphName="ROAD" glyphSize="35" textAlignment="CENTER"/>
                                 </graphic>
-                        <GridPane.margin>
-                           <Insets left="12.0" />
-                        </GridPane.margin>
+                                <GridPane.margin>
+                                    <Insets left="12.0"/>
+                                </GridPane.margin>
+                                <styleClass>
+                                    <String fx:value="menu-button-general"/>
+                                    <String fx:value="menu-button-transparent"/>
+                                    <String fx:value="menu-button-hover-blue-outline"/>
+                                </styleClass>
                             </OperationOption>
-                            <OperationOption operation="DIJKSTRA" styleClass="operationOption, operationOptionSelected" GridPane.columnIndex="1">
+                            <OperationOption operation="TRAVELLING_SALESMAN" GridPane.columnIndex="1">
                                 <tooltip>
-                                    <Tooltip text="Ant Colony" />
+                                    <Tooltip text="Travelling Salesman"/>
                                 </tooltip>
                                 <graphic>
-                                    <FontAwesomeIconView glyphName="BUG" glyphSize="35" />
+                                    <FontAwesomeIconView glyphName="CAR" glyphSize="35"/>
                                 </graphic>
-                        <GridPane.margin>
-                           <Insets right="12.0" />
-                        </GridPane.margin>
+                                <GridPane.margin>
+                                    <Insets right="12.0"/>
+                                </GridPane.margin>
+                                <styleClass>
+                                    <String fx:value="menu-button-general"/>
+                                    <String fx:value="menu-button-blue"/>
+                                </styleClass>
                             </OperationOption>
-                  </children>
+                        </children>
                     </GridPane>
-               <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePane" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
-                    <Label styleClass="menuTitle" text="Method" />
+                    <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneBlue" GridPane.hgrow="ALWAYS"
+                          GridPane.vgrow="ALWAYS"/>
+                    <Label styleClass="menuTitle" text="Problem"/>
                 </children>
             </GridPane>
-            <GridPane styleClass="menu" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+            <GridPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3"
+                      GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES">
                 <columnConstraints>
-                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints minHeight="10.0" prefHeight="40.0" valignment="CENTER" />
-                    <RowConstraints minHeight="10.0" prefHeight="70.0" valignment="CENTER" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" valignment="CENTER"/>
+                    <RowConstraints minHeight="10.0" valignment="TOP" vgrow="SOMETIMES"/>
                 </rowConstraints>
+                <children>
+                    <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneGreen"/>
+                    <Label styleClass="menuTitle" text="Tools"/>
+                    <VBox prefHeight="200.0" prefWidth="100.0" GridPane.halignment="CENTER" GridPane.rowIndex="1"
+                          GridPane.valignment="TOP">
+                        <children>
+                            <HBox alignment="CENTER" spacing="20">
+                                <padding>
+                                    <Insets top="20"/>
+                                </padding>
+                                <children>
+                                    <OperationOption operation="DIJKSTRA">
+                                        <tooltip>
+                                            <Tooltip text="Set as source node"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="CAR" glyphSize="32" textAlignment="CENTER"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <!--<String fx:value="menu-button-blue-outline"/>-->
+                                            <String fx:value="menu-button-orange-outline"/>
+                                            <String fx:value="menu-button-hover-orange"/>
+                                            <!--<String fx:value="menu-button-hover-dark"/>-->
+                                        </styleClass>
+                                    </OperationOption>
+                                    <OperationOption operation="DIJKSTRA">
+                                        <tooltip>
+                                            <Tooltip text="Set as target node"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="FLAG" glyphSize="35"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-green-outline"/>
+                                            <String fx:value="menu-button-hover-green"/>
+                                        </styleClass>
+                                    </OperationOption>
+                                </children>
+                            </HBox>
+                            <HBox alignment="CENTER" spacing="20">
+                                <padding>
+                                    <Insets top="20"/>
+                                </padding>
+                                <children>
+                                    <OperationOption operation="DIJKSTRA">
+                                        <tooltip>
+                                            <Tooltip text="Set weight for edge"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="PENCIL" glyphSize="32"
+                                                                 textAlignment="CENTER"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-dark"/>
+                                        </styleClass>
+                                    </OperationOption>
+                                    <OperationOption operation="DIJKSTRA">
+                                        <tooltip>
+                                            <Tooltip text="Set label for node"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="FONT" glyphSize="32"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-dark"/>
+                                        </styleClass>
+                                    </OperationOption>
+                                </children>
+                            </HBox>
+                            <HBox alignment="CENTER" spacing="20">
+                                <padding>
+                                    <Insets bottom="20" top="20"/>
+                                </padding>
+                                <children>
+                                    <OperationOption disable="true" operation="DIJKSTRA">
+                                        <tooltip>
+                                            <Tooltip text="Dijkstra"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="STAR" glyphSize="40"
+                                                                 textAlignment="CENTER"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-blue-outline"/>
+                                        </styleClass>
+                                    </OperationOption>
+                                    <OperationOption operation="DIJKSTRA">
+                                        <tooltip>
+                                            <Tooltip text="Ant Colony"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="BUG" glyphSize="40"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-blue"/>
+                                        </styleClass>
+                                    </OperationOption>
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
+                </children>
+                <styleClass>
+                    <String fx:value="menu"/>
+                    <String fx:value="noPadding"/>
+                    <String fx:value="noMargin"/>
+                </styleClass>
             </GridPane>
         </children>
     </GridPane>
 
     <columnConstraints>
-        <ColumnConstraints />
+        <ColumnConstraints/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints />
+        <RowConstraints/>
     </rowConstraints>
 
 </GridPane>

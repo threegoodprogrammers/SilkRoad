@@ -1,25 +1,25 @@
 package elements;
 
 import graph.App;
-import graph.Main;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
 public class SceneGestures {
-    private static final double MAX_SCALE = 3.0d;
+    private static final double MAX_SCALE = 4.0d;
     private static final double MIN_SCALE = .4d;
+    private static final double MIN_SCALE_FOR_BG = 1;
     private DragContext sceneDragContext = new DragContext();
 
     private PannableCanvas canvas;
+    private PannableGridPane background;
     private App app;
 
-    public SceneGestures(PannableCanvas canvas, App app) {
+    public SceneGestures(PannableCanvas canvas, App app, PannableGridPane background) {
         this.canvas = canvas;
         this.app = app;
+        this.background = background;
     }
 
     public EventHandler<MouseEvent> getOnMousePressedEventHandler() {
@@ -237,6 +237,7 @@ public class SceneGestures {
                     (event.getSceneY() - (canvas.getBoundsInParent().getHeight() / 2 + canvas.getBoundsInParent().getMinY()));
 
             canvas.setScale(scale);
+            background.setScale(scale * 10 / 4);
 
             // note: pivot value must be untransformed, i. e. without scaling
             canvas.setPivot(f * dx, f * dy);

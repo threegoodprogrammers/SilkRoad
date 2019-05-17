@@ -23,35 +23,6 @@ Button, JFXButton {
     linear-gradient(#66bde1 0%, #71cdf5 50%);
 }
 
-/*.buttonBlue {*/
-/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
-/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
-/*linear-gradient(#6bc0e6 0%, #70d2fa 50%);*/
-
-/*-fx-background-radius: 8, 7, 6;*/
-/*!*-fx-background-radius: 50%;*!*/
-/*-fx-background-insets: 0, 1, 2;*/
-/*-fx-text-fill: #4b4b4b;*/
-/*-fx-font-size: 24;*/
-/*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);*/
-/*}*/
-
-/*.buttonBlue:hover {*/
-/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
-/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
-/*linear-gradient(#66bde1 0%, #71cdf5 50%);*/
-/*}*/
-
-/*.buttonBlue {*/
-/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
-/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
-/*linear-gradient(#dddddd 0%, #f6f6f6 50%);*/
-/*-fx-background-radius: 8, 7, 6;*/
-/*-fx-background-insets: 0, 1, 2;*/
-/*-fx-text-fill: black;*/
-/*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);*/
-/*-fx-font-size: 16;*/
-/*}*/
 .buttonBlue {
     -fx-background-color: #c3c4c4,
     linear-gradient(#d6d6d6 50%, white 100%),
@@ -75,9 +46,92 @@ Button, JFXButton {
     -fx-text-fill: #f5f5f5;
 }
 
-.menuTitlePane {
+.menuTitlePaneBlue {
     -fx-background-color: #72c1dd;
     -fx-background-radius: 10 10 0 0;
+}
+
+.menuTitlePaneGreen {
+    -fx-background-color: #2ecc71;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.menu-button-general {
+    -fx-border-width: 3;
+    -fx-border-style: ridge;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-pref-width: 70;
+    -fx-pref-height: 70;
+    -fx-min-height: 70;
+    -fx-min-width: 70;
+    -fx-max-width: 70;
+    -fx-max-height: 70;
+    -fx-cursor: hand;
+}
+
+.menu-button-green-outline {
+    -fx-border-color: #2ecc71;
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.menu-button-green-outline FontAwesomeIconView {
+    -fx-text-fill: #2ecc71;
+    -fx-fill: #2ecc71;
+}
+
+.menu-button-orange-outline {
+    -fx-border-color: #f39c12;
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.menu-button-orange-outline FontAwesomeIconView {
+    -fx-text-fill: #f39c12;
+    -fx-fill: #f39c12;
+}
+
+.menu-button-blue-outline {
+    -fx-border-color: #72c1dd;
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.menu-button-blue-outline FontAwesomeIconView {
+    -fx-text-fill: #72c1dd;
+    -fx-fill: #72c1dd;
+}
+
+.menu-button-blue-outline:hover {
+    -fx-background-color: #72c1dd;
+}
+
+.menu-button-blue-outline:hover FontAwesomeIconView {
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
+.menu-button-purple {
+    -fx-border-color: #ff7979;
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.menu-button-purple FontAwesomeIconView {
+    -fx-text-fill: #ff7979;
+    -fx-fill: #ff7979;
+}
+
+.menu-button-purple:hover {
+    -fx-background-color: #ff7979;
+}
+
+.menu-button-purple:hover FontAwesomeIconView {
+    -fx-text-fill: white;
+    -fx-fill: white;
 }
 
 .buttonOrange {
@@ -116,12 +170,15 @@ Button, JFXButton {
 .menu {
     /*-fx-background-color: linear-gradient(to bottom right, rgba(210, 120, 225, 0.7), rgba(221, 128, 237, 0.7));*/
     -fx-background-color: linear-gradient(to bottom right, rgba(250, 250, 250, .9), rgba(253, 253, 253, .9));
-
     -fx-background-radius: 10;
     -fx-background-insets: 0, 1, 2;
     -fx-text-fill: #4b4b4b;
     -fx-font-size: 24;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 10, 0.0, 0, 1);
+}
+
+.menu-bar {
+    /*-fx-padding: 0 12 0 12;*/
 }
 
 .noPadding {
@@ -133,37 +190,85 @@ Button, JFXButton {
     -fx-padding: 0;
 }
 
-.operationOption {
-    -fx-border-width: 3;
-    -fx-border-style: ridge;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-alignment: center;
-    -fx-text-alignment: center;
-    -fx-pref-width: 70;
-    -fx-pref-height: 70;
-    -fx-cursor: hand;
-}
-
-.operationOptionIdle {
+.menu-button-transparent {
     -fx-background-color: transparent;
     -fx-border-color: #666;
 }
 
-.operationOptionIdle:hover {
-    -fx-background-color: transparent;
-    -fx-border-color: #72c1dd;
-}
-
-.operationOptionIdle FontAwesomeIconView {
+.menu-button-transparent FontAwesomeIconView {
     -fx-text-fill: #666;
     -fx-fill: #666;
 }
 
-.operationOptionIdle:hover FontAwesomeIconView {
+.menu-button-hover-blue-outline:hover {
+    -fx-background-color: transparent;
+    -fx-border-color: #72c1dd;
+}
+
+.menu-button-hover-blue-outline:hover FontAwesomeIconView {
     -fx-text-fill: #72c1dd;
     -fx-fill: #72c1dd;
 }
+
+.menu-button-hover-dark:hover {
+    -fx-background-color: #666;
+    -fx-border-color: #666;
+}
+
+.menu-button-hover-dark:hover FontAwesomeIconView {
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
+.menu-button-hover-blue:hover {
+    -fx-background-color: #72c1dd;
+    -fx-border-color: #72c1dd;
+}
+
+.menu-button-hover-blue:hover FontAwesomeIconView {
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
+.menu-button-hover-green:hover {
+    -fx-background-color: #2ecc71;
+    -fx-border-color: #2ecc71;
+}
+
+.menu-button-hover-green:hover FontAwesomeIconView {
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
+.menu-button-hover-orange:hover {
+    -fx-background-color: #f39c12;
+    -fx-border-color: #f39c12;
+}
+
+.menu-button-hover-orange:hover FontAwesomeIconView {
+    -fx-text-fill: white;
+    -fx-fill: white;
+}
+
+.menu-button-blue {
+    -fx-text-fill: #72c1dd;
+    -fx-fill: #72c1dd;
+}
+
+/*.menu-button-blue-hover:hover {*/
+/*-fx-background-color: transparent;*/
+/*-fx-border-color: #72c1dd;*/
+/*}*/
+
+.menu-button-blue FontAwesomeIconView {
+    -fx-text-fill: #f5f5f5;
+    -fx-fill: #f5f5f5;
+}
+
+/*.menu-button-blue-hover:hover FontAwesomeIconView {*/
+/*-fx-text-fill: #72c1dd;*/
+/*-fx-fill: #72c1dd;*/
+/*}*/
 
 /*.operationOptionSelected {*/
 /*-fx-background-color: #e1e1e1;*/
@@ -175,14 +280,14 @@ Button, JFXButton {
 /*-fx-fill: #61a4cd;*/
 /*}*/
 
-.operationOptionSelected {
+.menu-button-blue {
     /*-fx-background-color: #e1e1e1;*/
     -fx-border-color: #72c1dd;
     -fx-background-color: #76c6e1;
     /*-fx-border-color: #61a4cd;*/
 }
 
-.operationOptionSelected FontAwesomeIconView {
+.menu-button-blue FontAwesomeIconView {
     /*-fx-text-fill: #61a4cd;*/
     /*-fx-fill: #61a4cd;*/
     -fx-text-fill: #f5f5f5;
@@ -193,7 +298,7 @@ Button, JFXButton {
 
 }
 
-.grayBackground {
+.blue-cells-background {
     /*-fx-background-color: rgb(248, 248, 248);*/
     -fx-background-color: rgba(24, 147, 235, 0.15);
 }
@@ -249,15 +354,6 @@ Button, JFXButton {
 
 .button-blue-1:hover {
     -fx-background-color: #2997a5;
-}
-
-.button-green-1 {
-    -fx-text-fill: white;
-    -fx-background-color: #4daf5d;
-}
-
-.button-green-1:hover {
-    -fx-background-color: #4ba555;
 }
 
 .button-red-1 {

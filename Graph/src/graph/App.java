@@ -1,10 +1,8 @@
 package graph;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import elements.GraphNode;
-import elements.NodeGestures;
-import elements.PannableCanvas;
-import elements.SceneGestures;
+import elements.*;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -23,7 +21,7 @@ import javafx.scene.layout.StackPane;
 public class App {
     public FontAwesomeIconView panIcon;
     public StackPane panIconPane;
-    public GridPane background;
+    public PannableGridPane background;
     public Pane overlay;
     public Pane leftPane;
     public Pane rightPane;
@@ -38,7 +36,7 @@ public class App {
     }
 
     public enum Operation {
-        DIJKSTRA, ANT
+        DIJKSTRA, TRAVELLING_SALESMAN
     }
 
     private boolean shiftPressed = false;
@@ -83,7 +81,8 @@ public class App {
 
         this.canvas.getChildren().addAll(graphNode, graphNode2);
 
-//        FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.HAND_PAPER_ALT);
+        FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.PENCIL);
+
 
 //        GraphNode node = new GraphNode("1", "1");
 //        pane.getChildren().add(node);
@@ -100,7 +99,7 @@ public class App {
     private void setScene(Scene scene) {
         this.nodeGestures = new NodeGestures(this.canvas, this);
         App.scene = scene;
-        this.sceneGestures = new SceneGestures(this.canvas, this);
+        this.sceneGestures = new SceneGestures(this.canvas, this, this.background);
         App.scene.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
         App.scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
         App.scene.addEventFilter(MouseDragEvent.MOUSE_RELEASED, sceneGestures.getOnMouseReleasedEventHandler());

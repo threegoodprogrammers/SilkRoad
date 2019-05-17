@@ -2,7 +2,6 @@ package elements;
 
 import com.jfoenix.controls.JFXButton;
 import graph.App;
-import javafx.scene.control.Label;
 
 public class OperationOption extends JFXButton {
     private App.Operation operation;
