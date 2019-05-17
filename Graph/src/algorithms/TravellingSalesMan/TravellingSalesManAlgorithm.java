@@ -94,7 +94,7 @@ public class TravellingSalesManAlgorithm {
         }
     }
 
-    public static List<Integer> combinations(int r, int n) {
+    private static List<Integer> combinations(int r, int n) {
         List<Integer> subsets = new ArrayList<>();
         combinations(0, 0, r, n, subsets);
         return subsets;
@@ -104,7 +104,7 @@ public class TravellingSalesManAlgorithm {
         return ((1 << elem) & subset) == 0;
     }
 
-    public static void solve(int N, double distance[][], int start) {
+    private static void solve(int N, double distance[][], int start) {
 
         if (ranSolver) return;
 
