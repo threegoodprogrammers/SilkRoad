@@ -1,5 +1,7 @@
 package algorithms.Dijkstra;
 
+import algorithms.GraphObject;
+import algorithms.NodeGraphObject;
 import elements.Graph;
 import elements.GraphNode;
 
@@ -29,18 +31,18 @@ public class DijkstraAlgorithm {
         ArrayList<NodeGraphObject> navigatedNodes = new ArrayList<>();
         PathDataObject pathData = new PathDataObject(nodes, sourceNode, targetNode);
 
-        NodeGraphObject leastDistantNode = pathData.GetClosestNode(nodes);
-
-        nodes.remove(leastDistantNode);
-        navigatedNodes.add(leastDistantNode);
-
-        for (NodeGraphObject adjacentNode : leastDistantNode.getAttachedNodes().keySet()) {
-            double currentDistance = pathData.GetDistanceToNode(leastDistantNode) + leastDistantNode.getAttachedNodes().get(adjacentNode).getWeight();
-            if (currentDistance < pathData.GetDistanceToNode(adjacentNode)) {
-                pathData.distances.put(adjacentNode, currentDistance);
-                adjacentNode.setPreviousNodeInPath(leastDistantNode);
+        do {
+            NodeGraphObject leastDistantNode = pathData.GetClosestNode(nodes);
+            nodes.remove(leastDistantNode);
+            navigatedNodes.add(leastDistantNode);
+            for (NodeGraphObject adjacentNode : leastDistantNode.getAttachedNodes().keySet()) {
+                double currentDistance = pathData.GetDistanceToNode(leastDistantNode) + leastDistantNode.getAttachedNodes().get(adjacentNode).getWeight();
+                if (currentDistance < pathData.GetDistanceToNode(adjacentNode)) {
+                    pathData.distances.put(adjacentNode, currentDistance);
+                    adjacentNode.setPreviousNodeInPath(leastDistantNode);
+                }
             }
-        }
+        } while (!nodes.isEmpty());
 
         return pathData;
     }

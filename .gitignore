@@ -27,3 +27,6 @@ Graph/.idea/*
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+Graph/.idea/libraries/fontawesomefx_8_9.xml
+Graph/.idea/misc.xml
+Graph/Graph.iml

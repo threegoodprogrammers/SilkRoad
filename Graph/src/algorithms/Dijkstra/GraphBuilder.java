@@ -1,5 +1,8 @@
 package algorithms.Dijkstra;
 
+import algorithms.GraphObject;
+import algorithms.NodeGraphObject;
+
 public class GraphBuilder {
     private GraphObject graph;
 
@@ -19,8 +22,8 @@ public class GraphBuilder {
     }
 
     public GraphBuilder AllConnected(double weight) {
-        for (NodeGraphObject graphNode1 : graph.nodes) {
-            for (NodeGraphObject graphNode2 : graph.nodes) {
+        for (NodeGraphObject graphNode1 : graph.getNodes()) {
+            for (NodeGraphObject graphNode2 : graph.getNodes()) {
                 if (graphNode1 != graphNode2) {
                     graph.connect(weight, graphNode1, graphNode2);
                 }
@@ -29,7 +32,7 @@ public class GraphBuilder {
         return this;
     }
 
-    public GraphBuilder SomeConnected(String[] sourceIDs, String[] targetIDs, int... weights) {
+    public GraphBuilder SomeConnected(String[] sourceIDs, String[] targetIDs, double... weights) {
         if (sourceIDs.length != targetIDs.length || targetIDs.length != weights.length)
             throw new IllegalArgumentException("Lengths Are Not Equal");
 

@@ -1,5 +1,7 @@
 package algorithms.Dijkstra;
 
+import algorithms.NodeGraphObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

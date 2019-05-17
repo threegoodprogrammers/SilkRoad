@@ -1,9 +1,9 @@
-package algorithms.Dijkstra;
+package algorithms;
 
 public class EdgeGraphObject {
-    NodeGraphObject sourceNode;
-    NodeGraphObject targetNode;
-    double weight;
+    private NodeGraphObject sourceNode;
+    private NodeGraphObject targetNode;
+    private double weight;
 
     public NodeGraphObject getSourceNode() {
         return sourceNode;
