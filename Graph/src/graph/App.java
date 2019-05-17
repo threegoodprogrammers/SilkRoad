@@ -23,12 +23,6 @@ public class App {
     public StackPane panIconPane;
     public PannableGridPane background;
     public Pane overlay;
-    public Pane leftPane;
-    public Pane rightPane;
-    public Pane bottomPane;
-    public Pane topPane;
-    public Pane topActionPane;
-    public Pane actionLabelPane;
     public Button traverseButton;
 
     public enum State {
