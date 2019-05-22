@@ -25,7 +25,7 @@ public class NodeGestures {
 
     private EventHandler<MouseEvent> onMousePressedEventHandler = event -> {
         // left mouse button => dragging
-        if (!event.isPrimaryButtonDown() || app.getState() == App.State.PAN)
+        if (!event.isPrimaryButtonDown() || app.isCtrlPressed())
             return;
 
         nodeDragContext.mouseAnchorX = event.getSceneX();
@@ -41,7 +41,7 @@ public class NodeGestures {
     private EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
         public void handle(MouseEvent event) {
             // left mouse button => dragging
-            if (!event.isPrimaryButtonDown() || app.getState() == App.State.PAN)
+            if (!event.isPrimaryButtonDown() || app.isCtrlPressed())
                 return;
 
             double scale = canvas.getScale();

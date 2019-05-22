@@ -9,8 +9,9 @@ import javafx.scene.input.ScrollEvent;
 public class SceneGestures {
     private static final double MAX_SCALE = 4.0d;
     private static final double MIN_SCALE = .4d;
-    private static final double MIN_SCALE_FOR_BG = 1;
     private DragContext sceneDragContext = new DragContext();
+    private static double mouseX;
+    private static double mouseY;
 
     private PannableCanvas canvas;
     private PannableGridPane background;
@@ -28,6 +29,10 @@ public class SceneGestures {
 
     public EventHandler<MouseEvent> getOnMouseReleasedEventHandler() {
         return onMouseReleasedEventHandler;
+    }
+
+    public EventHandler<MouseEvent> getOnMouseMovedEventHandler() {
+        return onMouseMovedEventHandler;
     }
 
     public EventHandler<KeyEvent> getOnKeyPressedEventHandler() {
@@ -63,7 +68,7 @@ public class SceneGestures {
             /*
              * Return if Control key is not pressed
              */
-            if (!app.isCtrlPressed()) {
+            if (!app.isCtrlPressed() || app.isMenuHovered()) {
                 return;
             }
 
@@ -79,6 +84,17 @@ public class SceneGestures {
                     event.getSceneY() - app.getPanIconBounds().getHeight() / 2 + 9);
 
             event.consume();
+        }
+
+    };
+
+    private EventHandler<MouseEvent> onMouseMovedEventHandler = new EventHandler<MouseEvent>() {
+        public void handle(MouseEvent event) {
+            mouseX = event.getSceneX();
+            mouseY = event.getSceneY();
+
+            System.out.println(mouseY);
+            System.out.println(mouseY);
         }
 
     };
@@ -100,7 +116,7 @@ public class SceneGestures {
             /*
              * Return if Control key is not pressed
              */
-            if (!app.isCtrlPressed()) {
+            if (!app.isCtrlPressed() || app.isMenuHovered()) {
                 return;
             }
 
@@ -115,11 +131,6 @@ public class SceneGestures {
              */
             app.movePanIcon(event.getSceneX() - app.getPanIconBounds().getWidth() / 2 + 9,
                     event.getSceneY() - app.getPanIconBounds().getHeight() / 2 + 9);
-
-            /*
-             * Set the current state to Pan Mode
-             */
-            app.panMode();
 
             event.consume();
         }
@@ -140,11 +151,6 @@ public class SceneGestures {
             app.hidePanIcon();
 
             /*
-             * Set the current state to interact mode
-             */
-            app.interactMode();
-
-            /*
              * Release left mouse click
              */
             app.releaseLeftClick();
@@ -160,7 +166,6 @@ public class SceneGestures {
                      */
                     if (!app.isLeftClickPressed() && !app.isShiftPressed()) {
                         app.pressCtrl();
-                        app.panMode();
                     }
 
                     break;
@@ -191,7 +196,6 @@ public class SceneGestures {
                      */
                     app.releaseCtrl();
                     app.hidePanIcon();
-                    app.interactMode();
 
                     break;
                 case SHIFT:

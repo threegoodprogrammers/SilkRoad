@@ -1,8 +1,12 @@
 package graph;
 
+import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
+import javafx.animation.PauseTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -14,6 +18,11 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The type App.
@@ -25,13 +34,80 @@ public class App {
     public Pane overlay;
     public Button traverseButton;
 
+    /**
+     * Menus grid panes
+     */
+
+    public GridPane mainMenu;
+    public GridPane problemsMenu;
+    public GridPane toolsMenu;
+    public GridPane modeMenu;
+
+    /**
+     * Problems menu buttons
+     */
+
+    public JFXButton shortestPathButton;
+    public JFXButton travellingSalesmanButton;
+
+    /**
+     * Tools menu buttons
+     */
+
+    public JFXButton setSourceNodeButton;
+    public JFXButton setTargetNodeButton;
+    public JFXButton setWeightButton;
+    public JFXButton setLabelButton;
+    public JFXButton changeDirectionButton;
+    public JFXButton removeButton;
+
+    /**
+     * Mode menu buttons
+     */
+
+    public JFXButton nodeButton;
+    public JFXButton directionalEdgeButton;
+    public JFXButton nonDirectionalEdgeButton;
+    public JFXButton selectButton;
+
+
     public enum State {
         IDLE, PAN, MOVE
     }
 
-    public enum Operation {
-        DIJKSTRA, TRAVELLING_SALESMAN
+    /**
+     * Different modes of interaction within the application
+     * <p>
+     * 1. New node mode: User can add new nodes to the main canvas.
+     * 2. New directional edge mode: User can add new directional edge between two nodes.
+     * 3. New non-directional edge mode: User can add new non-directional edge between two nodes. Non-directional
+     * edges are the same as two directional edges with opposite directions.
+     * 4. Select mode: User can select nodes and edges to delete them.
+     */
+
+    public enum Mode {
+        NODE, DIRECTIONAL_EDGE, NON_DIRECTIONAL_EDGE, SELECT
     }
+
+    /**
+     * Main application problem mode.
+     * <p>
+     * 1. Shortest path: User must choose one source node and one target node, so the application finds the shortest
+     * path between the two nodes specified using Dijkstra algorithm.
+     * 2. Travelling salesman: User must choose one source node, so the application finds the best way that one can
+     * traverse through them all without visiting any node more than once. This method uses dynamic programming
+     * algorithm.
+     */
+
+    public enum Problem {
+        SHORTEST_PATH, TRAVELLING_SALESMAN
+    }
+
+    /**
+     * Current application interaction mode
+     */
+
+    private Mode currentMode;
 
     private boolean shiftPressed = false;
     private boolean ctrlPressed = false;
@@ -43,17 +119,20 @@ public class App {
     private NodeGestures nodeGestures;
     private SceneGestures sceneGestures;
     private static Scene scene;
+    private Stage primaryStage;
 
-    public void set(Scene scene) {
+    public boolean mouseOnMenu = false;
+
+    public void set(Scene scene, Stage primaryStage) {
         /*
          * Set scene elements and listeners
          */
         setScene(scene);
 
         /*
-         * Set the current state to interact mode
+         * Set primary stage
          */
-        interactMode();
+        setPrimaryStage(primaryStage);
 
         GraphNode graphNode = new GraphNode("1");
         graphNode.setTranslateX(50);
@@ -75,7 +154,7 @@ public class App {
 
         this.canvas.getChildren().addAll(graphNode, graphNode2);
 
-        FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.PENCIL);
+        FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.LONG_ARROW_RIGHT);
 
 
 //        GraphNode node = new GraphNode("1", "1");
@@ -96,6 +175,7 @@ public class App {
         this.sceneGestures = new SceneGestures(this.canvas, this, this.background);
         App.scene.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
         App.scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
+        window.addEventFilter(MouseEvent.MOUSE_MOVED, sceneGestures.getOnMouseMovedEventHandler());
         App.scene.addEventFilter(MouseDragEvent.MOUSE_RELEASED, sceneGestures.getOnMouseReleasedEventHandler());
         App.scene.addEventFilter(KeyEvent.KEY_PRESSED, sceneGestures.getOnKeyPressedEventHandler());
         App.scene.addEventFilter(KeyEvent.KEY_RELEASED, sceneGestures.getOnKeyReleasedEventHandler());
@@ -105,30 +185,35 @@ public class App {
         panIconPane.toBack();
         canvas.toFront();
 
+        TranslateTransition hideMenu = new TranslateTransition(Duration.millis(500), mainMenu);
+        hideMenu.setToX(-220);
+        hideMenu.setOnFinished(event -> {
+            hideMenu.setToX(0);
+        });
+
+        PauseTransition wait = new PauseTransition(Duration.millis(3000));
+        wait.setOnFinished(event -> {
+            hideMenu.play();
+        });
+        wait.play();
+
+        PauseTransition wait2 = new PauseTransition(Duration.millis(6000));
+        wait2.setOnFinished(event -> {
+            hideMenu.play();
+        });
+        wait2.play();
+
     }
 
-    /**
-     * Switch to Move state
-     */
+    private void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
 
-    public void moveMode() {
-        this.state = State.MOVE;
-    }
-
-    /**
-     * Switch to Interact state
-     */
-
-    public void interactMode() {
-        this.state = State.IDLE;
-    }
-
-    /**
-     * Switch to Pan state
-     */
-
-    public void panMode() {
-        this.state = State.PAN;
+        this.primaryStage.iconifiedProperty().addListener((ov, t, t1) -> {
+            leaveMenu();
+            releaseLeftClick();
+            releaseCtrl();
+            releaseShift();
+        });
     }
 
     /**
@@ -145,6 +230,15 @@ public class App {
 
     private void hideCursor() {
         scene.setCursor(Cursor.NONE);
+    }
+
+    /**
+     * Hide menu
+     */
+
+    public void hideMenu() {
+//        showMenu.stop();
+//        hideMenu.play();
     }
 
     /**
@@ -222,13 +316,80 @@ public class App {
     }
 
     /**
-     * Return the state of the app
-     *
-     * @return The state
+     * Switch to node mode
      */
 
-    public State getState() {
-        return this.state;
+    public void nodeMode() {
+        this.currentMode = Mode.NODE;
+    }
+
+    /**
+     * Switch to select mode
+     */
+
+    public void selectMode() {
+        this.currentMode = Mode.SELECT;
+    }
+
+    /**
+     * Switch to non-directional edge mode
+     */
+
+    public void nonDirectionalEdgeMode() {
+        this.currentMode = Mode.NON_DIRECTIONAL_EDGE;
+    }
+
+    /**
+     * Switch to directional edge mode
+     */
+
+    public void directionalEdgeMode() {
+        this.currentMode = Mode.DIRECTIONAL_EDGE;
+    }
+
+    /**
+     * Get current application interaction mode
+     *
+     * @return the current mode
+     */
+
+    public Mode getCurrentMode() {
+        return this.currentMode;
+    }
+
+    /**
+     * Deselect mode button
+     *
+     * @param button the button
+     */
+
+    public void deselectModeButton(JFXButton button) {
+        button.getStyleClass().remove("menu-button-pink");
+        button.getStyleClass().addAll("menu-button-transparent", "menu-button-hover-pink-outline");
+    }
+
+    /**
+     * Deselect all mode buttons.
+     *
+     * @param buttons the buttons
+     */
+
+    public void deselectAllModeButtons(List<JFXButton> buttons) {
+        for (JFXButton button : buttons) {
+            button.getStyleClass().remove("menu-button-pink");
+            button.getStyleClass().addAll("menu-button-transparent", "menu-button-hover-pink-outline");
+        }
+    }
+
+    /**
+     * Select mode button
+     *
+     * @param button the button
+     */
+
+    public void selectModeButton(JFXButton button) {
+        button.getStyleClass().removeAll("menu-button-transparent", "menu-button-hover-pink-outline");
+        button.getStyleClass().add("menu-button-pink");
     }
 
     /**
@@ -307,6 +468,32 @@ public class App {
 
     public void releaseLeftClick() {
         this.leftClickPressed = false;
+    }
+
+    /**
+     * Hover menu.
+     */
+
+    public void hoverMenu() {
+        this.mouseOnMenu = true;
+    }
+
+    /**
+     * Leave menu.
+     */
+
+    public void leaveMenu() {
+        this.mouseOnMenu = false;
+    }
+
+    /**
+     * Has user hovered menu
+     *
+     * @return the boolean
+     */
+
+    public boolean isMenuHovered() {
+        return this.mouseOnMenu;
     }
 
     /**

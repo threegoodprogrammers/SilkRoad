@@ -19,7 +19,7 @@ public class Main extends Application {
 //        Font.loadFont(getClass().getResourceAsStream("/education/font.ttf"), 16);
         Scene scene = new Scene(root, 1200, 800);
         app = loader.getController();
-        app.set(scene);
+        app.set(scene, primaryStage);
         primaryStage.setTitle("Test");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);

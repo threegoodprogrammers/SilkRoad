@@ -23,6 +23,18 @@ Button, JFXButton {
     linear-gradient(#66bde1 0%, #71cdf5 50%);
 }
 
+.node-transparent {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#6bc0e6 0%, #70d2fa 50%);
+    -fx-background-radius: 50%;
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: #4b4b4b;
+    -fx-font-size: 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+    -fx-opacity: .7;
+}
+
 .buttonBlue {
     -fx-background-color: #c3c4c4,
     linear-gradient(#d6d6d6 50%, white 100%),
@@ -56,6 +68,11 @@ Button, JFXButton {
     -fx-background-radius: 10 10 0 0;
 }
 
+.menuTitlePanePink {
+    -fx-background-color: #ff7979;
+    -fx-background-radius: 10 10 0 0;
+}
+
 .menu-button-general {
     -fx-border-width: 3;
     -fx-border-style: ridge;
@@ -81,6 +98,17 @@ Button, JFXButton {
 .menu-button-green-outline FontAwesomeIconView {
     -fx-text-fill: #2ecc71;
     -fx-fill: #2ecc71;
+}
+
+.menu-button-pink-outline {
+    -fx-border-color: #ff7979;
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.menu-button-pink-outline FontAwesomeIconView {
+    -fx-text-fill: #ff7979;
+    -fx-fill: #ff7979;
 }
 
 .menu-button-orange-outline {
@@ -114,22 +142,18 @@ Button, JFXButton {
     -fx-fill: white;
 }
 
-.menu-button-purple {
+.menu-button-pink {
     -fx-border-color: #ff7979;
-    -fx-background-color: transparent;
+    -fx-background-color: #ff7979;
     -fx-text-fill: white;
 }
 
-.menu-button-purple FontAwesomeIconView {
-    -fx-text-fill: #ff7979;
-    -fx-fill: #ff7979;
+.menu-button-pink FontAwesomeIconView {
+    -fx-text-fill: white;
+    -fx-fill: white;
 }
 
-.menu-button-purple:hover {
-    -fx-background-color: #ff7979;
-}
-
-.menu-button-purple:hover FontAwesomeIconView {
+.menu-button-pink:hover FontAwesomeIconView {
     -fx-text-fill: white;
     -fx-fill: white;
 }
@@ -216,8 +240,8 @@ Button, JFXButton {
 }
 
 .menu-button-hover-dark:hover FontAwesomeIconView {
-    -fx-text-fill: white;
-    -fx-fill: white;
+    -fx-text-fill: #f5f5f5;
+    -fx-fill: #f5f5f5;
 }
 
 .menu-button-hover-blue:hover {
@@ -226,8 +250,8 @@ Button, JFXButton {
 }
 
 .menu-button-hover-blue:hover FontAwesomeIconView {
-    -fx-text-fill: white;
-    -fx-fill: white;
+    -fx-text-fill: #f5f5f5;
+    -fx-fill: #f5f5f5;
 }
 
 .menu-button-hover-green:hover {
@@ -236,8 +260,28 @@ Button, JFXButton {
 }
 
 .menu-button-hover-green:hover FontAwesomeIconView {
-    -fx-text-fill: white;
-    -fx-fill: white;
+    -fx-text-fill: #f5f5f5;
+    -fx-fill: #f5f5f5;
+}
+
+.menu-button-hover-pink:hover {
+    -fx-background-color: #ff7979;
+    -fx-border-color: #ff7979;
+}
+
+.menu-button-hover-pink:hover FontAwesomeIconView {
+    -fx-text-fill: #f5f5f5;
+    -fx-fill: #f5f5f5;
+}
+
+.menu-button-hover-pink-outline:hover {
+    -fx-background-color: transparent;
+    -fx-border-color: #ff7979;
+}
+
+.menu-button-hover-pink-outline:hover FontAwesomeIconView {
+    -fx-text-fill: #ff7979;
+    -fx-fill: #ff7979;
 }
 
 .menu-button-hover-orange:hover {
@@ -246,8 +290,8 @@ Button, JFXButton {
 }
 
 .menu-button-hover-orange:hover FontAwesomeIconView {
-    -fx-text-fill: white;
-    -fx-fill: white;
+    -fx-text-fill: #f5f5f5;
+    -fx-fill: #f5f5f5;
 }
 
 .menu-button-blue {
