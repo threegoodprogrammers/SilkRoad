@@ -6,6 +6,8 @@ import java.util.ArrayList;
  * The type Graph.
  */
 public class Graph {
+    private int lastID = 0;
+
     private ArrayList<GraphNode> nodes = new ArrayList<>();
     private ArrayList<GraphEdge> edges = new ArrayList<>();
 
@@ -52,7 +54,7 @@ public class Graph {
     /**
      * Add node.
      *
-     * @param id the id
+     * @param id the lastID
      */
 
     public GraphNode addNode(String id) {
@@ -163,5 +165,15 @@ public class Graph {
         for (GraphNode node : nodes)
             if (node.getIdentifier().equals(nodeIdentifier)) return node;
         return null;
+    }
+
+    /**
+     * Generate lastID string.
+     *
+     * @return the string
+     */
+
+    public String generateID() {
+        return String.valueOf(++lastID);
     }
 }

@@ -2,6 +2,7 @@ package elements;
 
 import graph.App;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -10,22 +11,28 @@ public class SceneGestures {
     private static final double MAX_SCALE = 4.0d;
     private static final double MIN_SCALE = .4d;
     private DragContext sceneDragContext = new DragContext();
-    private static double mouseX;
-    private static double mouseY;
+    private double mouseX;
+    private double mouseY;
 
     private PannableCanvas canvas;
     private PannableGridPane background;
     private App app;
+    private GraphNode newNode;
 
-    public SceneGestures(PannableCanvas canvas, App app, PannableGridPane background) {
+    public SceneGestures(PannableCanvas canvas, App app, PannableGridPane background, GraphNode newNode) {
         this.canvas = canvas;
         this.app = app;
         this.background = background;
+        this.newNode = newNode;
     }
 
     public EventHandler<MouseEvent> getOnMousePressedEventHandler() {
         return onMousePressedEventHandler;
     }
+
+//    public EventHandler<MouseEvent> getOnMouseClickEventHandler() {
+//        return onMouseClickedEventHandler;
+//    }
 
     public EventHandler<MouseEvent> getOnMouseReleasedEventHandler() {
         return onMouseReleasedEventHandler;
@@ -34,6 +41,11 @@ public class SceneGestures {
     public EventHandler<MouseEvent> getOnMouseMovedEventHandler() {
         return onMouseMovedEventHandler;
     }
+
+    public EventHandler<MouseEvent> getOnMouseEnteredEventHandler() {
+        return onMouseEnteredEventHandler;
+    }
+
 
     public EventHandler<KeyEvent> getOnKeyPressedEventHandler() {
         return onKeyPressedEventHandler;
@@ -53,6 +65,14 @@ public class SceneGestures {
 
     private EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
         public void handle(MouseEvent event) {
+            mouseX = event.getSceneX();
+            mouseY = event.getSceneY();
+
+            /*
+             * Set co-ordinates of mouse click position
+             */
+            setSceneDragContext(event);
+
             /*
              * Return if the left click is not pressed
              */
@@ -73,6 +93,11 @@ public class SceneGestures {
             }
 
             /*
+             * Hide menu
+             */
+            app.hideMenu();
+
+            /*
              * Set co-ordinates of mouse click position
              */
             setSceneDragContext(event);
@@ -85,7 +110,6 @@ public class SceneGestures {
 
             event.consume();
         }
-
     };
 
     private EventHandler<MouseEvent> onMouseMovedEventHandler = new EventHandler<MouseEvent>() {
@@ -93,14 +117,48 @@ public class SceneGestures {
             mouseX = event.getSceneX();
             mouseY = event.getSceneY();
 
-            System.out.println(mouseY);
-            System.out.println(mouseY);
-        }
+//            app.setMenuOnTop();
 
+            if (app.getCurrentMode() == App.Mode.NODE && !app.isMenuHovered()) {
+                moveNewNode(event);
+            }
+
+        }
     };
 
     private EventHandler<MouseEvent> onMouseDraggedEventHandler = new EventHandler<MouseEvent>() {
         public void handle(MouseEvent event) {
+            mouseX = event.getSceneX();
+            mouseY = event.getSceneY();
+
+            switch (app.getCurrentMode()) {
+                case NODE:
+                    if (app.isCtrlPressed() || app.isMenuHovered()) {
+                        break;
+                    }
+                    moveNewNode(event);
+
+                    return;
+                case NON_DIRECTIONAL_EDGE:
+                    if (app.isCtrlPressed()) {
+                        break;
+                    }
+
+                    break;
+                case DIRECTIONAL_EDGE:
+                    if (app.isCtrlPressed()) {
+                        break;
+                    }
+
+                    break;
+                default:
+                    if (app.isCtrlPressed()) {
+                        break;
+                    }
+
+                    break;
+            }
+
             /*
              * Return if the left click is not pressed
              */
@@ -116,28 +174,104 @@ public class SceneGestures {
             /*
              * Return if Control key is not pressed
              */
-            if (!app.isCtrlPressed() || app.isMenuHovered()) {
+            if (!app.isCtrlPressed()) {
                 return;
             }
 
             /*
+             * Hide menu
+             */
+            app.hideMenu();
+
+            /*
              * Move the main canvas
              */
-            app.moveCanvas(sceneDragContext.translateAnchorX + event.getSceneX() - sceneDragContext.mouseAnchorX,
-                    sceneDragContext.translateAnchorY + event.getSceneY() - sceneDragContext.mouseAnchorY);
+            app.moveCanvas(sceneDragContext.translateAnchorX + mouseX - sceneDragContext.mouseAnchorX,
+                    sceneDragContext.translateAnchorY + mouseY - sceneDragContext.mouseAnchorY);
 
             /*
              * Move pan icon
              */
-            app.movePanIcon(event.getSceneX() - app.getPanIconBounds().getWidth() / 2 + 9,
-                    event.getSceneY() - app.getPanIconBounds().getHeight() / 2 + 9);
+            app.movePanIcon(mouseX - app.getPanIconBounds().getWidth() / 2 + 9,
+                    mouseY - app.getPanIconBounds().getHeight() / 2 + 9);
+
+            /******
+             * TEST
+             ******/
+
+//            sceneDragContext.mouseAnchorX = mouseX;
+//            sceneDragContext.mouseAnchorY = mouseY;
+//            Bounds boundsInScene = newNode.localToScene(newNode.getBoundsInLocal());
+
+//            sceneDragContext.mouseAnchorX = (boundsInScene.getMinX() + boundsInScene.getMaxX()) / 2;
+//            sceneDragContext.mouseAnchorY = (boundsInScene.getMinY() + boundsInScene.getMaxY()) / 2;
+//            sceneDragContext.translateAnchorX = newNode.getTranslateX();
+//            sceneDragContext.translateAnchorY = newNode.getTranslateY();
+//            System.out.println("X: " + boundsInScene.getMinX());
+//            System.out.println("Y: " + boundsInScene.getMinY());
+
+//            Bounds boundsInScene = canvas.localToScene(canvas.getBoundsInLocal());
+
+//            System.out.println("X: " + event.getScreenX());
+//            System.out.println("Y: " + event.getSceneY());
+
+//            System.out.println("X: " + canvas.getTranslateX());
+//            System.out.println("Y: " + canvas.getTranslateY());
 
             event.consume();
         }
     };
 
+
+    private EventHandler<MouseEvent> onMouseEnteredEventHandler = new EventHandler<MouseEvent>() {
+        public void handle(MouseEvent event) {
+            /*
+             * Return if the left click is not pressed
+             */
+//            if (app.getCurrentMode() != App.Mode.NODE) {
+//                return;
+//            }
+
+            /*
+             * Move the main canvas
+             */
+//            setSceneDragContext(event);
+
+//            event.consume();
+        }
+    };
+
     private EventHandler<MouseEvent> onMouseReleasedEventHandler = new EventHandler<MouseEvent>() {
         public void handle(MouseEvent event) {
+            switch (app.getCurrentMode()) {
+                case NODE:
+                    if (app.isCtrlPressed() || app.isMenuHovered()) {
+                        break;
+                    }
+                    moveNewNode(event);
+                    break;
+
+//                    return;
+                case NON_DIRECTIONAL_EDGE:
+                    if (app.isCtrlPressed()) {
+                        break;
+                    }
+
+                    break;
+                case DIRECTIONAL_EDGE:
+                    if (app.isCtrlPressed()) {
+                        break;
+                    }
+
+                    break;
+                default:
+                    if (app.isCtrlPressed()) {
+                        break;
+                    }
+
+                    break;
+            }
+
             /*
              * Return if the left click is not released
              */
@@ -154,8 +288,34 @@ public class SceneGestures {
              * Release left mouse click
              */
             app.releaseLeftClick();
+
+            /*
+             * Show menu again
+             */
+            app.showMenu();
         }
     };
+
+//    private EventHandler<MouseEvent> onMouseReleasedEventHandler = new EventHandler<MouseEvent>() {
+//        public void handle(MouseEvent event) {
+//            /*
+//             * Return if the left click is not released
+//             */
+////            if (!event.isPrimaryButtonDown()) {
+////                return;
+////            }
+////
+//            /*
+//             * Hide pan icon
+//             */
+//            app.hidePanIcon();
+//
+//            /*
+//             * Release left mouse click
+//             */
+//            app.releaseLeftClick();
+//        }
+//    };
 
     private EventHandler<KeyEvent> onKeyPressedEventHandler = new EventHandler<KeyEvent>() {
         public void handle(KeyEvent event) {
@@ -244,7 +404,11 @@ public class SceneGestures {
             background.setScale(scale * 10 / 4);
 
             // note: pivot value must be untransformed, i. e. without scaling
-            canvas.setPivot(f * dx, f * dy);
+//            canvas.setPivot(f * dx, f * dy);
+
+            if (app.getCurrentMode() == App.Mode.NODE) {
+                app.moveNewNode(mouseX, mouseY);
+            }
 
             event.consume();
         }
@@ -267,12 +431,43 @@ public class SceneGestures {
      *
      * @param event the event
      */
-
     public void setSceneDragContext(MouseEvent event) {
         sceneDragContext.mouseAnchorX = event.getSceneX();
         sceneDragContext.mouseAnchorY = event.getSceneY();
 
         sceneDragContext.translateAnchorX = canvas.getTranslateX();
         sceneDragContext.translateAnchorY = canvas.getTranslateY();
+    }
+
+    /**
+     * Move new node
+     *
+     * @param event Mouse event
+     */
+
+    private void moveNewNode(MouseEvent event) {
+        app.moveNewNode(event.getSceneX(), event.getSceneY());
+    }
+
+//    private void
+
+    /**
+     * Gets x.
+     *
+     * @return the x
+     */
+
+    public double getX() {
+        return this.mouseX;
+    }
+
+    /**
+     * Gets y.
+     *
+     * @return the y
+     */
+
+    public double getY() {
+        return this.mouseY;
     }
 }

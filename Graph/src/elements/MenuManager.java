@@ -3,10 +3,10 @@ package elements;
 import com.jfoenix.controls.JFXButton;
 import graph.App;
 import javafx.animation.TranslateTransition;
+import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -114,6 +114,11 @@ public class MenuManager {
          * Set menu animations
          */
         setMenuAnimations();
+
+        /*
+         * Set mode buttons action listener
+         */
+        setMenuButtons();
     }
 
     /**
@@ -131,7 +136,7 @@ public class MenuManager {
          * Show menu animation
          */
         showMenu = new TranslateTransition(Duration.millis(500), mainMenu);
-        hideMenu.setToX(0);
+        showMenu.setToX(0);
     }
 
     /**
@@ -373,6 +378,40 @@ public class MenuManager {
                 app.selectModeButton(selectButton);
 
                 break;
+        }
+    }
+
+    /**
+     * Sets menu buttons actions
+     */
+
+    public void setMenuButtons() {
+        selectButton.setOnAction(event -> app.changeMode(App.Mode.SELECT));
+        nodeButton.setOnAction(event -> app.changeMode(App.Mode.NODE));
+        directionalEdgeButton.setOnAction(event -> app.changeMode(App.Mode.DIRECTIONAL_EDGE));
+        nonDirectionalEdgeButton.setOnAction(event -> app.changeMode(App.Mode.NON_DIRECTIONAL_EDGE));
+    }
+
+    /**
+     * Menu on top
+     */
+
+    public void menuOnTop() {
+        mainMenu.toFront();
+//        modeMenu.toFront();
+//        toolsMenu.toFront();
+//        problemsMenu.toFront();
+    }
+
+    /**
+     * Finalize on top.
+     *
+     * @param onTop the on top
+     */
+
+    public void finalizeOnTop(ArrayList<Node> onTop) {
+        for (Node node : onTop) {
+            node.toFront();
         }
     }
 }

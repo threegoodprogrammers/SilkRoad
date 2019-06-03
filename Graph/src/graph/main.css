@@ -15,6 +15,7 @@ Button, JFXButton {
     -fx-text-fill: #4b4b4b;
     -fx-font-size: 24;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+    -fx-cursor: hand;
 }
 
 .node:hover {
@@ -23,16 +24,61 @@ Button, JFXButton {
     linear-gradient(#66bde1 0%, #71cdf5 50%);
 }
 
-.node-transparent {
+.node-selected {
     -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
     linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-    linear-gradient(#6bc0e6 0%, #70d2fa 50%);
+    linear-gradient(#60eb71 0%, #7afa79 50%);
+    -fx-border-color: #fff;
+    -fx-border-style: dashed;
+    -fx-border-width: 3;
+    -fx-border-radius: 50%;
     -fx-background-radius: 50%;
     -fx-background-insets: 0, 1, 2;
     -fx-text-fill: #4b4b4b;
     -fx-font-size: 24;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
-    -fx-opacity: .7;
+    -fx-opacity: .8;
+    /*-fx-cursor: hand;*/
+}
+
+.node-transparent {
+    /*-fx-background-color: linear-gradient(rgba(242, 242, 242, 0.8), rgba(214, 214, 214, 0.8)),*/
+    /*linear-gradient(rgba(252, 252, 252, 0.61) 0%, rgba(217, 217, 217, 0.6) 20%, rgba(214, 214, 214, 0.6) 100%),*/
+    /*linear-gradient(rgba(102, 189, 225, 0.6) 0%, rgba(113, 205, 245, 0.6) 50%);*/
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#80cdeb 0%, #8cddfb 50%);
+    -fx-border-color: #fff;
+    -fx-border-style: dashed;
+    -fx-border-width: 3;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-background-insets: 0, 1, 2;
+    /*-fx-text-fill: #4b4b4b;*/
+    -fx-text-fill: #fff;
+    -fx-font-size: 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+    -fx-opacity: .8;
+    /*-fx-cursor: hand;*/
+}
+
+.node-source {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#ebab4b 0%, #f9b64d 50%);
+    -fx-background-radius: 50%;
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: #4b4b4b;
+    /*-fx-text-fill: #f2f2f2;*/
+    -fx-font-size: 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.node-source:hover {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#e4ab44 0%, #f6b34d 50%);
 }
 
 .buttonBlue {

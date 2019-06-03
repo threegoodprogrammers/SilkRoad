@@ -5,10 +5,10 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
 import javafx.animation.PauseTransition;
-import javafx.animation.RotateTransition;
-import javafx.animation.TranslateTransition;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
@@ -21,8 +21,13 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static graph.Main.app;
+import static graph.Main.main;
 
 /**
  * The type App.
@@ -70,6 +75,19 @@ public class App {
     public JFXButton nonDirectionalEdgeButton;
     public JFXButton selectButton;
 
+    /**
+     * New temp node
+     */
+
+    public GraphNode newNode;
+    public Pane tempNodePane;
+    private boolean newNodeVisible = false;
+
+    /**
+     * Menu manager object
+     */
+
+    private MenuManager menuManager;
 
     public enum State {
         IDLE, PAN, MOVE
@@ -121,9 +139,23 @@ public class App {
     private static Scene scene;
     private Stage primaryStage;
 
-    public boolean mouseOnMenu = false;
+    private Graph mainGraph = new Graph();
+    private boolean mouseOnMenu = false;
+    private boolean mouseOnNode = false;
+    private boolean menuVisible = true;
 
     public void set(Scene scene, Stage primaryStage) {
+        this.newNode = new GraphNode("•");
+        newNode.setTranslateX(0);
+        newNode.setTranslateY(0);
+        newNode.setPrefHeight(70);
+        newNode.setPrefWidth(70);
+        newNode.getStyleClass().add("node-transparent");
+        newNode.setVisible(false);
+
+//        EventHandler<MouseEvent> handler = MouseEvent::consume;
+//        newNode.addEventFilter(MouseEvent.ANY, handler);
+
         /*
          * Set scene elements and listeners
          */
@@ -134,14 +166,25 @@ public class App {
          */
         setPrimaryStage(primaryStage);
 
-        GraphNode graphNode = new GraphNode("1");
-        graphNode.setTranslateX(50);
-        graphNode.setTranslateY(50);
-        graphNode.setPrefHeight(70);
-        graphNode.setPrefWidth(70);
-        graphNode.getStyleClass().add("node");
-        graphNode.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        graphNode.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+        /*
+         * Set menus
+         */
+        setMenus();
+
+        /*
+         * Set current mode to node mode
+         */
+        setCurrentMode(Mode.SELECT);
+
+//        GraphNode graphNode = new GraphNode("1");
+//        graphNode.setTranslateX(50);
+//        graphNode.setTranslateY(50);
+//        graphNode.setPrefHeight(70);
+//        graphNode.setPrefWidth(70);
+////        graphNode.getStyleClass().add("node");
+//        graphNode.getStyleClass().add("node-transparent");
+//        graphNode.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+//        graphNode.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
         GraphNode graphNode2 = new GraphNode("2");
         graphNode2.setTranslateX(200);
@@ -151,16 +194,47 @@ public class App {
         graphNode2.getStyleClass().add("node");
         graphNode2.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
         graphNode2.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+        graphNode2.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
 
-        this.canvas.getChildren().addAll(graphNode, graphNode2);
+        GraphNode graphNode3 = new GraphNode("3");
+        graphNode3.setTranslateX(300);
+        graphNode3.setTranslateY(300);
+        graphNode3.setPrefHeight(70);
+        graphNode3.setPrefWidth(70);
+        graphNode3.getStyleClass().add("node-source");
+        graphNode3.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        graphNode3.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+        graphNode3.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
 
-        FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.LONG_ARROW_RIGHT);
+//        this.newNode = new GraphNode("1");
+//        newNode.setTranslateX(50);
+//        newNode.setTranslateY(50);
+//        newNode.setPrefHeight(70);
+//        newNode.setPrefWidth(70);
+//        newNode.getStyleClass().add("node-transparent");
 
+        this.canvas.getChildren().addAll(graphNode2, graphNode3);
+        this.canvas.getChildren().add(newNode);
+
+        canvas.addEventHandler(MouseEvent.MOUSE_ENTERED, sceneGestures.getOnMouseEnteredEventHandler());
+
+        FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.MAP_PIN);
+
+//        System.out.println("X: " + canvas.getScale());
+//        System.out.println("Y: " + canvas.getScaleX());
+
+//        double translateX = -(1200 * (1 - scale) / 2) / scale - canvas.getTranslateX() / scale - 35;
+//        double translateY = -(800 * (1 - scale) / 2) / scale - canvas.getTranslateY() / scale - 35;
+//
+//        newNode.setTranslateX(translateX);
+//        newNode.setTranslateY(translateY);
 
 //        GraphNode node = new GraphNode("1", "1");
 //        pane.getChildren().add(node);
 //        node.setLayoutX(700);
 //        node.setLayoutY(500);
+
+        setMenuOnTop();
     }
 
     /**
@@ -172,7 +246,7 @@ public class App {
     private void setScene(Scene scene) {
         this.nodeGestures = new NodeGestures(this.canvas, this);
         App.scene = scene;
-        this.sceneGestures = new SceneGestures(this.canvas, this, this.background);
+        this.sceneGestures = new SceneGestures(this.canvas, this, this.background, this.newNode);
         App.scene.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
         App.scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
         window.addEventFilter(MouseEvent.MOUSE_MOVED, sceneGestures.getOnMouseMovedEventHandler());
@@ -185,23 +259,26 @@ public class App {
         panIconPane.toBack();
         canvas.toFront();
 
-        TranslateTransition hideMenu = new TranslateTransition(Duration.millis(500), mainMenu);
-        hideMenu.setToX(-220);
-        hideMenu.setOnFinished(event -> {
-            hideMenu.setToX(0);
-        });
-
+//        TranslateTransition hideMenu = new TranslateTransition(Duration.millis(500), mainMenu);
+//        hideMenu.setToX(-220);
+//        hideMenu.setOnFinished(event -> {
+//            hideMenu.setToX(0);
+//        });
+//
         PauseTransition wait = new PauseTransition(Duration.millis(3000));
         wait.setOnFinished(event -> {
-            hideMenu.play();
+//            hideMenu.play();
+//            menuManager.hideMenu();
         });
         wait.play();
+//
+//        PauseTransition wait2 = new PauseTransition(Duration.millis(6000));
+//        wait2.setOnFinished(event -> {
+//            hideMenu.play();
+//        });
+//        wait2.play();
 
-        PauseTransition wait2 = new PauseTransition(Duration.millis(6000));
-        wait2.setOnFinished(event -> {
-            hideMenu.play();
-        });
-        wait2.play();
+//        menuManager.hideMenu();
 
     }
 
@@ -214,6 +291,47 @@ public class App {
             releaseCtrl();
             releaseShift();
         });
+    }
+
+    /**
+     * Set menus in the menu manager
+     */
+
+    private void setMenus() {
+        /*
+         * Define the hash maps
+         */
+        HashMap<Integer, GridPane> menus = new HashMap<>();
+        HashMap<Integer, JFXButton> buttons = new HashMap<>();
+
+        /*
+         * Put menus in hash map
+         */
+        menus.put(0, mainMenu);
+        menus.put(1, problemsMenu);
+        menus.put(2, toolsMenu);
+        menus.put(3, modeMenu);
+
+        /*
+         * Put menu buttons in hash map
+         */
+        buttons.put(0, shortestPathButton);
+        buttons.put(1, travellingSalesmanButton);
+        buttons.put(2, setSourceNodeButton);
+        buttons.put(3, setTargetNodeButton);
+        buttons.put(4, setWeightButton);
+        buttons.put(5, setLabelButton);
+        buttons.put(6, changeDirectionButton);
+        buttons.put(7, removeButton);
+        buttons.put(8, nodeButton);
+        buttons.put(9, directionalEdgeButton);
+        buttons.put(10, nonDirectionalEdgeButton);
+        buttons.put(11, selectButton);
+
+        /*
+         * Instantiate menu manager object
+         */
+        menuManager = new MenuManager(app, buttons, menus);
     }
 
     /**
@@ -230,15 +348,6 @@ public class App {
 
     private void hideCursor() {
         scene.setCursor(Cursor.NONE);
-    }
-
-    /**
-     * Hide menu
-     */
-
-    public void hideMenu() {
-//        showMenu.stop();
-//        hideMenu.play();
     }
 
     /**
@@ -299,6 +408,8 @@ public class App {
 
     public void setPanOnTop() {
         overlay.getStyleClass().add("dark-overlay");
+        overlay.setDisable(false);
+
         panIconPane.toFront();
         canvas.toBack();
         background.toBack();
@@ -310,9 +421,72 @@ public class App {
 
     public void setSceneOnTop() {
         overlay.getStyleClass().remove("dark-overlay");
+//        overlay.setDisable(true);
+//        canvas.toBack();
         panIconPane.toBack();
         panIcon.toBack();
         canvas.toFront();
+        setMenuOnTop();
+    }
+
+    /**
+     * Change application interaction mode
+     */
+
+    public void changeMode(Mode newMode) {
+        /*
+         * Return if the desired new mode is already selected
+         */
+        if (getCurrentMode() == newMode) {
+            return;
+        }
+
+        /*
+         * Change the menu layout according to the
+         * new application interaction mode
+         */
+        menuManager.changeMode(newMode);
+
+        switch (newMode) {
+            case NODE:
+                /*
+                 * Node Mode
+                 */
+                nodeMode();
+
+                break;
+            case DIRECTIONAL_EDGE:
+                /*
+                 * Directional Edge Mode
+                 */
+                directionalEdgeMode();
+
+                break;
+            case NON_DIRECTIONAL_EDGE:
+                /*
+                 * Non-directional Edge Mode
+                 */
+                nonDirectionalEdgeMode();
+
+                break;
+            default:
+                /*
+                 * Select Mode
+                 */
+                selectMode();
+
+                break;
+        }
+    }
+
+    /**
+     * Set the application interaction mode
+     *
+     * @param newMode New mode to set
+     */
+
+    private void setCurrentMode(Mode newMode) {
+        this.currentMode = newMode;
     }
 
     /**
@@ -320,7 +494,15 @@ public class App {
      */
 
     public void nodeMode() {
-        this.currentMode = Mode.NODE;
+        showNewNode();
+
+        /*
+         * Set new current mode
+         */
+        setCurrentMode(Mode.NODE);
+
+//        showNewNode();
+        System.out.println(currentMode.toString());
     }
 
     /**
@@ -328,7 +510,13 @@ public class App {
      */
 
     public void selectMode() {
-        this.currentMode = Mode.SELECT;
+        hideNewNode();
+
+        /*
+         * Set new current mode
+         */
+        setCurrentMode(Mode.SELECT);
+        System.out.println(currentMode.toString());
     }
 
     /**
@@ -336,7 +524,13 @@ public class App {
      */
 
     public void nonDirectionalEdgeMode() {
-        this.currentMode = Mode.NON_DIRECTIONAL_EDGE;
+        hideNewNode();
+
+        /*
+         * Set new current mode
+         */
+        setCurrentMode(Mode.NON_DIRECTIONAL_EDGE);
+        System.out.println(currentMode.toString());
     }
 
     /**
@@ -344,7 +538,13 @@ public class App {
      */
 
     public void directionalEdgeMode() {
-        this.currentMode = Mode.DIRECTIONAL_EDGE;
+        hideNewNode();
+
+        /*
+         * Set new current mode
+         */
+        setCurrentMode(Mode.DIRECTIONAL_EDGE);
+        System.out.println(currentMode.toString());
     }
 
     /**
@@ -355,6 +555,110 @@ public class App {
 
     public Mode getCurrentMode() {
         return this.currentMode;
+    }
+
+    /**
+     * Add new node
+     *
+     * @param event The mouse event
+     */
+
+    public void addNewNode(MouseEvent event) {
+        GraphNode newNode = mainGraph.addNode(mainGraph.generateID());
+
+
+    }
+
+    /**
+     * Add new node to screen
+     */
+
+    private void placeNewNode(double x, double y) {
+
+    }
+
+    /**
+     * Show new temp node on screen
+     */
+
+    private void showNewNode() {
+        /*
+         * Return if new temp node is already visible
+         */
+        if (newNodeVisible) {
+            return;
+        }
+
+        /*
+         * Show new node
+         */
+        moveNewNode(sceneGestures.getX(), sceneGestures.getY());
+        newNode.setVisible(true);
+        setNewNodeVisibility(true);
+    }
+
+    /**
+     * Hide new temp node on the canvas
+     */
+
+    private void hideNewNode() {
+        /*
+         * Return if new temp node is already hidden
+         */
+        if (!newNodeVisible) {
+            return;
+        }
+
+        /*
+         * Hide new node
+         */
+        newNode.setVisible(false);
+        setNewNodeVisibility(false);
+    }
+
+    private void addNewNodeListener() {
+
+    }
+
+    private void removeNewNodeListener() {
+
+    }
+
+    /**
+     * Mode new temp node on the canvas
+     *
+     * @param mouseX X co-ordinate of the new node
+     * @param mouseY Y co-ordinate of the new node
+     */
+
+    public void moveNewNode(double mouseX, double mouseY) {
+        double scale = canvas.getScale();
+
+        double translateX = -(1200 * (1 - scale) / 2) / scale - canvas.getTranslateX() / scale - 35;
+        double translateY = -(800 * (1 - scale) / 2) / scale - canvas.getTranslateY() / scale - 35;
+
+        this.newNode.setTranslateX(mouseX / scale + translateX);
+        this.newNode.setTranslateY(mouseY / scale + translateY);
+    }
+
+    /**
+     * Sets new node visibility
+     *
+     * @param visibility the visibility status
+     */
+
+    public void setNewNodeVisibility(boolean visibility) {
+        this.newNodeVisible = visibility;
+    }
+
+    /**
+     * Is new node visible boolean
+     *
+     * @return the boolean
+     */
+
+    public boolean isNewNodeVisible() {
+        return this.newNodeVisible;
     }
 
     /**
@@ -390,6 +694,44 @@ public class App {
     public void selectModeButton(JFXButton button) {
         button.getStyleClass().removeAll("menu-button-transparent", "menu-button-hover-pink-outline");
         button.getStyleClass().add("menu-button-pink");
+    }
+
+    /**
+     * Sets necessary objects on top
+     */
+
+    public void setOnTop() {
+        ArrayList<Node> onTop = new ArrayList<>();
+        setMenuOnTop();
+
+        switch (currentMode) {
+            case NODE:
+//                onTop.addAll(mainGraph.getNodes());
+
+                break;
+            case NON_DIRECTIONAL_EDGE:
+//                onTop.addAll(mainGraph.getNodes());
+
+                break;
+            case DIRECTIONAL_EDGE:
+//                onTop.addAll(mainGraph.getNodes());
+
+                break;
+            default:
+//                onTop.addAll(mainGraph.getNodes());
+
+                break;
+        }
+
+        menuManager.finalizeOnTop(onTop);
+    }
+
+    /**
+     * Sets menu on top
+     */
+
+    public void setMenuOnTop() {
+        menuManager.menuOnTop();
     }
 
     /**
@@ -487,13 +829,67 @@ public class App {
     }
 
     /**
+     * Show menu
+     */
+
+    public void showMenu() {
+        if (menuVisible) {
+            return;
+        }
+
+        menuManager.showMenu();
+        menuVisible = true;
+    }
+
+    /**
+     * Hide menu
+     */
+
+    public void hideMenu() {
+        if (!menuVisible) {
+            return;
+        }
+
+        menuManager.hideMenu();
+        menuVisible = false;
+    }
+
+    /**
+     * Hover nodes
+     */
+
+    public void hoverNode() {
+        this.mouseOnNode = true;
+    }
+
+    /**
+     * Leave node
+     */
+
+    public void leaveNode() {
+        this.mouseOnNode = false;
+    }
+
+    /**
+     * Is node hovered boolean
+     *
+     * @return the boolean
+     */
+
+    public boolean isNodeHovered() {
+        return this.mouseOnNode;
+    }
+
+
+    /**
      * Has user hovered menu
      *
      * @return the boolean
      */
 
     public boolean isMenuHovered() {
-        return this.mouseOnMenu;
+//        return this.mouseOnMenu;
+        return sceneGestures.getX() <= 220;
     }
 
     /**

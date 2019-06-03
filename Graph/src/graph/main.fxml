@@ -238,7 +238,7 @@
         </StackPane>
     </Pane>
     <PannableCanvas fx:id="canvas" prefHeight="800" prefWidth="1200" />
-    <GridPane fx:id="mainMenu">
+    <GridPane fx:id="mainMenu" maxWidth="220.0">
         <columnConstraints>
             <ColumnConstraints minWidth="10.0" prefWidth="20.0" />
             <ColumnConstraints minWidth="10.0" prefWidth="200.0" />
@@ -330,7 +330,7 @@
                                             <Tooltip text="Set as source node" />
                                         </tooltip>
                                         <graphic>
-                                            <FontAwesomeIconView glyphName="CAR" glyphSize="32" textAlignment="CENTER" />
+                                            <FontAwesomeIconView glyphName="MAP_MARKER" glyphSize="32" textAlignment="CENTER" />
                                         </graphic>
                                         <styleClass>
                                             <String fx:value="menu-button-general" />

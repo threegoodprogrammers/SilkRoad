@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    public static App app;
+    static App app;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -21,8 +21,9 @@ public class Main extends Application {
         app = loader.getController();
         app.set(scene, primaryStage);
         primaryStage.setTitle("Test");
-        primaryStage.setScene(scene);
         primaryStage.setResizable(false);
+        primaryStage.sizeToScene();
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
