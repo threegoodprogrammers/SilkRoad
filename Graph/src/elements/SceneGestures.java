@@ -46,7 +46,6 @@ public class SceneGestures {
         return onMouseEnteredEventHandler;
     }
 
-
     public EventHandler<KeyEvent> getOnKeyPressedEventHandler() {
         return onKeyPressedEventHandler;
     }
@@ -249,6 +248,8 @@ public class SceneGestures {
                         break;
                     }
                     moveNewNode(event);
+
+                    app.addNewNode(event);
                     break;
 
 //                    return;

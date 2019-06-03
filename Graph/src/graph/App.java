@@ -186,37 +186,8 @@ public class App {
 //        graphNode.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
 //        graphNode.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
-        GraphNode graphNode2 = new GraphNode("2");
-        graphNode2.setTranslateX(200);
-        graphNode2.setTranslateY(200);
-        graphNode2.setPrefHeight(70);
-        graphNode2.setPrefWidth(70);
-        graphNode2.getStyleClass().add("node");
-        graphNode2.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        graphNode2.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
-        graphNode2.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
 
-        GraphNode graphNode3 = new GraphNode("3");
-        graphNode3.setTranslateX(300);
-        graphNode3.setTranslateY(300);
-        graphNode3.setPrefHeight(70);
-        graphNode3.setPrefWidth(70);
-        graphNode3.getStyleClass().add("node-source");
-        graphNode3.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        graphNode3.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
-        graphNode3.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
-
-//        this.newNode = new GraphNode("1");
-//        newNode.setTranslateX(50);
-//        newNode.setTranslateY(50);
-//        newNode.setPrefHeight(70);
-//        newNode.setPrefWidth(70);
-//        newNode.getStyleClass().add("node-transparent");
-
-        this.canvas.getChildren().addAll(graphNode2, graphNode3);
         this.canvas.getChildren().add(newNode);
-
-        canvas.addEventHandler(MouseEvent.MOUSE_ENTERED, sceneGestures.getOnMouseEnteredEventHandler());
 
         FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.MAP_PIN);
 
@@ -236,6 +207,8 @@ public class App {
 
         setMenuOnTop();
     }
+
+//    private void set
 
     /**
      * Set scene elements and listeners
@@ -332,6 +305,16 @@ public class App {
          * Instantiate menu manager object
          */
         menuManager = new MenuManager(app, buttons, menus);
+    }
+
+    /**
+     * Add mouse event filters to node
+     */
+
+    private void addEventFilterToNode(GraphNode node) {
+        node.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        node.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+        node.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
     }
 
     /**
@@ -564,17 +547,47 @@ public class App {
      */
 
     public void addNewNode(MouseEvent event) {
+        /*
+         * Create a new graph node
+         */
         GraphNode newNode = mainGraph.addNode(mainGraph.generateID());
 
+        /*
+         * Calculate new node co-ordinates
+         */
+        double scale = canvas.getScale();
+        double anchorX = -(1200 * (1 - scale) / 2) / scale - canvas.getTranslateX() / scale - 35;
+        double anchorY = -(800 * (1 - scale) / 2) / scale - canvas.getTranslateY() / scale - 35;
+        double finalX = event.getSceneX() / scale + anchorX;
+        double finalY = event.getSceneY() / scale + anchorY;
 
+        /*
+         * Call the function with the new coordinates
+         */
+
+        placeNewNode(newNode, finalX, finalY);
+
+        /*
+         * Add event filters to new node
+         */
+        addEventFilterToNode(newNode);
     }
 
     /**
      * Add new node to screen
      */
 
-    private void placeNewNode(double x, double y) {
+    private void placeNewNode(GraphNode newNode, double x, double y) {
+        /*
+         * Add the new node to the canvas
+         */
+        canvas.getChildren().add(newNode);
 
+        /*
+         * Set the co-ordinates as translate values
+         */
+        newNode.setTranslateX(x);
+        newNode.setTranslateY(y);
     }
 
     /**

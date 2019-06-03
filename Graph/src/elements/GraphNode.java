@@ -1,6 +1,7 @@
 package elements;
 
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 
 import java.util.HashMap;
 
@@ -18,6 +19,8 @@ public class GraphNode extends Button {
     public GraphNode(String identifier) {
         super(identifier);
         this.identifier = identifier;
+
+        this.getStyleClass().add("node");
     }
 
     /**

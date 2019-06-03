@@ -16,6 +16,8 @@ Button, JFXButton {
     -fx-font-size: 24;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
     -fx-cursor: hand;
+    -fx-pref-width: 70;
+    -fx-pref-height: 70;
 }
 
 .node:hover {
