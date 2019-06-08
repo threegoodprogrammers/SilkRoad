@@ -1,7 +1,5 @@
 package elements;
 
-import javafx.geometry.Orientation;
-
 import java.util.ArrayList;
 
 /**
@@ -89,14 +87,9 @@ public class Graph {
 
     public GraphEdge addDirectionalEdge(double weight, GraphNode source, GraphNode target) {
         /*
-         * Get single edge between the two nodes if there is any
-         */
-        GraphEdge existingEdge = getSingleEdgeBetweenNodes(source, target);
-
-        /*
          * Generate the suitable orientation for the edge
          */
-        EdgeOrientation orientation = generateOrientation(source, target, existingEdge);
+        EdgeOrientation orientation = generateOrientation(source, target);
 
         /*
          * Instantiate a new graph edge object and add it to the graph edges array list
@@ -124,27 +117,40 @@ public class Graph {
      */
 
     public NonDirectionalEdge addNonDirectionalEdge(double weight, GraphNode source, GraphNode target) {
+        /*
+         * Create two new edges in opposite
+         * direction and add both edges to the nodes
+         */
         GraphEdge edgeOne = addDirectionalEdge(weight, source, target);
         GraphEdge edgeTwo = addDirectionalEdge(weight, target, source);
-        edges.add(edgeOne);
-        edges.add(edgeTwo);
 
-        attachNodes(source, target, edgeOne);
-        attachNodes(target, source, edgeTwo);
+        /*
+         * Instantiate a new non-directional edge
+         * using the two newly created directional edges
+         */
+        NonDirectionalEdge newEdge = new NonDirectionalEdge(edgeOne, edgeTwo);
 
-        return new NonDirectionalEdge(edgeOne, edgeTwo);
+        /*
+         * Two-way attach the two nodes together
+         */
+        twoWayAttachNodes(source, target, newEdge);
+
+        /*
+         * Return the final created non-directional edge
+         */
+        return newEdge;
     }
 
     /**
      * Add the target node to the attached nodes array list
-     * of the source node
+     * of the source and target node
      *
      * @param source         Source node
      * @param target         Target node
      * @param connectingEdge The edge connecting the nodes together
      */
 
-    public void attachNodes(GraphNode source, GraphNode target, GraphEdge connectingEdge) {
+    private void attachNodes(GraphNode source, GraphNode target, GraphEdge connectingEdge) {
         source.addNodeToOutgoingNodes(target, connectingEdge);
         target.addNodeToIncomingNodes(source, connectingEdge);
     }
@@ -157,9 +163,36 @@ public class Graph {
      * @param target the target node
      */
 
-    public void detachNodes(GraphNode source, GraphNode target) {
+    private void detachNodes(GraphNode source, GraphNode target) {
         source.removeNodeFromOutgoingNodes(target);
         target.removeNodeFromIncomingNodes(source);
+    }
+
+    /**
+     * Add each node along with the edge to the
+     * array list of two way attached nodes of the other node
+     *
+     * @param source         Source node
+     * @param target         Target node
+     * @param connectingEdge The edge connecting the nodes together
+     */
+
+    private void twoWayAttachNodes(GraphNode source, GraphNode target, NonDirectionalEdge connectingEdge) {
+        source.addNodeToTwoWayAttachedNodes(target, connectingEdge);
+        target.addNodeToTwoWayAttachedNodes(source, connectingEdge);
+    }
+
+    /**
+     * Remove each node from the two way attached nodes array list
+     * of the other node
+     *
+     * @param source the source node
+     * @param target the target node
+     */
+
+    private void twoWayDetachNodes(GraphNode source, GraphNode target) {
+        source.removeNodeFromTwoWayAttachedNodes(target);
+        target.removeNodeFromTwoWayAttachedNodes(source);
     }
 
     /**
@@ -182,6 +215,8 @@ public class Graph {
      */
 
     public void removeDirectionalEdge(GraphEdge edge) {
+        /* TODO: 5/9/2019 */
+
         edges.remove(edge);
 
         detachNodes(edge.getSourceNode(), edge.getTargetNode());
@@ -194,6 +229,7 @@ public class Graph {
      */
 
     public void removeNonDirectionalEdge(NonDirectionalEdge edge) {
+        /* TODO: 5/9/2019 */
 
     }
 
@@ -272,18 +308,6 @@ public class Graph {
     }
 
     /**
-     * Gets two way edge from target to source and vice versa
-     *
-     * @param source the source
-     * @param target the target
-     * @return the incoming edge
-     */
-
-    public NonDirectionalEdge getTwoWayEdge(GraphNode source, GraphNode target) {
-        return source.getTwoWayEdgeToTargetNode(target);
-    }
-
-    /**
      * Gets incoming edge from target to source
      *
      * @param source the source
@@ -308,15 +332,31 @@ public class Graph {
     }
 
     /**
+     * Gets two way edge from target to source and vice versa
+     *
+     * @param source the source
+     * @param target the target
+     * @return the incoming edge
+     */
+
+    public NonDirectionalEdge getTwoWayEdge(GraphNode source, GraphNode target) {
+        return source.getTwoWayEdgeToTargetNode(target);
+    }
+
+    /**
      * Generate suitable edge orientation for new edge
      *
-     * @param source    The source node
-     * @param target    The target node
-     * @param firstEdge First edge between two nodes
+     * @param source The source node
+     * @param target The target node
      * @return The suitable edge orientation for the new edge
      */
 
-    private EdgeOrientation generateOrientation(GraphNode source, GraphNode target, GraphEdge firstEdge) {
+    private EdgeOrientation generateOrientation(GraphNode source, GraphNode target) {
+        /*
+         * Get single edge between the two nodes if there is any
+         */
+        GraphEdge firstEdge = getSingleEdgeBetweenNodes(source, target);
+
         if (firstEdge == null) {
             return EdgeOrientation.VERTICAL;
         } else {

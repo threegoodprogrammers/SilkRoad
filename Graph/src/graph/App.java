@@ -143,7 +143,8 @@ public class App {
 
     private State state;
     public GridPane window;
-    public static PannableCanvas canvas;
+    public PannableCanvas canvas;
+    private static PannableCanvas appCanvas;
     private NodeGestures nodeGestures;
     private SceneGestures sceneGestures;
     private static Scene scene;
@@ -458,6 +459,8 @@ public class App {
      */
 
     private void setScene(Scene scene) {
+        appCanvas = this.canvas;
+
         this.nodeGestures = new NodeGestures(this.canvas, this);
         App.scene = scene;
         this.sceneGestures = new SceneGestures(this.canvas, this, this.background);
@@ -1203,7 +1206,7 @@ public class App {
      */
 
     public static void addToCanvas(Node node) {
-        canvas.getChildren().add(node);
+        appCanvas.getChildren().add(node);
     }
 
     /**
@@ -1213,7 +1216,7 @@ public class App {
      */
 
     public static void removeFromCanvas(Node node) {
-        canvas.getChildren().remove(node);
+        appCanvas.getChildren().remove(node);
     }
 
     /**
@@ -1223,7 +1226,7 @@ public class App {
      */
 
     public static double getScale() {
-        return canvas.getScale();
+        return appCanvas.getScale();
     }
 
     /**

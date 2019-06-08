@@ -136,7 +136,7 @@ public class GraphNode extends Button {
      * @param connectingEdge the connecting edge
      */
 
-    public void addNodeToTwoWayNodes(GraphNode targetNode, NonDirectionalEdge connectingEdge) {
+    public void addNodeToTwoWayAttachedNodes(GraphNode targetNode, NonDirectionalEdge connectingEdge) {
         this.twoWayAttachedNodes.put(targetNode, connectingEdge);
     }
 
@@ -146,7 +146,7 @@ public class GraphNode extends Button {
      * @param targetNode the target node
      */
 
-    public void removeNodeFromTwoWayNodes(GraphNode targetNode) {
+    public void removeNodeFromTwoWayAttachedNodes(GraphNode targetNode) {
         this.twoWayAttachedNodes.remove(targetNode);
     }
 
