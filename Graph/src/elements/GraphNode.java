@@ -1,14 +1,15 @@
 package elements;
 
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 
 import java.util.HashMap;
 
 public class GraphNode extends Button {
     private GraphNode previousNodeInPath;
     private String identifier;
-    private HashMap<GraphNode, GraphEdge> attachedNodes = new HashMap<>();
+    private HashMap<GraphNode, GraphEdge> incomingNodes = new HashMap<>();
+    private HashMap<GraphNode, GraphEdge> outgoingNodes = new HashMap<>();
+    private HashMap<GraphNode, NonDirectionalEdge> twoWayAttachedNodes = new HashMap<>();
 
     /**
      * Instantiates a new Graph node.
@@ -29,40 +30,124 @@ public class GraphNode extends Button {
      * @return the attached nodes
      */
 
-    public HashMap<GraphNode, GraphEdge> getAttachedNodes() {
-        return attachedNodes;
+    public HashMap<GraphNode, GraphEdge> getIncomingNodes() {
+        return incomingNodes;
     }
 
     /**
-     * Gets edge connecting the current node to a specific node
+     * Gets edge connecting the current node to a specific incoming node
      *
-     * @param targetNode the target node
+     * @param targetNode the target incoming node
      * @return the edge to target node
      */
 
-    public GraphEdge getEdgeToTargetNode(GraphNode targetNode) {
-        return this.attachedNodes.get(targetNode);
+    public GraphEdge getEdgeToTargetIncomingNode(GraphNode targetNode) {
+        return this.incomingNodes.get(targetNode);
     }
 
     /**
-     * Add node to attached nodes hash map
+     * Add node to incoming nodes hash map
      *
      * @param targetNode     the target node
      * @param connectingEdge the connecting edge
      */
 
-    public void addNodeToAttachedNodes(GraphNode targetNode, GraphEdge connectingEdge) {
-        this.attachedNodes.put(targetNode, connectingEdge);
+    public void addNodeToIncomingNodes(GraphNode targetNode, GraphEdge connectingEdge) {
+        this.incomingNodes.put(targetNode, connectingEdge);
     }
 
     /**
-     * Remove node from attached nodes.
+     * Remove node from incoming nodes.
      *
      * @param targetNode the target node
      */
 
-    public void removeNodeFromAttachedNodes(GraphNode targetNode) {
-        this.attachedNodes.remove(targetNode);
+    public void removeNodeFromIncomingNodes(GraphNode targetNode) {
+        this.incomingNodes.remove(targetNode);
+    }
+
+    /**
+     * Gets outgoing nodes.
+     *
+     * @return the outgoing nodes
+     */
+
+    public HashMap<GraphNode, GraphEdge> getOutgoingNodes() {
+        return outgoingNodes;
+    }
+
+    /**
+     * Gets edge connecting the current node to a specific outgoing node
+     *
+     * @param targetNode the target outgoing node
+     * @return the edge to target node
+     */
+
+    public GraphEdge getEdgeToTargetOutgoingNode(GraphNode targetNode) {
+        return this.outgoingNodes.get(targetNode);
+    }
+
+    /**
+     * Add node to outgoing nodes hash map
+     *
+     * @param targetNode     the target node
+     * @param connectingEdge the connecting edge
+     */
+
+    public void addNodeToOutgoingNodes(GraphNode targetNode, GraphEdge connectingEdge) {
+        this.outgoingNodes.put(targetNode, connectingEdge);
+    }
+
+    /**
+     * Remove node from outgoing nodes.
+     *
+     * @param targetNode the target node
+     */
+
+    public void removeNodeFromOutgoingNodes(GraphNode targetNode) {
+        this.outgoingNodes.remove(targetNode);
+    }
+
+    /**
+     * Gets two way attached nodes
+     *
+     * @return the two way attached nodes
+     */
+
+    public HashMap<GraphNode, NonDirectionalEdge> getTwoWayNodes() {
+        return twoWayAttachedNodes;
+    }
+
+    /**
+     * Gets edge connecting the current node to a specific outgoing node
+     *
+     * @param targetNode the target node
+     * @return the edge to target node
+     */
+
+    public NonDirectionalEdge getTwoWayEdgeToTargetNode(GraphNode targetNode) {
+        return this.twoWayAttachedNodes.get(targetNode);
+    }
+
+    /**
+     * Add node to two way attached nodes hash map
+     *
+     * @param targetNode     the target node
+     * @param connectingEdge the connecting edge
+     */
+
+    public void addNodeToTwoWayNodes(GraphNode targetNode, NonDirectionalEdge connectingEdge) {
+        this.twoWayAttachedNodes.put(targetNode, connectingEdge);
+    }
+
+    /**
+     * Remove node from two way attached nodes.
+     *
+     * @param targetNode the target node
+     */
+
+    public void removeNodeFromTwoWayNodes(GraphNode targetNode) {
+        this.twoWayAttachedNodes.remove(targetNode);
     }
 
     /**
@@ -104,5 +189,4 @@ public class GraphNode extends Button {
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
-
 }

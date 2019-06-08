@@ -1,5 +1,6 @@
 package graph;
 
+import elements.PannableCanvas;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -17,13 +17,11 @@ public class SceneGestures {
     private PannableCanvas canvas;
     private PannableGridPane background;
     private App app;
-    private GraphNode newNode;
 
-    public SceneGestures(PannableCanvas canvas, App app, PannableGridPane background, GraphNode newNode) {
+    public SceneGestures(PannableCanvas canvas, App app, PannableGridPane background) {
         this.canvas = canvas;
         this.app = app;
         this.background = background;
-        this.newNode = newNode;
     }
 
     public EventHandler<MouseEvent> getOnMousePressedEventHandler() {
@@ -116,8 +114,6 @@ public class SceneGestures {
             mouseX = event.getSceneX();
             mouseY = event.getSceneY();
 
-//            app.setMenuOnTop();
-
             if (app.getCurrentMode() == App.Mode.NODE && !app.isMenuHovered()) {
                 moveNewNode(event);
             }
@@ -194,29 +190,6 @@ public class SceneGestures {
             app.movePanIcon(mouseX - app.getPanIconBounds().getWidth() / 2 + 9,
                     mouseY - app.getPanIconBounds().getHeight() / 2 + 9);
 
-            /******
-             * TEST
-             ******/
-
-//            sceneDragContext.mouseAnchorX = mouseX;
-//            sceneDragContext.mouseAnchorY = mouseY;
-//            Bounds boundsInScene = newNode.localToScene(newNode.getBoundsInLocal());
-
-//            sceneDragContext.mouseAnchorX = (boundsInScene.getMinX() + boundsInScene.getMaxX()) / 2;
-//            sceneDragContext.mouseAnchorY = (boundsInScene.getMinY() + boundsInScene.getMaxY()) / 2;
-//            sceneDragContext.translateAnchorX = newNode.getTranslateX();
-//            sceneDragContext.translateAnchorY = newNode.getTranslateY();
-//            System.out.println("X: " + boundsInScene.getMinX());
-//            System.out.println("Y: " + boundsInScene.getMinY());
-
-//            Bounds boundsInScene = canvas.localToScene(canvas.getBoundsInLocal());
-
-//            System.out.println("X: " + event.getScreenX());
-//            System.out.println("Y: " + event.getSceneY());
-
-//            System.out.println("X: " + canvas.getTranslateX());
-//            System.out.println("Y: " + canvas.getTranslateY());
-
             event.consume();
         }
     };
@@ -247,9 +220,17 @@ public class SceneGestures {
                     if (app.isCtrlPressed() || app.isMenuHovered()) {
                         break;
                     }
+
                     moveNewNode(event);
 
-                    app.addNewNode(event);
+                    /*
+                     * Place the new node is left click is pressed
+                     */
+
+                    if (app.isLeftClickPressed()) {
+                        app.addNewNode(event);
+                    }
+
                     break;
 
 //                    return;

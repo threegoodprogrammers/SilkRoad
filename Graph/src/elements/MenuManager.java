@@ -398,9 +398,6 @@ public class MenuManager {
 
     public void menuOnTop() {
         mainMenu.toFront();
-//        modeMenu.toFront();
-//        toolsMenu.toFront();
-//        problemsMenu.toFront();
     }
 
     /**

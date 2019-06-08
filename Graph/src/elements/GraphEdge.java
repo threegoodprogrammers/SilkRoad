@@ -1,11 +1,19 @@
 package elements;
 
-import javafx.scene.shape.Line;
+import javafx.scene.control.Label;
+import javafx.scene.shape.CubicCurve;
 
-public class GraphEdge extends Line {
+public class GraphEdge extends CubicCurve {
     private double weight;
     private GraphNode sourceNode;
     private GraphNode targetNode;
+    private EdgeWeight weightLabel;
+
+    /**
+     * Edge orientation (horizontal or vertical)
+     */
+
+    private Graph.EdgeOrientation edgeOrientation;
 
     /**
      * Instantiates a new Graph edge.
@@ -16,10 +24,35 @@ public class GraphEdge extends Line {
      */
 
     public GraphEdge(double weight,
-                     GraphNode sourceNode, GraphNode targetNode) {
+                     GraphNode sourceNode, GraphNode targetNode,
+                     Graph.EdgeOrientation edgeOrientation) {
         this.weight = weight;
         this.sourceNode = sourceNode;
         this.targetNode = targetNode;
+        this.edgeOrientation = edgeOrientation;
+
+        /*
+         * Set weight label and edge transitions
+         */
+//        setWeightLabel(createWeightLabel());
+//        setHoverTransitions();
+    }
+
+
+    /**
+     * Invert edge direction
+     */
+
+    public void invertDirection() {
+
+    }
+
+    /**
+     * Create new weight label for the edge
+     */
+
+    private void createWeightLabel() {
+        this.weightLabel = new EdgeWeight(this.weight);
     }
 
     /**
@@ -39,7 +72,25 @@ public class GraphEdge extends Line {
      */
 
     public void setWeight(double weight) {
+        /*
+         * Set weight property of edge
+         */
         this.weight = weight;
+
+        /*
+         * Update the value on the weight label node
+         */
+        this.weightLabel.setWeight(weight);
+    }
+
+    /**
+     * Gets weight label
+     *
+     * @return the weight label
+     */
+
+    public Label getWeightLabel() {
+        return this.weightLabel;
     }
 
     /**
@@ -81,8 +132,45 @@ public class GraphEdge extends Line {
         this.targetNode = targetNode;
     }
 
-    public void invertDirection() {
-
+    /**
+     * Gets edge orientation
+     *
+     * @return the edge orientation
+     */
+    public Graph.EdgeOrientation getEdgeOrientation() {
+        return edgeOrientation;
     }
+
+    /**
+     * Sets edge orientation
+     *
+     * @param edgeOrientation the edge orientation
+     */
+
+    public void setEdgeOrientation(Graph.EdgeOrientation edgeOrientation) {
+        this.edgeOrientation = edgeOrientation;
+    }
+
+//    public
+
+//    /**
+//     * Set edge hover transitions
+//     */
+//
+//    private void setHoverTransitions() {
+//        /*
+//         * Add mouse enter event listener
+//         */
+//        this.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
+//            App.hoverEdge(this);
+//        });
+//
+//        /*
+//         * Add mouse leave event listener
+//         */
+//        this.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
+//            App.leaveEdge(this);
+//        });
+//    }
 
 }

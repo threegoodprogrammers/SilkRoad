@@ -43,6 +43,77 @@ Button, JFXButton {
     /*-fx-cursor: hand;*/
 }
 
+.edge {
+    -fx-cursor: hand;
+    /*-fx-stroke: rgba(80, 80, 80, .9);*/
+    -fx-opacity: .9;
+}
+
+.edge-idle {
+    -fx-stroke: #66bde1;
+}
+
+.edge-hover {
+    -fx-stroke: #f39c12;
+    -fx-opacity: 1;
+}
+
+.edge-arrow {
+    -fx-stroke-width: 5;
+}
+
+.edge-arrow-idle {
+    -fx-stroke: #66bde1;
+}
+
+.edge-arrow-hover {
+    -fx-stroke: #f39c12;
+}
+
+.edge-weight {
+    -fx-background-radius: 50%;
+    -fx-background-color: rgba(255, 255, 255, .8);
+    -fx-border-width: 3;
+    -fx-border-radius: 50%;
+    -fx-border-style: solid;
+    -fx-font-size: 25;
+    -fx-font-weight: normal;
+    -fx-pref-width: 60;
+    -fx-pref-height: 60;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-opacity: .3;
+}
+
+.edge-weight-idle {
+    -fx-border-color: #66bde1;
+    -fx-text-fill: #66bde1;
+}
+
+.edge-weight-hover {
+    -fx-border-color: #f39c12;
+    -fx-text-fill: #f39c12;
+}
+
+.edge-weight-2 {
+    -fx-background-radius: 50%;
+    -fx-background-color: rgba(255, 255, 255, .8);
+    -fx-border-width: 3;
+    /*-fx-border-color: orange;*/
+    /*-fx-text-fill: orange;*/
+    -fx-border-color: rgba(80, 80, 80, .9);
+    -fx-text-fill: rgba(80, 80, 80, .9);
+    -fx-border-style: solid;
+    -fx-border-radius: 50%;
+    -fx-font-size: 25;
+    -fx-font-weight: normal;
+    -fx-pref-width: 60;
+    -fx-pref-height: 60;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-opacity: .3;
+}
+
 .node-transparent {
     /*-fx-background-color: linear-gradient(rgba(242, 242, 242, 0.8), rgba(214, 214, 214, 0.8)),*/
     /*linear-gradient(rgba(252, 252, 252, 0.61) 0%, rgba(217, 217, 217, 0.6) 20%, rgba(214, 214, 214, 0.6) 100%),*/
