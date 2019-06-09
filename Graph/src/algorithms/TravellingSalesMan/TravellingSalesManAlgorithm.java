@@ -2,12 +2,15 @@ package algorithms.TravellingSalesMan;
 
 import algorithms.GraphObject;
 import algorithms.NodeGraphObject;
+import elements.Graph;
+import elements.GraphNode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class TravellingSalesManAlgorithm {
 
-    private static Map<Map<Integer, ArrayList<NodeGraphObject>>, Double> costs = new HashMap<>();
     private static boolean ranSolver = false;
     private static List<Integer> tour = new ArrayList<>();
     private static double minTourCost = Double.POSITIVE_INFINITY;
@@ -31,6 +34,24 @@ public class TravellingSalesManAlgorithm {
         return null;
     }
 
+    public static TravellingSalesManData findShortestCycle(Graph graph, GraphNode baseNode) {
+        if (graph == null) return null;
+        if (HasHamiltonianCycle(graph.getNodes())) {
+            int nodesCount = graph.getNodes().size();
+            double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), nodesCount);
+            if (distanceMatrix == null) return null;
+
+            ArrayList<GraphNode> path = new ArrayList<>();
+            for (int i : getTour(nodesCount, distanceMatrix, graph.getNodes().indexOf(baseNode))) {
+                path.add(graph.getNodes().get(i));
+            }
+            return new TravellingSalesManData(path, (float) getTourCost(nodesCount, distanceMatrix, graph.getNodes().indexOf(baseNode)));
+        } else {
+            //TODO: Show error that the the salesMan
+            //TODO: cannot travel and get back home visiting the other cities just one time
+        }
+        return null;
+    }
 
     private static boolean HasHamiltonianCycle(ArrayList<NodeGraphObject> nodes) {
 
@@ -43,6 +64,26 @@ public class TravellingSalesManAlgorithm {
                 NodeGraphObject source = nodes.get(i);
                 NodeGraphObject target = nodes.get(j);
                 if (source.getAttachedNodes().get(target) != null) {
+                    adjacencyMatrix[i][j] = 1;
+                } else {
+                    adjacencyMatrix[i][j] = 0;
+                }
+            }
+        }
+        return HamiltonianCycle.HamiltonianCycle(adjacencyMatrix);
+    }
+
+    private static boolean HasHamiltonianCycle(List<GraphNode> nodes) {
+
+        int nodesCount = nodes.size();
+        int[][] adjacencyMatrix = new int[nodesCount][nodesCount];
+
+        for (int i = 0; i < nodesCount; i++) {
+            for (int j = 0; j < nodesCount; j++) {
+
+                GraphNode source = nodes.get(i);
+                GraphNode target = nodes.get(j);
+                if (source.getOutgoingNodes().get(target) != null) {
                     adjacencyMatrix[i][j] = 1;
                 } else {
                     adjacencyMatrix[i][j] = 0;
@@ -66,6 +107,26 @@ public class TravellingSalesManAlgorithm {
                 NodeGraphObject target = nodes.get(j);
                 if (source.getAttachedNodes().get(target) != null) {
                     distanceMatrix[i][j] = source.getAttachedNodes().get(target).getWeight();
+                }
+            }
+        }
+        return distanceMatrix;
+    }
+
+    private static double[][] getDistanceMatrixFromObjects(List<GraphNode> nodes, int nodesCount) {
+        if (nodes == null) return null;
+        double[][] distanceMatrix = new double[nodesCount][nodesCount];
+        for (int i = 0; i < nodesCount; i++) {
+            for (int j = 0; j < nodesCount; j++) {
+                distanceMatrix[i][j] = Double.MAX_VALUE;
+            }
+        }
+        for (int i = 0; i < nodesCount; i++) {
+            for (int j = 0; j < nodesCount; j++) {
+                GraphNode source = nodes.get(i);
+                GraphNode target = nodes.get(j);
+                if (source.getOutgoingNodes().get(target) != null) {
+                    distanceMatrix[i][j] = source.getOutgoingNodes().get(target).getWeight();
                 }
             }
         }
