@@ -75,6 +75,11 @@ public class Graph {
         GraphNode newNode = new GraphNode(id);
         nodes.add(newNode);
 
+        /*
+         * Initialize node
+         */
+        newNode.initialize();
+
         return newNode;
     }
 

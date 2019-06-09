@@ -290,6 +290,22 @@ public class GraphEdge extends CubicCurve {
     }
 
     /**
+     * Sets dashed stroke style
+     */
+
+    public void setDashed() {
+        this.getStrokeDashArray().addAll(25d, 10d);
+    }
+
+    /**
+     * Sets solid stroke style
+     */
+
+    public void setSolid() {
+        this.getStrokeDashArray().clear();
+    }
+
+    /**
      * Invert edge direction
      */
 
@@ -449,14 +465,54 @@ public class GraphEdge extends CubicCurve {
         hover();
         this.weightLabel.hover();
         this.arrowHead.hover();
-        this.sourceNode.hoverNode();
-        this.targetNode.hoverNode();
+        this.sourceNode.sendToFront();
+        this.targetNode.sendToFront();
+
+        /*
+         * Set dashed style on edge
+         */
+        setDashed();
 
         /*
          * Send edge elements to front
          */
         sendToFront();
     }
+
+    /**
+     * Select edge
+     */
+
+    public void selectEdge() {
+        this.isSelected = true;
+        select();
+        this.weightLabel.select();
+        this.arrowHead.select();
+    }
+
+    /**
+     * Deselect edge
+     */
+
+    public void deselectEdge() {
+        this.isSelected = false;
+        idle();
+    }
+
+//    /**
+//     * Highlight edge
+//     */
+//
+//    public void highlightEdge() {
+//        hover();
+//        this.weightLabel.hover();
+//        this.arrowHead.hover();
+//
+//        /*
+//         * Send edge elements to front
+//         */
+//        sendToFront();
+//    }
 
     /**
      * Leave edge
@@ -478,6 +534,11 @@ public class GraphEdge extends CubicCurve {
             this.weightLabel.idle();
             this.arrowHead.idle();
         }
+
+        /*
+         * Set solid style on edge
+         */
+        setSolid();
 
         /*
          * Send all nodes to front

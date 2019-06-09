@@ -23,7 +23,7 @@ Button, JFXButton {
 .node:hover {
     -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
     linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-    linear-gradient(#66bde1 0%, #71cdf5 50%);
+    linear-gradient(#65b6da 0%, #70c8f0 50%);
 }
 
 .node-selected {

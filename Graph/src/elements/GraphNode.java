@@ -1,15 +1,23 @@
 package elements;
 
+import graph.App;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 
 import java.util.HashMap;
 
+/**
+ * The type Graph node.
+ */
 public class GraphNode extends Button {
     private GraphNode previousNodeInPath;
     private String identifier;
     private HashMap<GraphNode, GraphEdge> incomingNodes = new HashMap<>();
     private HashMap<GraphNode, GraphEdge> outgoingNodes = new HashMap<>();
     private HashMap<GraphNode, NonDirectionalEdge> twoWayAttachedNodes = new HashMap<>();
+
+    private boolean isSelected = false;
 
     /**
      * Instantiates a new Graph node.
@@ -20,7 +28,26 @@ public class GraphNode extends Button {
     public GraphNode(String identifier) {
         super(identifier);
         this.identifier = identifier;
+    }
 
+    /**
+     * Initialize node
+     */
+
+    public void initialize() {
+        /*
+         * Set mouse event listeners
+         */
+        addHoverListeners();
+        addLeaveListeners();
+
+        /*
+         * Set styles
+         */
+        setStyle();
+    }
+
+    private void setStyle() {
         this.getStyleClass().add("node");
     }
 
@@ -30,6 +57,48 @@ public class GraphNode extends Button {
 
     public void hoverNode() {
         sendToFront();
+        highlightAttachedEdges();
+    }
+
+    /**
+     * Select node
+     */
+
+    public void selectNode() {
+        this.isSelected = true;
+        select();
+    }
+
+    /**
+     * Deselect node
+     */
+
+    public void deselectNode() {
+        this.isSelected = false;
+        idle();
+    }
+
+    /**
+     * Leave node
+     */
+
+    public void leaveNode() {
+        if (isSelected) {
+            /*
+             * Set "SELECT" style on edge elements
+             */
+            select();
+        } else {
+            /*
+             * Set "IDLE" styles on edge elements
+             */
+            idle();
+        }
+
+        /*
+         * Send all nodes to front
+         */
+        App.sendNodesToFront();
     }
 
     /**
@@ -226,4 +295,67 @@ public class GraphNode extends Button {
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
+
+    /**
+     * Add hover listener to edge elements
+     */
+
+    private void addHoverListeners() {
+        EventHandler<MouseEvent> mouseHover = event -> {
+            hoverNode();
+//            event.consume();
+        };
+
+        this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouseHover);
+    }
+
+    /**
+     * Add leave listener to edge elements
+     */
+
+    private void addLeaveListeners() {
+        EventHandler<MouseEvent> mouseLeave = event -> {
+            leaveNode();
+//            event.consume();
+        };
+
+        this.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
+    }
+
+    /**
+     * Highlight attached edges to the node
+     */
+
+    private void highlightAttachedEdges() {
+        for (GraphEdge edge : this.getOutgoingNodes().values()) {
+            edge.sendToFront();
+            edge.getTargetNode().sendToFront();
+        }
+
+        for (GraphEdge edge : this.getIncomingNodes().values()) {
+            edge.sendToFront();
+            edge.getSourceNode().sendToFront();
+        }
+
+//        for (NonDirectionalEdge edge : this.getTwoWayNodes().values()) {
+//            edge.sendToFront();
+//            edge.getSourceNode().sendToFront();
+//        }
+    }
+//
+//    /**
+//     * Set attached edges to idle mode
+//     */
+//
+//    private void idleAttachedEdges() {
+//        for (GraphEdge edge : this.getOutgoingNodes().values()) {
+////            edge.sendToFront();
+//            edge.leaveEdge();
+//        }
+//
+//        for (GraphEdge edge : this.getIncomingNodes().values()) {
+////            edge.sendToFront();
+//            edge.leaveEdge();
+//        }
+//    }
 }
