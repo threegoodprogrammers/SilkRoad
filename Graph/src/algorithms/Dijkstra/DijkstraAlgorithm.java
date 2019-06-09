@@ -13,18 +13,48 @@ import java.util.ArrayList;
  */
 public class DijkstraAlgorithm {
 
+    /**
+     * @return
+     */
     public static PathData FindShortestPath(Graph graph, String sourceNodeIdentifier, String targetNodeIdentifier) throws ArrayStoreException {
-        return null;
+        return FindShortestPath(graph, graph.getNode(sourceNodeIdentifier), graph.getNode(targetNodeIdentifier));
     }
 
+    /**
+     * @return
+     */
     public static PathDataObject FindShortestPath(GraphObject graph, String sourceNodeIdentifier, String targetNodeIdentifier) throws ArrayStoreException {
         return FindShortestPath(graph, graph.getNode(sourceNodeIdentifier), graph.getNode(targetNodeIdentifier));
     }
 
+    /**
+     * @return
+     */
     public static PathData FindShortestPath(Graph graph, GraphNode sourceNode, GraphNode targetNode) throws ArrayStoreException {
-        return null;
+        if (graph.getNodes().size() == 0) throw new ArrayStoreException();
+        ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
+        ArrayList<GraphNode> navigatedNodes = new ArrayList<>();
+        PathData pathData = new PathData(nodes, sourceNode, targetNode);
+
+        do {
+            GraphNode leastDistantNode = pathData.GetClosestNode(nodes);
+            nodes.remove(leastDistantNode);
+            navigatedNodes.add(leastDistantNode);
+            for (GraphNode adjacentNode : leastDistantNode.getOutgoingNodes().keySet()) {
+                double currentDistance = pathData.GetDistanceToNode(leastDistantNode) + leastDistantNode.getOutgoingNodes().get(adjacentNode).getWeight();
+                if (currentDistance < pathData.GetDistanceToNode(adjacentNode)) {
+                    pathData.distances.put(adjacentNode, currentDistance);
+                    adjacentNode.setPreviousNodeInPath(leastDistantNode);
+                }
+            }
+        } while (!nodes.isEmpty());
+
+        return pathData;
     }
 
+    /**
+     * @return
+     */
     public static PathDataObject FindShortestPath(GraphObject graph, NodeGraphObject sourceNode, NodeGraphObject targetNode) throws ArrayStoreException {
         if (graph.getNodes().size() == 0) throw new ArrayStoreException();
         ArrayList<NodeGraphObject> nodes = new ArrayList<>(graph.getNodes());

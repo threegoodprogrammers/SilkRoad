@@ -27,14 +27,19 @@ public class PathData {
      * @return
      */
     public ArrayList<GraphNode> GetPathNodesToTargetNode() {
-        return null;
+        return GetPathNodesToNode(targetNode);
     }
 
     /**
      * @return
      */
     public ArrayList<GraphNode> GetPathNodesToNode(GraphNode node) {
-        return null;
+        ArrayList<GraphNode> nodesInPath = new ArrayList<>();
+        do {
+            nodesInPath.add(0, node);
+            node = node.getPreviousNodeInPath();
+        } while (node != null);
+        return nodesInPath;
     }
 
 
@@ -42,21 +47,20 @@ public class PathData {
      * @return
      */
     public double GetDistanceToNode(GraphNode node) {
-        return 0;
+        return distances.get(node);
     }
 
     public GraphNode GetClosestNode(ArrayList<GraphNode> nodes) {
         double minDistance = Double.POSITIVE_INFINITY;
 
-        GraphNode closestNode = sourceNode;
+        GraphNode closestNode = nodes.get(0);
         for (GraphNode graphNode : nodes) {
-            if (graphNode != sourceNode) {
-                double distance = distances.get(graphNode);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestNode = graphNode;
-                }
+            double distance = distances.get(graphNode);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestNode = graphNode;
             }
+
         }
         return closestNode;
     }
