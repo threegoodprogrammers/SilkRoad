@@ -45,8 +45,10 @@ Button, JFXButton {
 
 .edge {
     -fx-cursor: hand;
+    -fx-fill: null;
+    -fx-stroke-width: 6;
     /*-fx-stroke: rgba(80, 80, 80, .9);*/
-    -fx-opacity: .9;
+    -fx-opacity: .5;
 }
 
 .edge-idle {
@@ -59,7 +61,10 @@ Button, JFXButton {
 }
 
 .edge-arrow {
-    -fx-stroke-width: 5;
+    -fx-stroke-width: 6;
+    -fx-fill: null;
+    -fx-opacity: .5;
+    -fx-cursor: hand;
 }
 
 .edge-arrow-idle {
@@ -68,6 +73,7 @@ Button, JFXButton {
 
 .edge-arrow-hover {
     -fx-stroke: #f39c12;
+    -fx-opacity: 1;
 }
 
 .edge-weight {
@@ -83,6 +89,7 @@ Button, JFXButton {
     -fx-alignment: center;
     -fx-text-alignment: center;
     -fx-opacity: .3;
+    -fx-cursor: hand;
 }
 
 .edge-weight-idle {
@@ -93,6 +100,7 @@ Button, JFXButton {
 .edge-weight-hover {
     -fx-border-color: #f39c12;
     -fx-text-fill: #f39c12;
+    -fx-opacity: 1;
 }
 
 .edge-weight-2 {

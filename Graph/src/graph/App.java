@@ -86,6 +86,9 @@ public class App {
     public Pane tempNodePane;
     private boolean newNodeVisible = false;
 
+    public Pane dummyPane;
+    public static Pane staticDummyPane;
+
     /**
      * Menu manager object
      */
@@ -144,13 +147,13 @@ public class App {
     private State state;
     public GridPane window;
     public PannableCanvas canvas;
-    private static PannableCanvas appCanvas;
+    public static PannableCanvas appCanvas;
     private NodeGestures nodeGestures;
     private SceneGestures sceneGestures;
     private static Scene scene;
     private Stage primaryStage;
 
-    private Graph mainGraph = new Graph();
+    private static Graph mainGraph = new Graph();
     private boolean mouseOnMenu = false;
     private boolean mouseOnNode = false;
     private boolean menuVisible = true;
@@ -202,49 +205,60 @@ public class App {
 //        graphNode.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
 //        graphNode.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
-
         this.canvas.getChildren().add(newNode);
 
         FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.MAP_PIN);
 
-        GraphNode node1 = new GraphNode("1");
+        GraphNode node1 = mainGraph.addNode("1");
         node1.setTranslateX(1000);
         node1.setTranslateY(400);
 
-        GraphNode node2 = new GraphNode("2");
+        GraphNode node2 = mainGraph.addNode("2");
         node2.setTranslateX(100);
         node2.setTranslateY(100);
 
-        final double[] max = new double[2];
-        max[0] = (node1.getTranslateY() + 70 + node2.getTranslateY()) / 2;
-        max[1] = (node1.getTranslateX() + 70 + node2.getTranslateX()) / 2;
+        GraphNode node3 = mainGraph.addNode("3");
+        node3.setTranslateX(150);
+        node3.setTranslateY(100);
 
-        CubicCurve curve1 = new CubicCurve(35 + node1.getTranslateX(), node1.getTranslateY(),
-                35 + node1.getTranslateX(), max[0] / 2,
-                35 + node2.getTranslateX(), max[0] / 2,
-                35 + node2.getTranslateX(), node2.getTranslateY() + 70);
-        curve1.setStrokeWidth(4);
-        curve1.setFill(null);
-        curve1.setStroke(Color.ORANGE);
-        curve1.getStyleClass().add("edge");
+//        final double[] max = new double[2];
+//        max[0] = (node1.getTranslateY() + 70 + node2.getTranslateY()) / 2;
+//        max[1] = (node1.getTranslateX() + 70 + node2.getTranslateX()) / 2;
 
-        CubicCurve curve2 = new CubicCurve(node1.getTranslateX(), node1.getTranslateY() + 35,
-                max[1] / 2, 35 + node1.getTranslateY(),
-                max[1] / 2, 35 + node2.getTranslateY(),
-                node2.getTranslateX() + 70, node2.getTranslateY() + 35);
-        curve2.setStrokeWidth(4);
-        curve2.setFill(null);
-        curve2.setStroke(Color.GREEN);
-        curve2.getStyleClass().add("edge");
+//        CubicCurve curve1 = new CubicCurve(35 + node1.getTranslateX(), node1.getTranslateY(),
+//                35 + node1.getTranslateX(), max[0] / 2,
+//                35 + node2.getTranslateX(), max[0] / 2,
+//                35 + node2.getTranslateX(), node2.getTranslateY() + 70);
+//        curve1.setStrokeWidth(4);
+//        curve1.setFill(null);
+//        curve1.setStroke(Color.ORANGE);
+//        curve1.getStyleClass().add("edge");
 
-        final Path[] arrowTwo = {new Path()};
-        final Path[] arrowOne = {new Path()};
+//        CubicCurve curve2 = new CubicCurve(node1.getTranslateX(), node1.getTranslateY() + 35,
+//                max[1] / 2, 35 + node1.getTranslateY(),
+//                max[1] / 2, 35 + node2.getTranslateY(),
+//                node2.getTranslateX() + 70, node2.getTranslateY() + 35);
+//        curve2.setStrokeWidth(4);
+//        curve2.setFill(null);
+//        curve2.setStroke(Color.GREEN);
+//        curve2.getStyleClass().add("edge");
 
-        Label weight1 = new Label("14");
-        weight1.getStyleClass().add("edge-weight-2");
+//        final Path[] arrowTwo = {new Path()};
+//        final Path[] arrowOne = {new Path()};
 
-        Label weight2 = new Label("25");
-        weight2.getStyleClass().add("edge-weight");
+        GraphEdge newEdge = mainGraph.addDirectionalEdge(12, node1, node2);
+        newEdge.initialize();
+        newEdge.addToCanvas(this.canvas);
+
+        GraphEdge newEdge2 = mainGraph.addDirectionalEdge(12, node2, node1);
+        newEdge2.initialize();
+        newEdge2.addToCanvas(this.canvas);
+
+//        Label weight1 = new Label("14");
+//        weight1.getStyleClass().add("edge-weight-2");
+//
+//        Label weight2 = new Label("25");
+//        weight2.getStyleClass().add("edge-weight");
 
         node1.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
             double scale = canvas.getScale();
@@ -255,91 +269,93 @@ public class App {
             node1.setTranslateX(posX);
             node1.setTranslateY(posY);
 
+            newEdge.update();
+            newEdge2.update();
 
-            GraphNode top, bottom;
+//            GraphNode top, bottom;
+//
+//            max[0] = node2.getTranslateY() + 70 + node1.getTranslateY();
+//
+//            if (node1.getTranslateY() <= node2.getTranslateY()) {
+//                top = node1;
+//                bottom = node2;
+//
+//                curve1.setStartY(top.getTranslateY() + 70);
+//                curve1.setEndY(bottom.getTranslateY() - 8);
+//                curve1.setStartX(35 + top.getTranslateX());
+//                curve1.setEndX(35 + bottom.getTranslateX());
+//                curve1.setControlX1(35 + top.getTranslateX());
+//                curve1.setControlX2(35 + bottom.getTranslateX());
+//                curve1.setControlY1(max[0] / 2 + 150);
+//                curve1.setControlY2(max[0] / 2 - 150);
+//
+//                weight1.setTranslateX((curve1.getStartX() + curve1.getEndX()) / 2);
+//                weight1.setTranslateY((curve1.getStartY() + curve1.getEndY()) / 2);
+////                weight1.setRotate();
+//
+//            } else {
+//                top = node2;
+//                bottom = node1;
+//
+//                curve1.setStartY(bottom.getTranslateY());
+//                curve1.setEndY(top.getTranslateY() + 70 + 8);
+//                curve1.setStartX(35 + bottom.getTranslateX());
+//                curve1.setEndX(35 + top.getTranslateX());
+//                curve1.setControlX1(35 + bottom.getTranslateX());
+//                curve1.setControlX2(35 + top.getTranslateX());
+//                curve1.setControlY1(max[0] / 2 - 150);
+//                curve1.setControlY2(max[0] / 2 + 150);
+//
+//                Bounds bounds = weight1.localToScene(weight1.getBoundsInLocal());
+//
+//                weight1.setTranslateX((curve1.getStartX() + curve1.getEndX()) / 2 - bounds.getWidth() / 2 / scale);
+//                weight1.setTranslateY((curve1.getStartY() + curve1.getEndY()) / 2 - bounds.getHeight() / 2 / scale);
+//
+////                double incline = (-curve1.getStartY() + curve1.getEndY()) / (-curve1.getStartX() + curve1.getEndX());
+////                System.out.println(Math.toDegrees(Math.atan(incline)));
+////                weight1.setRotate(Math.toDegrees(Math.atan(incline)) + 45);
+//
+//            }
+//
+//            GraphNode right, left;
+//            max[1] = node2.getTranslateX() + 70 + node1.getTranslateX();
+//
+//            if (node1.getTranslateX() <= node2.getTranslateX()) {
+//                left = node1;
+//                right = node2;
+//
+//                curve2.setStartX(right.getTranslateX());
+//                curve2.setEndX(left.getTranslateX() + 70 + 8);
+//                curve2.setControlX1(max[1] / 2 - 150);
+//                curve2.setControlX2(max[1] / 2 + 150);
+//                curve2.setStartY(35 + right.getTranslateY());
+//                curve2.setControlY1(35 + right.getTranslateY());
+//                curve2.setControlY2(35 + left.getTranslateY());
+//                curve2.setEndY(35 + left.getTranslateY());
+//            } else {
+//                left = node2;
+//                right = node1;
+//
+//                curve2.setStartX(left.getTranslateX() + 70);
+//                curve2.setEndX(right.getTranslateX() - 8);
+//                curve2.setControlX1(max[1] / 2 + 150);
+//                curve2.setControlX2(max[1] / 2 - 150);
+//                curve2.setStartY(35 + left.getTranslateY());
+//                curve2.setControlY1(35 + left.getTranslateY());
+//                curve2.setControlY2(35 + right.getTranslateY());
+//                curve2.setEndY(35 + right.getTranslateY());
+//
+//                Bounds bounds = weight2.localToScene(weight2.getBoundsInLocal());
+//
+//                weight2.setTranslateX((curve2.getStartX() + curve2.getEndX()) / 2 - bounds.getWidth() / 2 / scale);
+//                weight2.setTranslateY((curve2.getStartY() + curve2.getEndY()) / 2 - bounds.getHeight() / 2 / scale);
+//
+//            }
 
-            max[0] = node2.getTranslateY() + 70 + node1.getTranslateY();
-
-            if (node1.getTranslateY() <= node2.getTranslateY()) {
-                top = node1;
-                bottom = node2;
-
-                curve1.setStartY(top.getTranslateY() + 70);
-                curve1.setEndY(bottom.getTranslateY() - 8);
-                curve1.setStartX(35 + top.getTranslateX());
-                curve1.setEndX(35 + bottom.getTranslateX());
-                curve1.setControlX1(35 + top.getTranslateX());
-                curve1.setControlX2(35 + bottom.getTranslateX());
-                curve1.setControlY1(max[0] / 2 + 150);
-                curve1.setControlY2(max[0] / 2 - 150);
-
-                weight1.setTranslateX((curve1.getStartX() + curve1.getEndX()) / 2);
-                weight1.setTranslateY((curve1.getStartY() + curve1.getEndY()) / 2);
-//                weight1.setRotate();
-
-            } else {
-                top = node2;
-                bottom = node1;
-
-                curve1.setStartY(bottom.getTranslateY());
-                curve1.setEndY(top.getTranslateY() + 70 + 8);
-                curve1.setStartX(35 + bottom.getTranslateX());
-                curve1.setEndX(35 + top.getTranslateX());
-                curve1.setControlX1(35 + bottom.getTranslateX());
-                curve1.setControlX2(35 + top.getTranslateX());
-                curve1.setControlY1(max[0] / 2 - 150);
-                curve1.setControlY2(max[0] / 2 + 150);
-
-                Bounds bounds = weight1.localToScene(weight1.getBoundsInLocal());
-
-                weight1.setTranslateX((curve1.getStartX() + curve1.getEndX()) / 2 - bounds.getWidth() / 2 / scale);
-                weight1.setTranslateY((curve1.getStartY() + curve1.getEndY()) / 2 - bounds.getHeight() / 2 / scale);
-
-//                double incline = (-curve1.getStartY() + curve1.getEndY()) / (-curve1.getStartX() + curve1.getEndX());
-//                System.out.println(Math.toDegrees(Math.atan(incline)));
-//                weight1.setRotate(Math.toDegrees(Math.atan(incline)) + 45);
-
-            }
-
-            GraphNode right, left;
-            max[1] = node2.getTranslateX() + 70 + node1.getTranslateX();
-
-            if (node1.getTranslateX() <= node2.getTranslateX()) {
-                left = node1;
-                right = node2;
-
-                curve2.setStartX(right.getTranslateX());
-                curve2.setEndX(left.getTranslateX() + 70 + 8);
-                curve2.setControlX1(max[1] / 2 - 150);
-                curve2.setControlX2(max[1] / 2 + 150);
-                curve2.setStartY(35 + right.getTranslateY());
-                curve2.setControlY1(35 + right.getTranslateY());
-                curve2.setControlY2(35 + left.getTranslateY());
-                curve2.setEndY(35 + left.getTranslateY());
-            } else {
-                left = node2;
-                right = node1;
-
-                curve2.setStartX(left.getTranslateX() + 70);
-                curve2.setEndX(right.getTranslateX() - 8);
-                curve2.setControlX1(max[1] / 2 + 150);
-                curve2.setControlX2(max[1] / 2 - 150);
-                curve2.setStartY(35 + left.getTranslateY());
-                curve2.setControlY1(35 + left.getTranslateY());
-                curve2.setControlY2(35 + right.getTranslateY());
-                curve2.setEndY(35 + right.getTranslateY());
-
-                Bounds bounds = weight2.localToScene(weight2.getBoundsInLocal());
-
-                weight2.setTranslateX((curve2.getStartX() + curve2.getEndX()) / 2 - bounds.getWidth() / 2 / scale);
-                weight2.setTranslateY((curve2.getStartY() + curve2.getEndY()) / 2 - bounds.getHeight() / 2 / scale);
-
-            }
-
-            canvas.getChildren().removeAll(arrowOne[0], arrowTwo[0]);
-
-            double size = 250;
-            double scale2 = size / 4d;
+//            canvas.getChildren().removeAll(arrowOne[0], arrowTwo[0]);
+//
+//            double size = 250;
+//            double scale2 = size / 4d;
 
 //            Point2D ori = eval(curve1, 1);
 //            Point2D tan = evalDt(curve1, 1).normalize().multiply(scale2);
@@ -441,7 +457,7 @@ public class App {
 //        arrowEnd.setStroke(Color.valueOf("#66bde1"));
 //        arrowEnd.setStrokeWidth(4);
 
-        canvas.getChildren().addAll(node1, node2, curve1, curve2, weight1, weight2);
+        canvas.getChildren().addAll(node1, node2, node3);
 
 //        root.setTranslateX(400);
 //        root.setTranslateY(400);
@@ -460,6 +476,7 @@ public class App {
 
     private void setScene(Scene scene) {
         appCanvas = this.canvas;
+        staticDummyPane = this.dummyPane;
 
         this.nodeGestures = new NodeGestures(this.canvas, this);
         App.scene = scene;
@@ -1240,6 +1257,32 @@ public class App {
     }
 
     /**
+     * Send nodes to front
+     */
+
+    public static void sendNodesToFront() {
+        for (GraphNode node : mainGraph.getNodes()) {
+            node.toFront();
+        }
+    }
+
+    /**
+     * Add to dummy pane
+     */
+
+    public static void addToDummyPane(Node node) {
+        staticDummyPane.getChildren().add(node);
+    }
+
+    /**
+     * Remove from dummy pane
+     */
+
+    public static void removeFromDummyPane(Node node) {
+        staticDummyPane.getChildren().remove(node);
+    }
+
+    /**
      * Check if both ctrl and shift keys are pressed
      *
      * @return If multiple keys are pressed
@@ -1258,5 +1301,4 @@ public class App {
     public static Scene getScene() {
         return scene;
     }
-
 }

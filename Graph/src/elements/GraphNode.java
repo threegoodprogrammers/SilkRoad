@@ -25,6 +25,43 @@ public class GraphNode extends Button {
     }
 
     /**
+     * Hover node
+     */
+
+    public void hoverNode() {
+        sendToFront();
+    }
+
+    /**
+     * Set idle style on node
+     */
+    public void idle() {
+
+    }
+
+    /**
+     * Set hover style on node
+     */
+    public void hover() {
+
+    }
+
+    /**
+     * Set select style on node
+     */
+    public void select() {
+
+    }
+
+    /**
+     * Send edge elements to front
+     */
+
+    public void sendToFront() {
+        this.toFront();
+    }
+
+    /**
      * Gets attached nodes hash map
      *
      * @return the attached nodes

@@ -1,7 +1,10 @@
 package elements;
 
+import graph.App;
+import javafx.animation.FadeTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
+import javafx.util.Duration;
 
 /**
  * The type Edge weight.
@@ -11,26 +14,32 @@ public class EdgeWeight extends Label {
     private double posY;
 
     /**
+     * Fade in and fade out transitions
+     */
+
+    private FadeTransition fadeIn, fadeOut;
+
+    /**
      * Instantiates a new edge weight label
      */
 
     public EdgeWeight(double weight) {
         setWeight(weight);
         setStyle();
+//        initializeFadeTransitions();
     }
 
     /**
      * Update the weight label
      *
      * @param edgeCurve the edge curve
-     * @param scale     the scale
      */
 
-    public void update(GraphEdge edgeCurve, double scale) {
+    public void update(GraphEdge edgeCurve) {
         /*
          * Calculate the co-ordinates
          */
-        calculate(edgeCurve, scale);
+        calculate(edgeCurve);
 
         /*
          * Move the edge weight label to
@@ -54,16 +63,16 @@ public class EdgeWeight extends Label {
      * @param edgeCurve the edge curve
      */
 
-    private void calculate(GraphEdge edgeCurve, double scale) {
+    private void calculate(GraphEdge edgeCurve) {
         /*
          * Calculate X co-ordinates of weight label
          */
-        this.posX = edgeCurve.getStartX() + edgeCurve.getEndX() / 2 - width() / 2 / scale;
+        this.posX = (edgeCurve.getStartX() + edgeCurve.getEndX()) / 2 - width() / 2;
 
         /*
          * Calculate Y co-ordinates of weight label
          */
-        this.posY = edgeCurve.getStartY() + edgeCurve.getEndY() / 2 - height() / 2 / scale;
+        this.posY = (edgeCurve.getStartY() + edgeCurve.getEndY()) / 2 - height() / 2;
     }
 
     /**
@@ -73,16 +82,6 @@ public class EdgeWeight extends Label {
     private void setStyle() {
         this.getStyleClass().add("edge-weight");
         idle();
-    }
-
-    /**
-     * Hover with mouse
-     */
-
-    public void hover() {
-        this.getStyleClass().remove("edge-weight-idle");
-        this.getStyleClass().remove("edge-weight-select");
-        this.getStyleClass().add("edge-weight-hover");
     }
 
     /**
@@ -96,6 +95,16 @@ public class EdgeWeight extends Label {
     }
 
     /**
+     * Hover with mouse
+     */
+
+    public void hover() {
+        this.getStyleClass().remove("edge-weight-idle");
+        this.getStyleClass().remove("edge-weight-select");
+        this.getStyleClass().add("edge-weight-hover");
+    }
+
+    /**
      * Select edge with mouse click
      */
 
@@ -106,11 +115,38 @@ public class EdgeWeight extends Label {
     }
 
     /**
+     * Initialize weight label
+     */
+
+    private void initializeFadeTransitions() {
+        this.fadeIn = TransitionManager.getFadeTransition(Duration.millis(300), this, (double) 1);
+        this.fadeOut = TransitionManager.getFadeTransition(Duration.millis(300), this, .3);
+    }
+
+    /**
+     * Fade in weight label
+     */
+
+    public void fadeIn() {
+        this.fadeOut.stop();
+        this.fadeIn.play();
+    }
+
+    /**
+     * Fade out weight label
+     */
+
+    public void fadeOut() {
+        this.fadeIn.stop();
+        this.fadeOut.play();
+    }
+
+    /**
      * Update node bounds in scene
      */
 
     private Bounds getBounds() {
-        return this.localToScene(this.getBoundsInLocal());
+        return this.getBoundsInParent();
     }
 
     /**
@@ -120,7 +156,7 @@ public class EdgeWeight extends Label {
      */
 
     private double height() {
-        return getBounds().getHeight();
+        return getBounds().getHeight() != 0 ? getBounds().getHeight() : 60;
     }
 
     /**
@@ -130,7 +166,7 @@ public class EdgeWeight extends Label {
      */
 
     private double width() {
-        return getBounds().getWidth();
+        return getBounds().getWidth() != 0 ? getBounds().getWidth() : 60;
     }
 
     /**

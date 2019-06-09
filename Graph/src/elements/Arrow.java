@@ -1,6 +1,7 @@
 package elements;
 
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -108,16 +109,6 @@ public class Arrow extends Path {
     }
 
     /**
-     * Hover with mouse
-     */
-
-    public void hover() {
-        this.getStyleClass().remove("edge-arrow-idle");
-        this.getStyleClass().remove("edge-arrow-select");
-        this.getStyleClass().add("edge-arrow-hover");
-    }
-
-    /**
      * Leave mouse and set the arrow to idle mode
      */
 
@@ -125,6 +116,16 @@ public class Arrow extends Path {
         this.getStyleClass().remove("edge-arrow-select");
         this.getStyleClass().remove("edge-arrow-hover");
         this.getStyleClass().add("edge-arrow-idle");
+    }
+
+    /**
+     * Hover with mouse
+     */
+
+    public void hover() {
+        this.getStyleClass().remove("edge-arrow-idle");
+        this.getStyleClass().remove("edge-arrow-select");
+        this.getStyleClass().add("edge-arrow-hover");
     }
 
     /**

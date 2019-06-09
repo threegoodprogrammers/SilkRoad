@@ -1,7 +1,12 @@
 package elements;
 
+import graph.App;
+import javafx.animation.FadeTransition;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.CubicCurve;
+import javafx.util.Duration;
 
 /**
  * The type Graph edge.
@@ -10,7 +15,13 @@ public class GraphEdge extends CubicCurve {
     private double weight;
     private GraphNode sourceNode;
     private GraphNode targetNode;
+
+    /**
+     * Other parts of edge in UI
+     */
+
     private EdgeWeight weightLabel;
+    private Arrow arrowHead;
 
     /**
      * Cubic curve properties
@@ -31,6 +42,12 @@ public class GraphEdge extends CubicCurve {
     private Graph.EdgeOrientation edgeOrientation;
 
     /**
+     * Edge selection boolean
+     */
+
+    private boolean isSelected = false;
+
+    /**
      * Instantiates a new Graph edge.
      *
      * @param weight     the weight
@@ -47,17 +64,60 @@ public class GraphEdge extends CubicCurve {
         this.edgeOrientation = edgeOrientation;
 
         /*
-         * Set weight label and edge transitions
+         * Set styles
          */
-//        setWeightLabel(createWeightLabel());
+        setStyle();
 //        setHoverTransitions();
+    }
+
+    /**
+     * Initialize graph edge different elements
+     */
+
+    public void initialize() {
+        calculate();
+        moveEdge();
+        initializeArrowHead();
+        initializeWeightLabel();
+
+        /*
+         * Set mouse event listeners
+         */
+        addHoverListeners();
+        addLeaveListeners();
+    }
+
+    /**
+     * Update graph edge
+     */
+
+    public void update() {
+        calculate();
+        moveEdge();
+        updateWeightLabel();
+        updateArrowHead();
+    }
+
+    /**
+     * Move edge curve along with arrow and weight label
+     */
+
+    private void moveEdge() {
+        this.setStartX(this.startX);
+        this.setEndX(this.endX);
+        this.setStartY(this.startY);
+        this.setEndY(this.endY);
+        this.setControlX1(this.controlX1);
+        this.setControlX2(this.controlX2);
+        this.setControlY1(this.controlY1);
+        this.setControlY2(this.controlY2);
     }
 
     /**
      * Calculate
      */
 
-    public void calculate() {
+    private void calculate() {
         switch (this.edgeOrientation) {
             case VERTICAL:
                 /*
@@ -97,7 +157,7 @@ public class GraphEdge extends CubicCurve {
              * Calculate properties
              */
             this.startX = left.getTranslateX() + 70;
-            this.endX = right.getTranslateX() - 8;
+            this.endX = right.getTranslateX() - 18;
             this.startY = 35 + left.getTranslateY();
             this.endY = 35 + right.getTranslateY();
             this.controlX1 = mid / 2 + 150;
@@ -112,7 +172,7 @@ public class GraphEdge extends CubicCurve {
              * Calculate properties
              */
             this.startX = right.getTranslateX();
-            this.endX = left.getTranslateX() + 70 + 8;
+            this.endX = left.getTranslateX() + 70 + 18;
             this.startY = 35 + right.getTranslateY();
             this.endY = 35 + left.getTranslateY();
             this.controlX1 = mid / 2 - 150;
@@ -137,7 +197,7 @@ public class GraphEdge extends CubicCurve {
         /*
          * Set left and right node according to translateX value
          */
-        if (sourceNode.getTranslateX() <= targetNode.getTranslateX()) {
+        if (sourceNode.getTranslateY() <= targetNode.getTranslateY()) {
             top = sourceNode;
             bottom = targetNode;
 
@@ -147,7 +207,7 @@ public class GraphEdge extends CubicCurve {
             this.startX = 35 + top.getTranslateX();
             this.endX = 35 + bottom.getTranslateX();
             this.startY = top.getTranslateY() + 70;
-            this.endY = bottom.getTranslateY() - 8;
+            this.endY = bottom.getTranslateY() - 18;
             this.controlX1 = 35 + top.getTranslateX();
             this.controlX2 = 35 + bottom.getTranslateX();
             this.controlY1 = mid / 2 + 150;
@@ -162,12 +222,71 @@ public class GraphEdge extends CubicCurve {
             this.startX = 35 + bottom.getTranslateX();
             this.endX = 35 + top.getTranslateX();
             this.startY = bottom.getTranslateY();
-            this.endY = top.getTranslateY() + 70 + 8;
+            this.endY = top.getTranslateY() + 70 + 18;
             this.controlX1 = 35 + bottom.getTranslateX();
             this.controlX2 = 35 + top.getTranslateX();
             this.controlY1 = mid / 2 - 150;
             this.controlY2 = mid / 2 + 150;
         }
+    }
+
+    /**
+     * Add edge elements to canvas
+     *
+     * @param canvas the canvas
+     */
+
+    public void addToCanvas(PannableCanvas canvas) {
+        canvas.getChildren().addAll(this, this.arrowHead, this.weightLabel);
+    }
+
+    /**
+     * Delete edge elements from canvas
+     *
+     * @param canvas the canvas
+     */
+
+    public void deleteFromCanvas(PannableCanvas canvas) {
+        canvas.getChildren().removeAll(this, this.arrowHead, this.weightLabel);
+    }
+
+    /**
+     * Set edge styless
+     */
+
+    private void setStyle() {
+        this.getStyleClass().add("edge");
+        idle();
+    }
+
+    /**
+     * Leave mouse and set the arrow to idle mode
+     */
+
+    public void idle() {
+        this.getStyleClass().remove("edge-select");
+        this.getStyleClass().remove("edge-hover");
+        this.getStyleClass().add("edge-idle");
+    }
+
+    /**
+     * Hover with mouse
+     */
+
+    public void hover() {
+        this.getStyleClass().remove("edge-idle");
+        this.getStyleClass().remove("edge-select");
+        this.getStyleClass().add("edge-hover");
+    }
+
+    /**
+     * Select edge with mouse click
+     */
+
+    public void select() {
+        this.getStyleClass().remove("edge-idle");
+        this.getStyleClass().remove("edge-hover");
+        this.getStyleClass().add("edge-select");
     }
 
     /**
@@ -182,8 +301,48 @@ public class GraphEdge extends CubicCurve {
      * Create new weight label for the edge
      */
 
-    private void createWeightLabel() {
+    private void initializeWeightLabel() {
+        /*
+         * Initialize new edge weight label
+         */
         this.weightLabel = new EdgeWeight(this.weight);
+
+        /*
+         * Update the edge weight label according to edge curve
+         */
+        updateWeightLabel();
+    }
+
+    /**
+     * Update weight label
+     */
+
+    private void updateWeightLabel() {
+        this.weightLabel.update(this);
+    }
+
+    /**
+     * Create new arrow head according to edge
+     */
+
+    private void initializeArrowHead() {
+        /*
+         * Initialize new edge weight label
+         */
+        this.arrowHead = new Arrow(200);
+
+        /*
+         * Update the edge arrow head according to edge curve
+         */
+        updateArrowHead();
+    }
+
+    /**
+     * Update arrow head
+     */
+
+    private void updateArrowHead() {
+        this.arrowHead.update(this);
     }
 
     /**
@@ -282,6 +441,91 @@ public class GraphEdge extends CubicCurve {
         this.edgeOrientation = edgeOrientation;
     }
 
+    /**
+     * Hover edge
+     */
+
+    public void hoverEdge() {
+        hover();
+        this.weightLabel.hover();
+        this.arrowHead.hover();
+        this.sourceNode.hoverNode();
+        this.targetNode.hoverNode();
+
+        /*
+         * Send edge elements to front
+         */
+        sendToFront();
+    }
+
+    /**
+     * Leave edge
+     */
+
+    public void leaveEdge() {
+        if (isSelected) {
+            /*
+             * Set "SELECT" style on edge elements
+             */
+            select();
+            this.weightLabel.select();
+            this.arrowHead.select();
+        } else {
+            /*
+             * Set "IDLE" styles on edge elements
+             */
+            idle();
+            this.weightLabel.idle();
+            this.arrowHead.idle();
+        }
+
+        /*
+         * Send all nodes to front
+         */
+        App.sendNodesToFront();
+    }
+
+    /**
+     * Add hover listener to edge elements
+     */
+
+    private void addHoverListeners() {
+        EventHandler<MouseEvent> mouseHover = event -> {
+            hoverEdge();
+            event.consume();
+        };
+
+        this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouseHover);
+        this.arrowHead.addEventFilter(MouseEvent.MOUSE_ENTERED, mouseHover);
+        this.weightLabel.addEventFilter(MouseEvent.MOUSE_ENTERED, mouseHover);
+    }
+
+    /**
+     * Add leave listener to edge elements
+     */
+
+    private void addLeaveListeners() {
+        EventHandler<MouseEvent> mouseLeave = event -> {
+            leaveEdge();
+            event.consume();
+        };
+
+        this.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
+        this.arrowHead.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
+        this.weightLabel.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
+    }
+
+    /**
+     * Send edge elements to front
+     */
+
+    public void sendToFront() {
+        this.toFront();
+        this.weightLabel.toFront();
+        this.arrowHead.toFront();
+    }
+
+
 //    public
 
 //    /**
@@ -303,5 +547,4 @@ public class GraphEdge extends CubicCurve {
 //            App.leaveEdge(this);
 //        });
 //    }
-
 }
