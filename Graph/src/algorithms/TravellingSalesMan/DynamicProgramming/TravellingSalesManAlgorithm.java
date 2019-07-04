@@ -1,7 +1,9 @@
-package algorithms.TravellingSalesMan;
+package algorithms.TravellingSalesMan.DynamicProgramming;
 
 import algorithms.GraphObject;
 import algorithms.NodeGraphObject;
+import algorithms.TravellingSalesMan.HamiltonianCycle;
+import algorithms.TravellingSalesMan.TravellingSalesManData;
 import elements.Graph;
 import elements.GraphNode;
 
