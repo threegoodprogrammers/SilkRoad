@@ -15,26 +15,37 @@ public class AntColonyAlgorithm {
     private static double[][] distanceMatrix;
     private static double[][] pheromoneMatrix;
     private static double[][] deltaPheromoneMatrix;
+    private static double[][] probabilityMatrix;
 
     private static int nodesCount = -1;
     private final static double VAP = 0.3;
 
     public static TravellingSalesManData findShortestCycle(
-            Graph graph,
+            final Graph graph,
             GraphNode baseNode,
             int iterationThreshold,
             int antsNumber
     ) {
+
         if (graph == null) return null;
         distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
         if (Validation.isComplete(distanceMatrix, distanceMatrix.length) && HasHamiltonianCycle(graph.getNodes())) {
-            nodesCount = graph.getNodes().size();
-
+            ArrayList<GraphNode> nodes = graph.getNodes();
+            nodesCount = nodes.size();
             //Initialize
 
             if (distanceMatrix == null) return null;
-            initializeMatrices();
 
+            if (nodesCount == 0)
+                return null;
+            if (nodesCount == 1)
+                return new TravellingSalesManData(nodes, 0);
+            else if (nodesCount == 2) {
+                GraphNode source = nodes.get(0);
+                GraphNode target = nodes.get(1);
+                return new TravellingSalesManData(nodes, (float) (2 * source.getOutgoingNodes().get(target).getWeight()));
+            }
+            initializeMatrices();
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {//for each iterate
                 for (int antNo = 0; antNo < antsNumber; antNo++) {//Placing each ant in different city
                     double loopLength = 0;
@@ -49,12 +60,12 @@ public class AntColonyAlgorithm {
                     double maxP = -1;
 
 
-                    for (int e = 0; e < nodesCount; e++) {
+                    for (int e = 0; e < nodesCount - 1; e++) {
                         for (int i = 0; i < notVisitedCities.size(); i++) {
                             int city = notVisitedCities.get(i);
                             if (city != antNo) {
-                                if (pheromoneMatrix[currentCity][city] > maxP) {
-                                    maxP = pheromoneMatrix[currentCity][city];
+                                if (probabilityMatrix[currentCity][city] > maxP) {
+                                    maxP = probabilityMatrix[currentCity][city];
                                     nextCity = city;
                                 }
                             }
@@ -70,7 +81,7 @@ public class AntColonyAlgorithm {
 
                     }
                     loopLength += distanceMatrix[currentCity][antNo];
-
+                    visitedCities.add(antNo);
 
                     for (int node = 0; node < visitedCities.size() - 1; node++) {
                         deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
@@ -81,6 +92,22 @@ public class AntColonyAlgorithm {
 
                         pheromoneMatrix[i][j] = ((1 - VAP) * pheromoneMatrix[i][j]) + deltaPheromoneMatrix[i][j];
                         deltaPheromoneMatrix[i][j] = 0;
+                    }
+                }
+
+                double sigma = 0;
+
+                for (int i = 0; i < nodesCount; i++) {
+                    for (int j = 0; j < nodesCount; j++) {
+                        sigma += pheromoneMatrix[i][j] * (1d / distanceMatrix[i][j]);
+                    }
+                }
+
+
+                // Filling  the probability Matrix
+                for (int i = 0; i < nodesCount; i++) {
+                    for (int j = 0; j < nodesCount; j++) {
+                        probabilityMatrix[i][j] = (pheromoneMatrix[i][j] * (1d / distanceMatrix[i][j])) / sigma;
                     }
                 }
             }
@@ -98,8 +125,8 @@ public class AntColonyAlgorithm {
                 for (int j = 0; j < nodesCount; j++) {
 
                     if (currentCityIndex != j) {
-                        if (pheromoneMatrix[currentCityIndex][j] > max) {
-                            max = pheromoneMatrix[currentCityIndex][j];
+                        if (probabilityMatrix[currentCityIndex][j] > max) {
+                            max = probabilityMatrix[currentCityIndex][j];
                             nextCity = j;
 
                         }
@@ -125,16 +152,26 @@ public class AntColonyAlgorithm {
             int iterationThreshold,
             int antsNumber
     ) {
+
         if (graph == null) return null;
         distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
-
         if (Validation.isComplete(distanceMatrix, distanceMatrix.length) && HasHamiltonianCycle(graph.getNodes())) {
-            nodesCount = graph.getNodes().size();
-
+            ArrayList<NodeGraphObject> nodes = graph.getNodes();
+            nodesCount = nodes.size();
             //Initialize
-            if (distanceMatrix == null) return null;
-            initializeMatrices();
 
+            if (distanceMatrix == null) return null;
+
+            if (nodesCount == 0)
+                return null;
+            if (nodesCount == 1)
+                return new TravellingSalesManData(nodes, 0);
+            else if (nodesCount == 2) {
+                NodeGraphObject source = nodes.get(0);
+                NodeGraphObject target = nodes.get(1);
+                return new TravellingSalesManData(nodes, (float) (2 * source.getAttachedNodes().get(target).getWeight()));
+            }
+            initializeMatrices();
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {//for each iterate
                 for (int antNo = 0; antNo < antsNumber; antNo++) {//Placing each ant in different city
                     double loopLength = 0;
@@ -149,12 +186,12 @@ public class AntColonyAlgorithm {
                     double maxP = -1;
 
 
-                    for (int e = 0; e < nodesCount; e++) {
+                    for (int e = 0; e < nodesCount - 1; e++) {
                         for (int i = 0; i < notVisitedCities.size(); i++) {
                             int city = notVisitedCities.get(i);
                             if (city != antNo) {
-                                if (pheromoneMatrix[currentCity][city] > maxP) {
-                                    maxP = pheromoneMatrix[currentCity][city];
+                                if (probabilityMatrix[currentCity][city] > maxP) {
+                                    maxP = probabilityMatrix[currentCity][city];
                                     nextCity = city;
                                 }
                             }
@@ -170,7 +207,7 @@ public class AntColonyAlgorithm {
 
                     }
                     loopLength += distanceMatrix[currentCity][antNo];
-
+                    visitedCities.add(antNo);
 
                     for (int node = 0; node < visitedCities.size() - 1; node++) {
                         deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
@@ -183,6 +220,22 @@ public class AntColonyAlgorithm {
                         deltaPheromoneMatrix[i][j] = 0;
                     }
                 }
+
+                double sigma = 0;
+
+                for (int i = 0; i < nodesCount; i++) {
+                    for (int j = 0; j < nodesCount; j++) {
+                        sigma += pheromoneMatrix[i][j] * (1d / distanceMatrix[i][j]);
+                    }
+                }
+
+
+                // Filling  the probability Matrix
+                for (int i = 0; i < nodesCount; i++) {
+                    for (int j = 0; j < nodesCount; j++) {
+                        probabilityMatrix[i][j] = (pheromoneMatrix[i][j] * (1d / distanceMatrix[i][j])) / sigma;
+                    }
+                }
             }
 
             int currentCityIndex = graph.getNodes().indexOf(baseNode);
@@ -190,7 +243,7 @@ public class AntColonyAlgorithm {
             ArrayList<NodeGraphObject> path = new ArrayList<>();
             path.add(graph.getNodes().get(currentCityIndex));
 
-            double distance = 0;
+            float distance = 0;
             for (int i = 0; i < nodesCount; i++) {
 
                 double max = -1;
@@ -198,12 +251,10 @@ public class AntColonyAlgorithm {
                 for (int j = 0; j < nodesCount; j++) {
 
                     if (currentCityIndex != j) {
-                        if (pheromoneMatrix[currentCityIndex][j] > max) {
-                            max = pheromoneMatrix[currentCityIndex][j];
+                        if (probabilityMatrix[currentCityIndex][j] > max) {
+                            max = probabilityMatrix[currentCityIndex][j];
                             nextCity = j;
-
                         }
-
                     }
                 }
                 distance += distanceMatrix[currentCityIndex][nextCity];
@@ -312,5 +363,6 @@ public class AntColonyAlgorithm {
         if (nodesCount < 0) return;
         pheromoneMatrix = new double[nodesCount][nodesCount];
         deltaPheromoneMatrix = new double[nodesCount][nodesCount];
+        probabilityMatrix = new double[nodesCount][nodesCount];
     }
 }
