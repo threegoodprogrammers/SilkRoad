@@ -62,7 +62,7 @@ public class MenuManager {
     public enum State {
         SELECTED_BOTH_NODES_AND_EDGES, SELECTED_SINGLE_DIRECTIONAL_EDGE, SELECTED_SINGLE_NON_DIRECTIONAL_EDGE,
         SELECTED_MULTIPLE_EDGES, SELECTED_SINGLE_NODE, SELECTED_SINGLE_NODE_WHICH_IS_SOURCE,
-        SELECTED_SINGLE_NODE_WHICH_IS_TARGET, SELECTED_MULTIPLE_NODES, RUNNING_ALGORITHM,
+        SELECTED_SINGLE_NODE_WHICH_IS_TARGET, SELECTED_MULTIPLE_NODES, RUNNING_ALGORITHM, NOTHING_SELECTED
     }
 
     /**
@@ -184,7 +184,7 @@ public class MenuManager {
      * @param currentState the current state
      */
 
-    public void changeButtons(State currentState) {
+    public void updateButtons(State currentState) {
         HashMap<JFXButton, Boolean> map = new HashMap<>();
 
         switch (currentState) {
@@ -324,6 +324,18 @@ public class MenuManager {
 
                 break;
             default:
+                map.put(shortestPathButton, true);
+                map.put(travellingSalesmanButton, true);
+                map.put(setSourceNodeButton, false);
+                map.put(setTargetNodeButton, false);
+                map.put(setWeightButton, false);
+                map.put(setLabelButton, false);
+                map.put(changeDirectionButton, false);
+                map.put(removeButton, false);
+                map.put(nodeButton, true);
+                map.put(directionalEdgeButton, true);
+                map.put(nonDirectionalEdgeButton, true);
+                map.put(selectButton, true);
                 break;
         }
 

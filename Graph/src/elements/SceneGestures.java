@@ -229,6 +229,7 @@ public class SceneGestures {
 
                     if (app.isLeftClickPressed()) {
                         app.addNewNode(event);
+                        app.newNodeOnTop();
                     }
 
                     break;

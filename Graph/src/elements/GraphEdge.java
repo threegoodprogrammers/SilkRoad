@@ -1,12 +1,10 @@
 package elements;
 
 import graph.App;
-import javafx.animation.FadeTransition;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.CubicCurve;
-import javafx.util.Duration;
 
 /**
  * The type Graph edge.
@@ -287,6 +285,26 @@ public class GraphEdge extends CubicCurve {
         this.getStyleClass().remove("edge-idle");
         this.getStyleClass().remove("edge-hover");
         this.getStyleClass().add("edge-select");
+    }
+
+    /**
+     * Hide edge.
+     */
+
+    public void hideEdge() {
+        this.setVisible(false);
+        this.arrowHead.setVisible(false);
+        this.weightLabel.setVisible(false);
+    }
+
+    /**
+     * Show edge.
+     */
+
+    public void showEdge(boolean nonDirectional) {
+        this.setVisible(true);
+        this.arrowHead.setVisible(!nonDirectional);
+        this.weightLabel.setVisible(false);
     }
 
     /**

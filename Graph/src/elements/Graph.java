@@ -1,5 +1,8 @@
 package elements;
 
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+
 import java.util.ArrayList;
 
 /**
@@ -73,6 +76,14 @@ public class Graph {
 
     public GraphNode addNode(String id) {
         GraphNode newNode = new GraphNode(id);
+
+        Rectangle rect = new Rectangle(75, 76);
+        rect.setTranslateX(-3);
+        rect.setTranslateY(-3);
+        rect.setArcHeight(70);
+        rect.setArcWidth(70);
+        newNode.setClip(rect);
+
         nodes.add(newNode);
 
         /*
@@ -133,7 +144,7 @@ public class Graph {
          * Instantiate a new non-directional edge
          * using the two newly created directional edges
          */
-        NonDirectionalEdge newEdge = new NonDirectionalEdge(edgeOne, edgeTwo);
+        NonDirectionalEdge newEdge = new NonDirectionalEdge(weight, edgeOne, edgeTwo);
 
         /*
          * Two-way attach the two nodes together

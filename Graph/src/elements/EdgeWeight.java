@@ -1,9 +1,9 @@
 package elements;
 
-import graph.App;
 import javafx.animation.FadeTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
+import javafx.scene.shape.CubicCurve;
 import javafx.util.Duration;
 
 /**
@@ -35,7 +35,7 @@ public class EdgeWeight extends Label {
      * @param edgeCurve the edge curve
      */
 
-    public void update(GraphEdge edgeCurve) {
+    public void update(CubicCurve edgeCurve) {
         /*
          * Calculate the co-ordinates
          */
@@ -63,7 +63,7 @@ public class EdgeWeight extends Label {
      * @param edgeCurve the edge curve
      */
 
-    private void calculate(GraphEdge edgeCurve) {
+    private void calculate(CubicCurve edgeCurve) {
         /*
          * Calculate X co-ordinates of weight label
          */
@@ -176,7 +176,11 @@ public class EdgeWeight extends Label {
      */
 
     public void setWeight(double weight) {
-        this.setText(String.valueOf(weight));
+        if (weight % 1 == 0) {
+            this.setText(String.valueOf((int) weight));
+        } else {
+            this.setText(String.valueOf(weight));
+        }
     }
 
     /**

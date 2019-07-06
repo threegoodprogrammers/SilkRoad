@@ -1,6 +1,7 @@
 package elements;
 
 import graph.App;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -48,16 +49,20 @@ public class GraphNode extends Button {
     }
 
     private void setStyle() {
-        this.getStyleClass().add("node");
+        style().add("node");
+        idle();
     }
 
     /**
      * Hover node
      */
 
-    public void hoverNode() {
+    public void hoverNode(boolean highlight) {
         sendToFront();
-        highlightAttachedEdges();
+        hover();
+        if (highlight) {
+            highlightAttachedEdges();
+        }
     }
 
     /**
@@ -82,7 +87,7 @@ public class GraphNode extends Button {
      * Leave node
      */
 
-    public void leaveNode() {
+    public void leaveNode(boolean sendToFront) {
         if (isSelected) {
             /*
              * Set "SELECT" style on edge elements
@@ -95,16 +100,25 @@ public class GraphNode extends Button {
             idle();
         }
 
-        /*
-         * Send all nodes to front
-         */
-        App.sendNodesToFront();
+        if (sendToFront) {
+            /*
+             * Send all nodes to front
+             */
+            App.sendNodesToFront();
+        }
     }
 
     /**
      * Set idle style on node
      */
     public void idle() {
+        if (style().contains("node-hover")) {
+            style().remove("node-hover");
+        }
+
+        if (!this.getStyleClass().contains("node-idle")) {
+            style().add("node-idle");
+        }
 
     }
 
@@ -112,7 +126,17 @@ public class GraphNode extends Button {
      * Set hover style on node
      */
     public void hover() {
+//        if (isSelected) {
+        if (this.getStyleClass().contains("node-idle")) {
+            style().remove("node-idle");
+        }
 
+        if (!this.getStyleClass().contains("node-hover")) {
+            this.getStyleClass().add("node-hover");
+        }
+//        } else {
+//            this.getStyleClass().add("node-hover");
+//        }
     }
 
     /**
@@ -302,7 +326,7 @@ public class GraphNode extends Button {
 
     private void addHoverListeners() {
         EventHandler<MouseEvent> mouseHover = event -> {
-            hoverNode();
+            hoverNode(true);
 //            event.consume();
         };
 
@@ -315,7 +339,7 @@ public class GraphNode extends Button {
 
     private void addLeaveListeners() {
         EventHandler<MouseEvent> mouseLeave = event -> {
-            leaveNode();
+            leaveNode(true);
 //            event.consume();
         };
 
@@ -342,6 +366,11 @@ public class GraphNode extends Button {
 //            edge.getSourceNode().sendToFront();
 //        }
     }
+
+    private ObservableList<String> style() {
+        return this.getStyleClass();
+    }
+
 //
 //    /**
 //     * Set attached edges to idle mode

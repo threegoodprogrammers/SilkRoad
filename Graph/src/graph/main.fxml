@@ -241,7 +241,7 @@
         </StackPane>
     </Pane>
     <PannableCanvas fx:id="canvas" prefHeight="800" prefWidth="1200"/>
-    <GridPane fx:id="mainMenu" maxWidth="220.0" visible="false">
+    <GridPane fx:id="mainMenu" maxWidth="220.0" visible="true">
         <columnConstraints>
             <ColumnConstraints minWidth="10.0" prefWidth="20.0"/>
             <ColumnConstraints minWidth="10.0" prefWidth="200.0"/>
@@ -470,7 +470,8 @@
                                         </graphic>
                                         <styleClass>
                                             <String fx:value="menu-button-general"/>
-                                            <String fx:value="menu-button-pink"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-pink-outline"/>
                                         </styleClass>
                                     </JFXButton>
                                     <JFXButton fx:id="directionalEdgeButton">
@@ -517,8 +518,7 @@
                                         </graphic>
                                         <styleClass>
                                             <String fx:value="menu-button-general"/>
-                                            <String fx:value="menu-button-transparent"/>
-                                            <String fx:value="menu-button-hover-pink-outline"/>
+                                            <String fx:value="menu-button-pink"/>
                                         </styleClass>
                                     </JFXButton>
                                 </children>

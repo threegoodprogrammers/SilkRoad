@@ -7,9 +7,6 @@ Button, JFXButton {
 }
 
 .node {
-    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
-    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-    linear-gradient(#6bc0e6 0%, #70d2fa 50%);
     -fx-background-radius: 50%;
     -fx-background-insets: 0, 1, 2;
     -fx-text-fill: #4b4b4b;
@@ -20,7 +17,25 @@ Button, JFXButton {
     -fx-pref-height: 70;
 }
 
-.node:hover {
+.node-idle {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#6bc0e6 0%, #70d2fa 50%);
+}
+
+/*.node-hover {*/
+/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
+/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
+/*linear-gradient(#56dad7 0%, #5beeeb 50%);*/
+/*}*/
+
+/*.node:hover {*/
+/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
+/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
+/*linear-gradient(#65b6da 0%, #70c8f0 50%);*/
+/*}*/
+
+.node-hover {
     -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
     linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
     linear-gradient(#65b6da 0%, #70c8f0 50%);
@@ -33,14 +48,36 @@ Button, JFXButton {
     -fx-border-color: #fff;
     -fx-border-style: dashed;
     -fx-border-width: 3;
-    -fx-border-radius: 50%;
-    -fx-background-radius: 50%;
+    /*-fx-border-radius: 50%;*/
+    /*-fx-background-radius: 50%;*/
     -fx-background-insets: 0, 1, 2;
     -fx-text-fill: #4b4b4b;
     -fx-font-size: 24;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
     -fx-opacity: .8;
     /*-fx-cursor: hand;*/
+}
+
+.node-selected-hover {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#60eb71 0%, #7afa79 50%);
+    -fx-border-color: #fff;
+    -fx-border-style: dashed;
+    -fx-border-width: 3;
+    /*-fx-border-radius: 50%;*/
+    /*-fx-background-radius: 50%;*/
+    -fx-background-insets: 0, 1, 2;
+    -fx-text-fill: #4b4b4b;
+    -fx-font-size: 24;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+    -fx-opacity: .8;
+    /*-fx-cursor: hand;*/
+}
+
+.selection-rect {
+    -fx-stroke: #57aecd;
+    -fx-fill: rgba(94, 190, 225, 0.3);
 }
 
 .edge {
@@ -903,6 +940,38 @@ Button, JFXButton {
 }
 
 .custom-dialog-1:no-header .graphic-container {
+    -fx-padding: 0;
+}
+
+.error-dialog {
+
+}
+
+.error-dialog:header {
+    -fx-text-fill: #5f1010;
+}
+
+.error-dialog > .button-bar > .container {
+    /*-fx-background-color: black;*/
+}
+
+.error-dialog > .content.label {
+    -fx-padding: 0.5em 0.5em 0.5em 0.5em;
+    -fx-text-fill: #360c0c;
+}
+
+.error-dialog .button {
+    -fx-background-color: #b91c1c;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-pref-width: 100;
+}
+
+.error-dialog .button:hover {
+    -fx-background-color: #b41c1c;
+}
+
+.error-dialog:no-header .graphic-container {
     -fx-padding: 0;
 }
 

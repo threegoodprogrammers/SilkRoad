@@ -6,29 +6,28 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.CubicCurve;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static graph.Main.app;
 
@@ -86,8 +85,22 @@ public class App {
     public Pane tempNodePane;
     private boolean newNodeVisible = false;
 
+    /**
+     * Source and target nodes
+     */
+
+    public GraphNode sourceNode;
+    public GraphNode targetNode;
+
     public Pane dummyPane;
     public static Pane staticDummyPane;
+
+    /**
+     * Hidden node and edges for drawing edge
+     */
+    public GraphNode hiddenNode;
+    public GraphEdge newEdge;
+    public boolean newEdgeVisible;
 
     /**
      * Menu manager object
@@ -96,7 +109,7 @@ public class App {
     private MenuManager menuManager;
 
     public enum State {
-        IDLE, PAN, MOVE
+        IDLE, DRAWING_EDGE, MOVING_NODE
     }
 
     /**
@@ -132,6 +145,7 @@ public class App {
      */
 
     private Mode currentMode;
+    private State currentState;
 
     /**
      * Hover transitions
@@ -191,282 +205,69 @@ public class App {
         setTransitions();
 
         /*
+         * Set hidden drawing tools
+         */
+        setHiddenDrawingTools();
+
+        /*
          * Set current mode to node mode
          */
         setCurrentMode(Mode.SELECT);
 
-//        GraphNode graphNode = new GraphNode("1");
-//        graphNode.setTranslateX(50);
-//        graphNode.setTranslateY(50);
-//        graphNode.setPrefHeight(70);
-//        graphNode.setPrefWidth(70);
-////        graphNode.getStyleClass().add("node");
-//        graphNode.getStyleClass().add("node-transparent");
-//        graphNode.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-//        graphNode.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
-
         this.canvas.getChildren().add(newNode);
 
-        FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.MAP_PIN);
+//        FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.MAP_PIN);
 
-        GraphNode node1 = mainGraph.addNode("1");
-        node1.setTranslateX(1000);
-        node1.setTranslateY(400);
+//        GraphNode node1 = mainGraph.addNode("1");
+//        node1.setTranslateX(1000);
+//        node1.setTranslateY(400);
+//
+//        GraphNode node2 = mainGraph.addNode("2");
+//        node2.setTranslateX(100);
+//        node2.setTranslateY(100);
+//
+//        GraphNode node3 = mainGraph.addNode("3");
+//        node3.setTranslateX(350);
+//        node3.setTranslateY(500);
+//
+//        node1.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+//        node1.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+//        node1.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
+//
+//        GraphEdge newEdge = mainGraph.addDirectionalEdge(1, node1, node2);
+//        newEdge.initialize();
+//        newEdge.addToCanvas(this.canvas);
+//
+//        GraphEdge newEdge2 = mainGraph.addDirectionalEdge(2, node2, node1);
+//        newEdge2.initialize();
+//        newEdge2.addToCanvas(this.canvas);
+//
+//        NonDirectionalEdge newEdge3 = mainGraph.addNonDirectionalEdge(3, node2, node3);
+//        newEdge3.initialize();
+//        newEdge3.getFirstEdge().initialize();
+//        newEdge3.getSecondEdge().initialize();
+//        newEdge3.addToCanvas(this.canvas);
 
-        GraphNode node2 = mainGraph.addNode("2");
-        node2.setTranslateX(100);
-        node2.setTranslateY(100);
+//        final Rectangle selectionRect = new Rectangle(10, 10, Color.TRANSPARENT);
+//        selectionRect.getStyleClass().add("selection-rect");
 
-        GraphNode node3 = mainGraph.addNode("3");
-        node3.setTranslateX(150);
-        node3.setTranslateY(100);
+        EventHandler<MouseEvent> mouseDragHandler = new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+//                System.out.println(selectionRect.intersects(newEdge.getTranslateX(),
+//                        newEdge.getTranslateY(),
+//                        newEdge.getBoundsInLocal().getWidth(),
+//                        newEdge.getBoundsInLocal().getHeight()));
+//                System.out.println(selectionRect.intersects(node2.localToParent(node2.getBoundsInLocal())));
+            }
+        };
 
-//        final double[] max = new double[2];
-//        max[0] = (node1.getTranslateY() + 70 + node2.getTranslateY()) / 2;
-//        max[1] = (node1.getTranslateX() + 70 + node2.getTranslateX()) / 2;
+        // Add selection gesture
+//        MouseControlUtil.addSelectionRectangleGesture(canvas, selectionRect, mouseDragHandler, null, null);
 
-//        CubicCurve curve1 = new CubicCurve(35 + node1.getTranslateX(), node1.getTranslateY(),
-//                35 + node1.getTranslateX(), max[0] / 2,
-//                35 + node2.getTranslateX(), max[0] / 2,
-//                35 + node2.getTranslateX(), node2.getTranslateY() + 70);
-//        curve1.setStrokeWidth(4);
-//        curve1.setFill(null);
-//        curve1.setStroke(Color.ORANGE);
-//        curve1.getStyleClass().add("edge");
-
-//        CubicCurve curve2 = new CubicCurve(node1.getTranslateX(), node1.getTranslateY() + 35,
-//                max[1] / 2, 35 + node1.getTranslateY(),
-//                max[1] / 2, 35 + node2.getTranslateY(),
-//                node2.getTranslateX() + 70, node2.getTranslateY() + 35);
-//        curve2.setStrokeWidth(4);
-//        curve2.setFill(null);
-//        curve2.setStroke(Color.GREEN);
-//        curve2.getStyleClass().add("edge");
-
-//        final Path[] arrowTwo = {new Path()};
-//        final Path[] arrowOne = {new Path()};
-
-        GraphEdge newEdge = mainGraph.addDirectionalEdge(12, node1, node2);
-        newEdge.initialize();
-        newEdge.addToCanvas(this.canvas);
-
-        GraphEdge newEdge2 = mainGraph.addDirectionalEdge(12, node2, node1);
-        newEdge2.initialize();
-        newEdge2.addToCanvas(this.canvas);
-
-//        Label weight1 = new Label("14");
-//        weight1.getStyleClass().add("edge-weight-2");
-//
-//        Label weight2 = new Label("25");
-//        weight2.getStyleClass().add("edge-weight");
-
-        node1.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
-            double scale = canvas.getScale();
-
-            double posX = -(1200 * (1 - scale) / 2) / scale - canvas.getTranslateX() / scale - 35 + event.getSceneX() / scale;
-            double posY = -(800 * (1 - scale) / 2) / scale - canvas.getTranslateY() / scale - 35 + event.getSceneY() / scale;
-
-            node1.setTranslateX(posX);
-            node1.setTranslateY(posY);
-
-            newEdge.update();
-            newEdge2.update();
-
-//            GraphNode top, bottom;
-//
-//            max[0] = node2.getTranslateY() + 70 + node1.getTranslateY();
-//
-//            if (node1.getTranslateY() <= node2.getTranslateY()) {
-//                top = node1;
-//                bottom = node2;
-//
-//                curve1.setStartY(top.getTranslateY() + 70);
-//                curve1.setEndY(bottom.getTranslateY() - 8);
-//                curve1.setStartX(35 + top.getTranslateX());
-//                curve1.setEndX(35 + bottom.getTranslateX());
-//                curve1.setControlX1(35 + top.getTranslateX());
-//                curve1.setControlX2(35 + bottom.getTranslateX());
-//                curve1.setControlY1(max[0] / 2 + 150);
-//                curve1.setControlY2(max[0] / 2 - 150);
-//
-//                weight1.setTranslateX((curve1.getStartX() + curve1.getEndX()) / 2);
-//                weight1.setTranslateY((curve1.getStartY() + curve1.getEndY()) / 2);
-////                weight1.setRotate();
-//
-//            } else {
-//                top = node2;
-//                bottom = node1;
-//
-//                curve1.setStartY(bottom.getTranslateY());
-//                curve1.setEndY(top.getTranslateY() + 70 + 8);
-//                curve1.setStartX(35 + bottom.getTranslateX());
-//                curve1.setEndX(35 + top.getTranslateX());
-//                curve1.setControlX1(35 + bottom.getTranslateX());
-//                curve1.setControlX2(35 + top.getTranslateX());
-//                curve1.setControlY1(max[0] / 2 - 150);
-//                curve1.setControlY2(max[0] / 2 + 150);
-//
-//                Bounds bounds = weight1.localToScene(weight1.getBoundsInLocal());
-//
-//                weight1.setTranslateX((curve1.getStartX() + curve1.getEndX()) / 2 - bounds.getWidth() / 2 / scale);
-//                weight1.setTranslateY((curve1.getStartY() + curve1.getEndY()) / 2 - bounds.getHeight() / 2 / scale);
-//
-////                double incline = (-curve1.getStartY() + curve1.getEndY()) / (-curve1.getStartX() + curve1.getEndX());
-////                System.out.println(Math.toDegrees(Math.atan(incline)));
-////                weight1.setRotate(Math.toDegrees(Math.atan(incline)) + 45);
-//
-//            }
-//
-//            GraphNode right, left;
-//            max[1] = node2.getTranslateX() + 70 + node1.getTranslateX();
-//
-//            if (node1.getTranslateX() <= node2.getTranslateX()) {
-//                left = node1;
-//                right = node2;
-//
-//                curve2.setStartX(right.getTranslateX());
-//                curve2.setEndX(left.getTranslateX() + 70 + 8);
-//                curve2.setControlX1(max[1] / 2 - 150);
-//                curve2.setControlX2(max[1] / 2 + 150);
-//                curve2.setStartY(35 + right.getTranslateY());
-//                curve2.setControlY1(35 + right.getTranslateY());
-//                curve2.setControlY2(35 + left.getTranslateY());
-//                curve2.setEndY(35 + left.getTranslateY());
-//            } else {
-//                left = node2;
-//                right = node1;
-//
-//                curve2.setStartX(left.getTranslateX() + 70);
-//                curve2.setEndX(right.getTranslateX() - 8);
-//                curve2.setControlX1(max[1] / 2 + 150);
-//                curve2.setControlX2(max[1] / 2 - 150);
-//                curve2.setStartY(35 + left.getTranslateY());
-//                curve2.setControlY1(35 + left.getTranslateY());
-//                curve2.setControlY2(35 + right.getTranslateY());
-//                curve2.setEndY(35 + right.getTranslateY());
-//
-//                Bounds bounds = weight2.localToScene(weight2.getBoundsInLocal());
-//
-//                weight2.setTranslateX((curve2.getStartX() + curve2.getEndX()) / 2 - bounds.getWidth() / 2 / scale);
-//                weight2.setTranslateY((curve2.getStartY() + curve2.getEndY()) / 2 - bounds.getHeight() / 2 / scale);
-//
-//            }
-
-//            canvas.getChildren().removeAll(arrowOne[0], arrowTwo[0]);
-//
-//            double size = 250;
-//            double scale2 = size / 4d;
-
-//            Point2D ori = eval(curve1, 1);
-//            Point2D tan = evalDt(curve1, 1).normalize().multiply(scale2);
-//            arrowOne[0] = new Path();
-//            arrowOne[0].getElements().add(new MoveTo(ori.getX() - 0.2 * tan.getX() - 0.2 * tan.getY(),
-//                    ori.getY() - 0.2 * tan.getY() + 0.2 * tan.getX()));
-//            arrowOne[0].getElements().add(new LineTo(ori.getX(), ori.getY()));
-//            arrowOne[0].getElements().add(new LineTo(ori.getX() - 0.2 * tan.getX() + 0.2 * tan.getY(),
-//                    ori.getY() - 0.2 * tan.getY() - 0.2 * tan.getX()));
-//            arrowOne[0].setStroke(Color.ORANGE);
-//            arrowOne[0].setStrokeWidth(4);
-//
-//            ori = eval(curve2, 1);
-//            tan = evalDt(curve2, 1).normalize().multiply(scale2);
-//            arrowTwo[0] = new Path();
-//            arrowTwo[0].getElements().add(new MoveTo(ori.getX() - 0.2 * tan.getX() - 0.2 * tan.getY(),
-//                    ori.getY() - 0.2 * tan.getY() + 0.2 * tan.getX()));
-//            arrowTwo[0].getElements().add(new LineTo(ori.getX(), ori.getY()));
-//            arrowTwo[0].getElements().add(new LineTo(ori.getX() - 0.2 * tan.getX() + 0.2 * tan.getY(),
-//                    ori.getY() - 0.2 * tan.getY() - 0.2 * tan.getX()));
-//            arrowTwo[0].setStroke(Color.GREEN);
-//            arrowTwo[0].setStrokeWidth(4);
-
-//            canvas.getChildren().addAll(arrowOne[0], arrowTwo[0]);
-        });
-
-//        /*
-//         * Add mouse enter event listener
-//         */
-//        curve1.addEventFilter(MouseEvent.MOUSE_ENTERED, event2 -> {
-//            weight1.toFront();
-//            weight1.setBorder(new Border(new BorderStroke(Color.ORANGE, BorderStrokeStyle.SOLID,
-//                    new CornerRadii(50, true), new BorderWidths(3))));
-//            showOnHover.setNode(weight1);
-//            showOnHover.setToValue(1);
-//            hideOnHover.stop();
-//            showOnHover.play();
-//        });
-//
-//        /*
-//         * Add mouse leave event listener
-//         */
-//        curve1.addEventFilter(MouseEvent.MOUSE_EXITED, event3 -> {
-//            hideOnHover.setNode(weight1);
-//            hideOnHover.setToValue(.3);
-//            showOnHover.stop();
-//            hideOnHover.play();
-//        });
-//
-//        /*
-//         * Add mouse enter event listener
-//         */
-//        curve2.addEventFilter(MouseEvent.MOUSE_ENTERED, event2 -> {
-//            weight2.toFront();
-//            showOnHover.setNode(weight2);
-//            showOnHover.setToValue(1);
-//            hideOnHover.stop();
-//            showOnHover.play();
-//        });
-//
-//        /*
-//         * Add mouse leave event listener
-//         */
-//        curve2.addEventFilter(MouseEvent.MOUSE_EXITED, event3 -> {
-//            hideOnHover.setNode(weight2);
-//            hideOnHover.setToValue(.3);
-//            showOnHover.stop();
-//            hideOnHover.play();
-//        });
-
-
-//        double size = Math.max(curve1.getBoundsInLocal().getWidth(),
-//                curve1.getBoundsInLocal().getHeight());
-//        double scale = size / 4d;
-
-
-//        double size = 250;
-//        double scale = size / 4d;
-//
-//        Point2D ori = eval(curve1, 0);
-//        Point2D tan = evalDt(curve1, 0).normalize().multiply(scale);
-//        Path arrowIni = new Path();
-//        arrowIni.getElements().add(new MoveTo(ori.getX() + 0.2 * tan.getX() - 0.2 * tan.getY(),
-//                ori.getY() + 0.2 * tan.getY() + 0.2 * tan.getX()));
-//        arrowIni.getElements().add(new LineTo(ori.getX(), ori.getY()));
-//        arrowIni.getElements().add(new LineTo(ori.getX() + 0.2 * tan.getX() + 0.2 * tan.getY(),
-//                ori.getY() + 0.2 * tan.getY() - 0.2 * tan.getX()));
-//        arrowIni.setStroke(Color.valueOf("#66bde1"));
-//        arrowIni.setStrokeWidth(4);
-//
-//        ori = eval(curve1, 1);
-//        tan = evalDt(curve1, 1).normalize().multiply(scale);
-//        Path arrowEnd = new Path();
-//        arrowEnd.getElements().add(new MoveTo(ori.getX() - 0.2 * tan.getX() - 0.2 * tan.getY(),
-//                ori.getY() - 0.2 * tan.getY() + 0.2 * tan.getX()));
-//        arrowEnd.getElements().add(new LineTo(ori.getX(), ori.getY()));
-//        arrowEnd.getElements().add(new LineTo(ori.getX() - 0.2 * tan.getX() + 0.2 * tan.getY(),
-//                ori.getY() - 0.2 * tan.getY() - 0.2 * tan.getX()));
-//        arrowEnd.setStroke(Color.valueOf("#66bde1"));
-//        arrowEnd.setStrokeWidth(4);
-
-        canvas.getChildren().addAll(node1, node2, node3);
-
-//        root.setTranslateX(400);
-//        root.setTranslateY(400);
-//        canvas.getChildren().add(root);
+//        canvas.getChildren().addAll(node1, node2, node3);
 
         setMenuOnTop();
     }
-
-//    private void set
 
     /**
      * Set scene elements and listeners
@@ -478,7 +279,7 @@ public class App {
         appCanvas = this.canvas;
         staticDummyPane = this.dummyPane;
 
-        this.nodeGestures = new NodeGestures(this.canvas, this);
+        this.nodeGestures = new NodeGestures(this.canvas, this, mainGraph);
         App.scene = scene;
         this.sceneGestures = new SceneGestures(this.canvas, this, this.background);
         App.scene.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
@@ -543,6 +344,33 @@ public class App {
          */
         hideOnHover = new FadeTransition(Duration.millis(300));
         hideOnHover.setToValue(.3);
+    }
+
+    /**
+     * Set hidden nodes an edges for drawing
+     */
+
+    private void setHiddenDrawingTools() {
+        this.hiddenNode = new GraphNode("");
+        this.hiddenNode.setVisible(false);
+        this.hiddenNode.toBack();
+
+//        this.hiddenNode.setDisable(false);
+
+        this.newEdge = new GraphEdge(0, this.hiddenNode, this.hiddenNode,
+                Graph.EdgeOrientation.HORIZONTAL);
+        this.newEdge.initialize();
+        this.newEdge.hideEdge();
+        this.newEdge.setDashed();
+        this.newEdge.hoverEdge();
+
+        this.newEdgeVisible = false;
+
+        /*
+         * Add new node and edge to canvas
+         */
+        this.canvas.getChildren().addAll(hiddenNode);
+        newEdge.addToCanvas(canvas);
     }
 
     /**
@@ -852,6 +680,22 @@ public class App {
     }
 
     /**
+     * Sets current state
+     */
+
+    public void setCurrentState(State newState) {
+        currentState = newState;
+    }
+
+    /**
+     * Gets current state
+     */
+
+    public State getCurrentState() {
+        return currentState;
+    }
+
+    /**
      * Add new node
      *
      * @param event The mouse event
@@ -902,6 +746,227 @@ public class App {
     }
 
     /**
+     * Add new edge
+     *
+     * @param sourceNode the source node
+     * @param targetNode the target node
+     */
+    public void addNewEdge(GraphNode sourceNode, GraphNode targetNode, boolean nonDirectional) {
+        /*
+         * Check if it is possible to draw edge
+         */
+        boolean possible = possibleToDrawEdge(sourceNode, targetNode, nonDirectional);
+
+        if (!possible) {
+            showEdgeErrorDialog();
+            return;
+        }
+
+        /*
+         * Prompt for edge weight
+         */
+        double weight = showNumberInputDialog();
+
+        if (weight == 0) {
+            return;
+        }
+
+        if (nonDirectional) {
+            /*
+             * Create a new graph edge
+             */
+            NonDirectionalEdge newEdge = mainGraph.addNonDirectionalEdge(weight, sourceNode, targetNode);
+
+            /*
+             * Initialize the new edge
+             */
+            newEdge.initialize();
+            newEdge.getFirstEdge().initialize();
+            newEdge.getSecondEdge().initialize();
+
+            /*
+             * Place the new edge on the canvas
+             */
+
+            newEdge.addToCanvas(this.canvas);
+        } else {
+            /*
+             * Create a new graph edge
+             */
+            GraphEdge newEdge = mainGraph.addDirectionalEdge(weight, sourceNode, targetNode);
+
+            /*
+             * Initialize the new edge
+             */
+            newEdge.initialize();
+
+            /*
+             * Place the new edge on the canvas
+             */
+
+            newEdge.addToCanvas(this.canvas);
+        }
+    }
+
+    /**
+     * Show edge error dialog
+     */
+
+    public void showEdgeErrorDialog() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("main.css").toExternalForm());
+        alert.getDialogPane().getStyleClass().add("error-dialog");
+        alert.setTitle("");
+        alert.setHeaderText("Cannot Draw Edge...");
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.WARNING);
+        icon.setGlyphSize(40);
+        icon.setFill(Color.valueOf("#b41c1c"));
+        alert.setGraphic(icon);
+        alert.setContentText("You cannot draw an edge from desired source node to the target! Please try again.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Show edge error dialog
+     */
+
+    public double showNumberInputDialog() {
+        TextInputDialog alert = new TextInputDialog("");
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("main.css").toExternalForm());
+        alert.getDialogPane().getStyleClass().add("custom-dialog");
+        alert.setTitle("");
+        alert.setHeaderText("Edge Weight Input...");
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.WARNING);
+        icon.setGlyphSize(40);
+        icon.setFill(Color.valueOf("#29a2b0"));
+        alert.setGraphic(icon);
+        alert.setContentText("Enter weight:");
+        Optional<String> input = alert.showAndWait();
+
+        if (!input.isPresent()) {
+            return 0;
+        }
+
+        while (!isNumber(input.get()) || Double.parseDouble(input.get()) <= 0) {
+            showNumberErrorDialog();
+            input = alert.showAndWait();
+
+            if (!input.isPresent()) {
+                return 0;
+            }
+        }
+
+        return Double.parseDouble(input.get());
+    }
+
+    /**
+     * Show number error dialog
+     */
+
+    public void showNumberErrorDialog() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("main.css").toExternalForm());
+        alert.getDialogPane().getStyleClass().add("error-dialog");
+        alert.setTitle("");
+        alert.setHeaderText("Number Error...");
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.WARNING);
+        icon.setGlyphSize(40);
+        icon.setFill(Color.valueOf("#b41c1c"));
+        alert.setGraphic(icon);
+        alert.setContentText("You have entered an invalid value! Please try again.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Show confirm delete dialog
+     */
+
+    public boolean showConfirmDeleteDialog() {
+        boolean userAccepted = false;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("main.css").toExternalForm());
+        alert.getDialogPane().getStyleClass().add("custom-dialog");
+        alert.setTitle("");
+        alert.setHeaderText("Confirm remove...");
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.INFO_CIRCLE);
+        icon.setGlyphSize(40);
+        icon.setFill(Color.valueOf("#29a2b0"));
+        alert.setGraphic(icon);
+
+        alert.setContentText("Are you sure to remove all?");
+        ButtonType yesButton = new ButtonType("Yes");
+        ButtonType noButton = new ButtonType("Cancel");
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == yesButton) {
+            userAccepted = true;
+        }
+
+        // return if user has accepted dialog
+        return userAccepted;
+    }
+
+    /**
+     * Find intersecting node graph node.
+     *
+     * @param event the event
+     * @return the graph node
+     */
+
+    public GraphNode findNodeOnMouse(MouseEvent event) {
+        Optional<GraphNode> node =
+                mainGraph.getNodes().stream().filter(n -> {
+                    double scale = canvas.getScale();
+                    double anchorX = -(1200 * (1 - scale) / 2) / scale - canvas.getTranslateX() / scale;
+                    double anchorY = -(800 * (1 - scale) / 2) / scale - canvas.getTranslateY() / scale;
+                    double finalX = event.getSceneX() / scale - n.getTranslateX() + anchorX;
+                    double finalY = event.getSceneY() / scale - n.getTranslateY() + anchorY;
+                    return n.contains(finalX, finalY);
+                }).findAny();
+
+        return node.orElse(null);
+    }
+
+    /**
+     * Check if we can draw edge from source to target
+     *
+     * @param source the source
+     * @param target the target
+     * @return the boolean
+     */
+
+    public boolean possibleToDrawEdge(GraphNode source, GraphNode target, boolean nonDirectional) {
+        for (GraphNode node : source.getTwoWayNodes().keySet()) {
+            if (node == target) {
+                return false;
+            }
+        }
+
+        for (GraphNode node : source.getOutgoingNodes().keySet()) {
+            if (node == target) {
+                return false;
+            }
+        }
+
+        if (nonDirectional) {
+            for (GraphNode node : source.getIncomingNodes().keySet()) {
+                if (node == target) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Show new temp node on screen
      */
 
@@ -919,6 +984,7 @@ public class App {
         moveNewNode(sceneGestures.getX(), sceneGestures.getY());
         newNode.setVisible(true);
         setNewNodeVisibility(true);
+        newNodeOnTop();
     }
 
     /**
@@ -938,6 +1004,14 @@ public class App {
          */
         newNode.setVisible(false);
         setNewNodeVisibility(false);
+    }
+
+    /**
+     * New node on top.
+     */
+
+    public void newNodeOnTop() {
+        newNode.toFront();
     }
 
     private void addNewNodeListener() {
@@ -983,6 +1057,87 @@ public class App {
 
     public boolean isNewNodeVisible() {
         return this.newNodeVisible;
+    }
+
+    /**
+     * Move hidden node.
+     *
+     * @param mouseX the mouse x
+     * @param mouseY the mouse y
+     */
+    public void moveHiddenNode(double mouseX, double mouseY) {
+        double scale = canvas.getScale();
+
+        double translateX = -(1200 * (1 - scale) / 2) / scale - canvas.getTranslateX() / scale - 35;
+        double translateY = -(800 * (1 - scale) / 2) / scale - canvas.getTranslateY() / scale - 35;
+
+        this.hiddenNode.setTranslateX(mouseX / scale + translateX);
+        this.hiddenNode.setTranslateY(mouseY / scale + translateY);
+    }
+
+    /**
+     * Show new edge
+     */
+
+    public void showNewEdge(boolean nonDirectional) {
+        if (!newEdgeVisible) {
+            this.newEdge.showEdge(nonDirectional);
+            this.newEdgeVisible = true;
+        }
+    }
+
+    /**
+     * Hide new edge
+     */
+
+    public void hideNewEdge() {
+        if (newEdgeVisible) {
+            this.newEdge.hideEdge();
+            this.newEdgeVisible = false;
+        }
+    }
+
+    /**
+     * Move new edge
+     */
+
+    public void moveNewEdge() {
+        this.newEdge.update();
+    }
+
+    /**
+     * Move node.
+     *
+     * @param node the node
+     */
+
+    public void moveNode(GraphNode node, MouseEvent event) {
+        /*
+         * Calculate the values
+         */
+        double scale = canvas.getScale();
+        double finalX = -(1200 * (1 - scale) / 2) / scale - canvas.getTranslateX() / scale - 35;
+        double finalY = -(800 * (1 - scale) / 2) / scale - canvas.getTranslateY() / scale - 35;
+
+        /*
+         * Set translate value for node
+         */
+        node.setTranslateX(event.getSceneX() / scale + finalX);
+        node.setTranslateY(event.getSceneY() / scale + finalY);
+
+        /*
+         * Update all of the attached edges
+         */
+
+        for (GraphEdge edge : node.getOutgoingNodes().values()) {
+            edge.update();
+        }
+        for (GraphEdge edge : node.getIncomingNodes().values()) {
+            edge.update();
+        }
+        for (NonDirectionalEdge edge : node.getTwoWayNodes().values()) {
+            edge.update();
+        }
     }
 
     /**
@@ -1056,6 +1211,31 @@ public class App {
 
     public void setMenuOnTop() {
         menuManager.menuOnTop();
+    }
+
+    /**
+     * Sets source node
+     */
+
+    public void setSourceNode(GraphNode sourceNode) {
+        this.sourceNode = sourceNode;
+    }
+
+    /**
+     * Reset source node
+     */
+    public void resetSourceNode() {
+
+
+        setSourceNode(null);
+    }
+
+    /**
+     * Sets target node
+     */
+
+    public void setTargetNode(GraphNode targetNode) {
+        this.targetNode = targetNode;
     }
 
     /**
@@ -1290,6 +1470,22 @@ public class App {
 
     public boolean areMultipleKeysPressed() {
         return this.shiftPressed && this.ctrlPressed;
+    }
+
+    /**
+     * Is number valid
+     *
+     * @param string the string
+     * @return the boolean
+     */
+
+    public boolean isNumber(String string) {
+        try {
+            double isNum = Double.parseDouble(string);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
