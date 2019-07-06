@@ -4,6 +4,7 @@ import algorithms.GraphObject;
 import algorithms.NodeGraphObject;
 import algorithms.TravellingSalesMan.HamiltonianCycle;
 import algorithms.TravellingSalesMan.TravellingSalesManData;
+import algorithms.TravellingSalesMan.Validation;
 import elements.Graph;
 import elements.GraphNode;
 
@@ -19,10 +20,9 @@ public class TravellingSalesManAlgorithm {
 
     public static TravellingSalesManData findShortestCycle(GraphObject graph, NodeGraphObject baseNode) {
         if (graph == null) return null;
-        if (HasHamiltonianCycle(graph.getNodes())) {
+        double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), graph.getNodes().size());
+        if (Validation.isComplete(distanceMatrix, distanceMatrix.length) && HasHamiltonianCycle(graph.getNodes())) {
             int nodesCount = graph.getNodes().size();
-            double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), nodesCount);
-            if (distanceMatrix == null) return null;
 
             ArrayList<NodeGraphObject> path = new ArrayList<>();
             for (int i : getTour(nodesCount, distanceMatrix, graph.getNodes().indexOf(baseNode))) {
@@ -38,10 +38,9 @@ public class TravellingSalesManAlgorithm {
 
     public static TravellingSalesManData findShortestCycle(Graph graph, GraphNode baseNode) {
         if (graph == null) return null;
-        if (HasHamiltonianCycle(graph.getNodes())) {
+        double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), graph.getNodes().size());
+        if (Validation.isComplete(distanceMatrix, distanceMatrix.length) && HasHamiltonianCycle(graph.getNodes())) {
             int nodesCount = graph.getNodes().size();
-            double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), nodesCount);
-            if (distanceMatrix == null) return null;
 
             ArrayList<GraphNode> path = new ArrayList<>();
             for (int i : getTour(nodesCount, distanceMatrix, graph.getNodes().indexOf(baseNode))) {

@@ -31,4 +31,6 @@ public class TravellingSalesManData {
     public double getShortestDistance() {
         return shortestDistance;
     }
+
+
 }

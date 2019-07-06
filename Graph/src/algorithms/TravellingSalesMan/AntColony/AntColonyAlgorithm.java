@@ -4,6 +4,7 @@ import algorithms.GraphObject;
 import algorithms.NodeGraphObject;
 import algorithms.TravellingSalesMan.HamiltonianCycle;
 import algorithms.TravellingSalesMan.TravellingSalesManData;
+import algorithms.TravellingSalesMan.Validation;
 import elements.Graph;
 import elements.GraphNode;
 
@@ -25,11 +26,12 @@ public class AntColonyAlgorithm {
             int antsNumber
     ) {
         if (graph == null) return null;
-        if (HasHamiltonianCycle(graph.getNodes())) {
+        distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
+        if (Validation.isComplete(distanceMatrix, distanceMatrix.length) && HasHamiltonianCycle(graph.getNodes())) {
             nodesCount = graph.getNodes().size();
 
             //Initialize
-            distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
+
             if (distanceMatrix == null) return null;
             initializeMatrices();
 
@@ -124,11 +126,12 @@ public class AntColonyAlgorithm {
             int antsNumber
     ) {
         if (graph == null) return null;
-        if (HasHamiltonianCycle(graph.getNodes())) {
+        distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
+
+        if (Validation.isComplete(distanceMatrix, distanceMatrix.length) && HasHamiltonianCycle(graph.getNodes())) {
             nodesCount = graph.getNodes().size();
 
             //Initialize
-            distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
             if (distanceMatrix == null) return null;
             initializeMatrices();
 
@@ -263,6 +266,7 @@ public class AntColonyAlgorithm {
         }
         return distanceMatrix;
     }
+
 
     private static boolean HasHamiltonianCycle(ArrayList<NodeGraphObject> nodes) {
 
