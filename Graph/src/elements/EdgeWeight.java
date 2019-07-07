@@ -1,6 +1,7 @@
 package elements;
 
 import javafx.animation.FadeTransition;
+import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
 import javafx.scene.shape.CubicCurve;
@@ -221,5 +222,9 @@ public class EdgeWeight extends Label {
 
     public void setPosY(double posY) {
         this.posY = posY;
+    }
+
+    public ObservableList<String> style() {
+        return this.getStyleClass();
     }
 }

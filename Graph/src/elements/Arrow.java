@@ -1,5 +1,6 @@
 package elements;
 
+import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
@@ -174,5 +175,9 @@ public class Arrow extends Path {
                         3 * ((1 - t) * 2 * t - t * t) * c.getControlY2() +
                         3 * Math.pow(t, 2) * c.getEndY());
         return p;
+    }
+
+    public ObservableList<String> style() {
+        return this.getStyleClass();
     }
 }

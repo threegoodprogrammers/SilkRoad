@@ -11,6 +11,8 @@ public class NodeGestures {
     private Graph mainGraph;
 
     private boolean drawingNonDirectionalEdge = false;
+    private boolean drawingEdge = false;
+    private boolean movingNode = false;
 
     public NodeGestures(PannableCanvas canvas, App app, Graph mainGraph) {
         this.canvas = canvas;
@@ -85,6 +87,8 @@ public class NodeGestures {
                     GraphNode nodeOnMouse = app.findNodeOnMouse(event);
                     node.hoverNode(false);
 
+                    drawingEdge = true;
+
                     if (nodeOnMouse != null && nodeOnMouse != node) {
                         attachNewEdgeToNode(nodeOnMouse);
                         nodeOnMouse.hoverNode(false);
@@ -112,6 +116,7 @@ public class NodeGestures {
                      */
                     app.hideMenu();
                     app.moveNode(node, event);
+                    movingNode = true;
 
                     break;
                 case IDLE:
@@ -150,12 +155,28 @@ public class NodeGestures {
                             break;
                     }
 
-                    app.hideNewEdge();
-                    newEdge().getSourceNode().leaveNode(false);
+                    if (drawingEdge) {
+                        app.hideNewEdge();
+                        newEdge().getSourceNode().leaveNode(false);
+                        drawingEdge = false;
+                    }
 
                     break;
                 case MOVING_NODE:
+                    if (movingNode) {
+                        /*
+                         * Move node mode
+                         */
+                        movingNode = false;
+                    } else {
+                        /*
+                         * Select mode
+                         */
 
+                        GraphNode node = (GraphNode) event.getSource();
+
+                        app.select(node);
+                    }
 
                     break;
                 case IDLE:

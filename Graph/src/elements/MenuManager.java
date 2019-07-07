@@ -61,8 +61,7 @@ public class MenuManager {
 
     public enum State {
         SELECTED_BOTH_NODES_AND_EDGES, SELECTED_SINGLE_DIRECTIONAL_EDGE, SELECTED_SINGLE_NON_DIRECTIONAL_EDGE,
-        SELECTED_MULTIPLE_EDGES, SELECTED_SINGLE_NODE, SELECTED_SINGLE_NODE_WHICH_IS_SOURCE,
-        SELECTED_SINGLE_NODE_WHICH_IS_TARGET, SELECTED_MULTIPLE_NODES, RUNNING_ALGORITHM, NOTHING_SELECTED
+        SELECTED_MULTIPLE_EDGES, SELECTED_SINGLE_NODE, SELECTED_MULTIPLE_NODES, RUNNING_ALGORITHM, NOTHING_SELECTED
     }
 
     /**
@@ -237,7 +236,7 @@ public class MenuManager {
                 map.put(shortestPathButton, true);
                 map.put(travellingSalesmanButton, true);
                 map.put(setSourceNodeButton, true);
-                map.put(setTargetNodeButton, true);
+                map.put(setTargetNodeButton, app.getCurrentProblem() == App.Problem.SHORTEST_PATH);
                 map.put(setWeightButton, false);
                 map.put(setLabelButton, true);
                 map.put(changeDirectionButton, false);
@@ -285,36 +284,6 @@ public class MenuManager {
                 map.put(setTargetNodeButton, false);
                 map.put(setWeightButton, false);
                 map.put(setLabelButton, false);
-                map.put(changeDirectionButton, false);
-                map.put(removeButton, true);
-                map.put(nodeButton, true);
-                map.put(directionalEdgeButton, true);
-                map.put(nonDirectionalEdgeButton, true);
-                map.put(selectButton, true);
-
-                break;
-            case SELECTED_SINGLE_NODE_WHICH_IS_SOURCE:
-                map.put(shortestPathButton, true);
-                map.put(travellingSalesmanButton, true);
-                map.put(setSourceNodeButton, false);
-                map.put(setTargetNodeButton, true);
-                map.put(setWeightButton, false);
-                map.put(setLabelButton, true);
-                map.put(changeDirectionButton, false);
-                map.put(removeButton, true);
-                map.put(nodeButton, true);
-                map.put(directionalEdgeButton, true);
-                map.put(nonDirectionalEdgeButton, true);
-                map.put(selectButton, true);
-
-                break;
-            case SELECTED_SINGLE_NODE_WHICH_IS_TARGET:
-                map.put(shortestPathButton, true);
-                map.put(travellingSalesmanButton, true);
-                map.put(setSourceNodeButton, true);
-                map.put(setTargetNodeButton, false);
-                map.put(setWeightButton, false);
-                map.put(setLabelButton, true);
                 map.put(changeDirectionButton, false);
                 map.put(removeButton, true);
                 map.put(nodeButton, true);
@@ -398,6 +367,8 @@ public class MenuManager {
      */
 
     public void setMenuButtons() {
+        setSourceNodeButton.setOnAction(event -> app.setSourceNode(app.selectionManager.getNode()));
+        setTargetNodeButton.setOnAction(event -> app.setTargetNode(app.selectionManager.getNode()));
         selectButton.setOnAction(event -> app.changeMode(App.Mode.SELECT));
         nodeButton.setOnAction(event -> app.changeMode(App.Mode.NODE));
         directionalEdgeButton.setOnAction(event -> app.changeMode(App.Mode.DIRECTIONAL_EDGE));

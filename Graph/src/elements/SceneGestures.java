@@ -116,6 +116,7 @@ public class SceneGestures {
 
             if (app.getCurrentMode() == App.Mode.NODE && !app.isMenuHovered()) {
                 moveNewNode(event);
+                app.newNodeOnTop();
             }
 
         }
@@ -131,7 +132,9 @@ public class SceneGestures {
                     if (app.isCtrlPressed() || app.isMenuHovered()) {
                         break;
                     }
+
                     moveNewNode(event);
+                    app.newNodeOnTop();
 
                     return;
                 case NON_DIRECTIONAL_EDGE:
@@ -222,6 +225,7 @@ public class SceneGestures {
                     }
 
                     moveNewNode(event);
+                    app.newNodeOnTop();
 
                     /*
                      * Place the new node is left click is pressed
@@ -318,7 +322,6 @@ public class SceneGestures {
                      */
                     if (!app.isLeftClickPressed() && !app.isCtrlPressed()) {
                         app.pressShift();
-
                     }
 
                     break;
@@ -431,8 +434,6 @@ public class SceneGestures {
     private void moveNewNode(MouseEvent event) {
         app.moveNewNode(event.getSceneX(), event.getSceneY());
     }
-
-//    private void
 
     /**
      * Gets x.

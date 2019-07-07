@@ -23,56 +23,76 @@ Button, JFXButton {
     linear-gradient(#6bc0e6 0%, #70d2fa 50%);
 }
 
-/*.node-hover {*/
-/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
-/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
-/*linear-gradient(#56dad7 0%, #5beeeb 50%);*/
-/*}*/
-
-/*.node:hover {*/
-/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
-/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
-/*linear-gradient(#65b6da 0%, #70c8f0 50%);*/
-/*}*/
-
 .node-hover {
     -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
     linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
     linear-gradient(#65b6da 0%, #70c8f0 50%);
 }
 
+/*.node-selected {*/
+/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
+/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
+/*linear-gradient(#eb8485 0%, #f98f90 50%);*/
+/*-fx-border-width: 2;*/
+/*-fx-border-style: dashed;*/
+/*-fx-border-color: #d77475;*/
+/*-fx-border-radius: 50%;*/
+/*}*/
+
 .node-selected {
     -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
     linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-    linear-gradient(#60eb71 0%, #7afa79 50%);
-    -fx-border-color: #fff;
-    -fx-border-style: dashed;
+    linear-gradient(#e8eb88 0%, #f6f994 50%);
     -fx-border-width: 3;
-    /*-fx-border-radius: 50%;*/
-    /*-fx-background-radius: 50%;*/
-    -fx-background-insets: 0, 1, 2;
-    -fx-text-fill: #4b4b4b;
-    -fx-font-size: 24;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
-    -fx-opacity: .8;
-    /*-fx-cursor: hand;*/
+    -fx-border-insets: 3;
+    -fx-border-style: dashed;
+    -fx-border-color: #c5c77d;
+    -fx-border-radius: 50%;
 }
+
+/*.node-selected-hover {*/
+/*-fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),*/
+/*linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),*/
+/*linear-gradient(#e68182 0%, #f48c8d 50%);*/
+/*-fx-border-width: 2;*/
+/*-fx-border-style: dashed;*/
+/*-fx-border-color: #d77475;*/
+/*-fx-border-radius: 50%;*/
+/*}*/
 
 .node-selected-hover {
     -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
     linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-    linear-gradient(#60eb71 0%, #7afa79 50%);
-    -fx-border-color: #fff;
-    -fx-border-style: dashed;
+    linear-gradient(#e3e685 0%, #f1f48e 50%);
     -fx-border-width: 3;
-    /*-fx-border-radius: 50%;*/
-    /*-fx-background-radius: 50%;*/
-    -fx-background-insets: 0, 1, 2;
-    -fx-text-fill: #4b4b4b;
-    -fx-font-size: 24;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
-    -fx-opacity: .8;
-    /*-fx-cursor: hand;*/
+    -fx-border-insets: 3;
+    -fx-border-style: dashed;
+    -fx-border-color: #c5c77d;
+    -fx-border-radius: 50%;
+}
+
+.node-source {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#ebab4b 0%, #f9b64d 50%);
+}
+
+.node-source-hover {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#dca641 0%, #f1ae4e 50%);
+}
+
+.node-target {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#31e181 0%, #35f389 50%);
+}
+
+.node-target-hover {
+    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
+    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
+    linear-gradient(#2ed97c 0%, #37ef85 50%);
 }
 
 .selection-rect {
@@ -84,7 +104,6 @@ Button, JFXButton {
     -fx-cursor: hand;
     -fx-fill: null;
     -fx-stroke-width: 6;
-    /*-fx-stroke: rgba(80, 80, 80, .9);*/
     -fx-opacity: .5;
 }
 
@@ -94,6 +113,11 @@ Button, JFXButton {
 
 .edge-hover {
     -fx-stroke: #f39c12;
+    -fx-opacity: 1;
+}
+
+.edge-select {
+    -fx-stroke: #f1f48e;
     -fx-opacity: 1;
 }
 
@@ -110,6 +134,11 @@ Button, JFXButton {
 
 .edge-arrow-hover {
     -fx-stroke: #f39c12;
+    -fx-opacity: 1;
+}
+
+.edge-arrow-selected {
+    -fx-stroke: #f1f48e;
     -fx-opacity: 1;
 }
 
@@ -137,6 +166,12 @@ Button, JFXButton {
 .edge-weight-hover {
     -fx-border-color: #f39c12;
     -fx-text-fill: #f39c12;
+    -fx-opacity: 1;
+}
+
+.edge-weight-selected {
+    -fx-border-color: #f1f48e;
+    -fx-text-fill: #f1f48e;
     -fx-opacity: 1;
 }
 
@@ -178,25 +213,6 @@ Button, JFXButton {
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
     -fx-opacity: .8;
     /*-fx-cursor: hand;*/
-}
-
-.node-source {
-    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
-    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-    linear-gradient(#ebab4b 0%, #f9b64d 50%);
-    -fx-background-radius: 50%;
-    -fx-background-insets: 0, 1, 2;
-    -fx-text-fill: #4b4b4b;
-    /*-fx-text-fill: #f2f2f2;*/
-    -fx-font-size: 24;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
-    -fx-cursor: hand;
-}
-
-.node-source:hover {
-    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
-    linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-    linear-gradient(#e4ab44 0%, #f6b34d 50%);
 }
 
 .buttonBlue {

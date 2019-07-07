@@ -1,6 +1,7 @@
 package elements;
 
 import graph.App;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -60,11 +61,6 @@ public class GraphEdge extends CubicCurve {
         this.sourceNode = sourceNode;
         this.targetNode = targetNode;
         this.edgeOrientation = edgeOrientation;
-
-        /*
-         * Set styles
-         */
-        setStyle();
 //        setHoverTransitions();
     }
 
@@ -83,6 +79,11 @@ public class GraphEdge extends CubicCurve {
          */
         addHoverListeners();
         addLeaveListeners();
+
+        /*
+         * Set styles
+         */
+        setStyle();
     }
 
     /**
@@ -262,9 +263,47 @@ public class GraphEdge extends CubicCurve {
      */
 
     public void idle() {
-        this.getStyleClass().remove("edge-select");
-        this.getStyleClass().remove("edge-hover");
-        this.getStyleClass().add("edge-idle");
+        if (isSelected) {
+            /*
+             * If edge is SELECTED
+             */
+            style().remove("edge-idle");
+            style().remove("edge-hover");
+            arrowHead.style().remove("edge-arrow-idle");
+            arrowHead.style().remove("edge-arrow-hover");
+            weightLabel.style().remove("edge-weight-idle");
+            weightLabel.style().remove("edge-weight-hover");
+
+            if (!style().contains("edge-selected")) {
+                style().add("edge-selected");
+            }
+            if (!arrowHead.style().contains("edge-arrow-selected")) {
+                arrowHead.style().add("edge-arrow-selected");
+            }
+            if (!weightLabel.style().contains("edge-weight-selected")) {
+                weightLabel.style().add("edge-weight-selected");
+            }
+        } else {
+            /*
+             * If edge is not SELECTED
+             */
+            style().remove("edge-selected");
+            style().remove("edge-hover");
+            arrowHead.style().remove("edge-arrow-selected");
+            arrowHead.style().remove("edge-arrow-hover");
+            weightLabel.style().remove("edge-weight-selected");
+            weightLabel.style().remove("edge-weight-hover");
+
+            if (!style().contains("edge-idle")) {
+                style().add("edge-idle");
+            }
+            if (!arrowHead.style().contains("edge-arrow-idle")) {
+                arrowHead.style().add("edge-arrow-idle");
+            }
+            if (!weightLabel.style().contains("edge-weight-idle")) {
+                weightLabel.style().add("edge-weight-idle");
+            }
+        }
     }
 
     /**
@@ -272,9 +311,27 @@ public class GraphEdge extends CubicCurve {
      */
 
     public void hover() {
-        this.getStyleClass().remove("edge-idle");
-        this.getStyleClass().remove("edge-select");
-        this.getStyleClass().add("edge-hover");
+        if (!isSelected) {
+            /*
+             * If edge is not SELECTED
+             */
+            style().remove("edge-selected");
+            style().remove("edge-idle");
+            arrowHead.style().remove("edge-arrow-selected");
+            arrowHead.style().remove("edge-arrow-idle");
+            weightLabel.style().remove("edge-weight-selected");
+            weightLabel.style().remove("edge-weight-idle");
+
+            if (!style().contains("edge-hover")) {
+                style().add("edge-hover");
+            }
+            if (!arrowHead.style().contains("edge-arrow-hover")) {
+                arrowHead.style().add("edge-arrow-hover");
+            }
+            if (!weightLabel.style().contains("edge-weight-hover")) {
+                weightLabel.style().add("edge-weight-hover");
+            }
+        }
     }
 
     /**
@@ -481,8 +538,8 @@ public class GraphEdge extends CubicCurve {
 
     public void hoverEdge() {
         hover();
-        this.weightLabel.hover();
-        this.arrowHead.hover();
+//        this.weightLabel.hover();
+//        this.arrowHead.hover();
         this.sourceNode.sendToFront();
         this.targetNode.sendToFront();
 
@@ -503,9 +560,9 @@ public class GraphEdge extends CubicCurve {
 
     public void selectEdge() {
         this.isSelected = true;
-        select();
-        this.weightLabel.select();
-        this.arrowHead.select();
+        idle();
+//        this.weightLabel.select();
+//        this.arrowHead.select();
     }
 
     /**
@@ -537,21 +594,7 @@ public class GraphEdge extends CubicCurve {
      */
 
     public void leaveEdge() {
-        if (isSelected) {
-            /*
-             * Set "SELECT" style on edge elements
-             */
-            select();
-            this.weightLabel.select();
-            this.arrowHead.select();
-        } else {
-            /*
-             * Set "IDLE" styles on edge elements
-             */
-            idle();
-            this.weightLabel.idle();
-            this.arrowHead.idle();
-        }
+        idle();
 
         /*
          * Set solid style on edge
@@ -604,6 +647,9 @@ public class GraphEdge extends CubicCurve {
         this.arrowHead.toFront();
     }
 
+    private ObservableList<String> style() {
+        return this.getStyleClass();
+    }
 
 //    public
 

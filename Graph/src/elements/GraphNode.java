@@ -19,6 +19,8 @@ public class GraphNode extends Button {
     private HashMap<GraphNode, NonDirectionalEdge> twoWayAttachedNodes = new HashMap<>();
 
     private boolean isSelected = false;
+    private boolean isSource = false;
+    private boolean isTarget = false;
 
     /**
      * Instantiates a new Graph node.
@@ -71,7 +73,7 @@ public class GraphNode extends Button {
 
     public void selectNode() {
         this.isSelected = true;
-        select();
+        idle();
     }
 
     /**
@@ -88,17 +90,7 @@ public class GraphNode extends Button {
      */
 
     public void leaveNode(boolean sendToFront) {
-        if (isSelected) {
-            /*
-             * Set "SELECT" style on edge elements
-             */
-            select();
-        } else {
-            /*
-             * Set "IDLE" styles on edge elements
-             */
-            idle();
-        }
+        idle();
 
         if (sendToFront) {
             /*
@@ -111,40 +103,166 @@ public class GraphNode extends Button {
     /**
      * Set idle style on node
      */
-    public void idle() {
-        if (style().contains("node-hover")) {
+    private void idle() {
+        if (isSelected) {
+            /*
+             * If node is SELECTED
+             */
+            style().remove("node-idle");
             style().remove("node-hover");
-        }
+            style().remove("node-source");
+            style().remove("node-source-hover");
+            style().remove("node-target");
+            style().remove("node-target-hover");
+            style().remove("node-selected-hover");
 
-        if (!this.getStyleClass().contains("node-idle")) {
-            style().add("node-idle");
-        }
+            if (!style().contains("node-selected")) {
+                style().add("node-selected");
+            }
+        } else {
+            /*
+             * If node is not SELECTED
+             */
+            if (!isSource && !isTarget) {
+                //////////////////////////
+                /////     NORMAL     /////
+                //////////////////////////
 
+                style().remove("node-hover");
+                style().remove("node-source");
+                style().remove("node-source-hover");
+                style().remove("node-target");
+                style().remove("node-target-hover");
+                style().remove("node-selected");
+                style().remove("node-selected-hover");
+
+                if (!style().contains("node-idle")) {
+                    style().add("node-idle");
+                }
+            } else if (!isSource) {
+                //////////////////////////
+                /////     TARGET     /////
+                //////////////////////////
+
+                style().remove("node-idle");
+                style().remove("node-hover");
+                style().remove("node-source");
+                style().remove("node-source-hover");
+                style().remove("node-target-hover");
+                style().remove("node-selected");
+                style().remove("node-selected-hover");
+
+                if (!style().contains("node-target")) {
+                    style().add("node-target");
+                }
+            } else if (!isTarget) {
+                //////////////////////////
+                /////     SOURCE     /////
+                //////////////////////////
+
+                style().remove("node-idle");
+                style().remove("node-hover");
+                style().remove("node-source-hover");
+                style().remove("node-target");
+                style().remove("node-target-hover");
+                style().remove("node-selected");
+                style().remove("node-selected-hover");
+
+                if (!style().contains("node-source")) {
+                    style().add("node-source");
+                }
+            }
+        }
     }
 
     /**
      * Set hover style on node
      */
     public void hover() {
-//        if (isSelected) {
-        if (this.getStyleClass().contains("node-idle")) {
+        if (isSelected) {
+            /*
+             * If node is SELECTED
+             */
             style().remove("node-idle");
-        }
+            style().remove("node-hover");
+            style().remove("node-source");
+            style().remove("node-source-hover");
+            style().remove("node-target");
+            style().remove("node-target-hover");
+            style().remove("node-selected");
 
-        if (!this.getStyleClass().contains("node-hover")) {
-            this.getStyleClass().add("node-hover");
+            if (!style().contains("node-selected-hover")) {
+                style().add("node-selected-hover");
+            }
+        } else {
+            /*
+             * If node is not SELECTED
+             */
+            if (!isSource && !isTarget) {
+                //////////////////////////
+                /////     NORMAL     /////
+                //////////////////////////
+
+                style().remove("node-idle");
+                style().remove("node-source");
+                style().remove("node-source-hover");
+                style().remove("node-target");
+                style().remove("node-target-hover");
+                style().remove("node-selected");
+                style().remove("node-selected-hover");
+
+                if (!style().contains("node-hover")) {
+                    style().add("node-hover");
+                }
+            } else if (!isSource) {
+                //////////////////////////
+                /////     TARGET     /////
+                //////////////////////////
+
+                style().remove("node-idle");
+                style().remove("node-hover");
+                style().remove("node-source");
+                style().remove("node-source-hover");
+                style().remove("node-target");
+                style().remove("node-selected");
+                style().remove("node-selected-hover");
+
+                if (!style().contains("node-target-hover")) {
+                    style().add("node-target-hover");
+                }
+            } else if (!isTarget) {
+                //////////////////////////
+                /////     SOURCE     /////
+                //////////////////////////
+
+                style().remove("node-idle");
+                style().remove("node-hover");
+                style().remove("node-source");
+                style().remove("node-target");
+                style().remove("node-target-hover");
+                style().remove("node-selected");
+                style().remove("node-selected-hover");
+
+                if (!style().contains("node-source-hover")) {
+                    style().add("node-source-hover");
+                }
+            }
         }
-//        } else {
-//            this.getStyleClass().add("node-hover");
-//        }
     }
 
-    /**
-     * Set select style on node
-     */
-    public void select() {
-
-    }
+//    /**
+//     * Set source style on node
+//     */
+//    public void source() {
+//
+//    }
+//
+//    /**
+//     * Set target style on node
+//     */
+//    public void target() {
+//
+//    }
 
     /**
      * Send edge elements to front
@@ -336,7 +454,6 @@ public class GraphNode extends Button {
     /**
      * Add leave listener to edge elements
      */
-
     private void addLeaveListeners() {
         EventHandler<MouseEvent> mouseLeave = event -> {
             leaveNode(true);
@@ -344,6 +461,57 @@ public class GraphNode extends Button {
         };
 
         this.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
+    }
+
+    /**
+     * Sets as source
+     */
+    public void setAsSource() {
+        isSource = true;
+
+        idle();
+    }
+
+    /**
+     * Is source boolean
+     *
+     * @return the boolean
+     */
+    public boolean isSource() {
+        return isSource;
+    }
+
+    /**
+     * Sets as target
+     */
+    public void setAsTarget() {
+        isTarget = true;
+
+        idle();
+    }
+
+    /**
+     * Is target boolean
+     *
+     * @return the boolean
+     */
+    public boolean isTarget() {
+        return isTarget;
+    }
+
+    /**
+     * Sets as normal
+     */
+    public void setAsNormal() {
+        if (isTarget()) {
+            isTarget = false;
+        }
+
+        if (isSource()) {
+            isSource = false;
+        }
+
+        idle();
     }
 
     /**
@@ -361,10 +529,10 @@ public class GraphNode extends Button {
             edge.getSourceNode().sendToFront();
         }
 
-//        for (NonDirectionalEdge edge : this.getTwoWayNodes().values()) {
-//            edge.sendToFront();
-//            edge.getSourceNode().sendToFront();
-//        }
+        for (NonDirectionalEdge edge : this.getTwoWayNodes().values()) {
+            edge.sendToFront();
+            edge.getFirstEdge().getSourceNode().sendToFront();
+        }
     }
 
     private ObservableList<String> style() {

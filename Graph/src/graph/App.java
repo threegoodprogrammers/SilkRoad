@@ -8,7 +8,6 @@ import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
-import javafx.geometry.NodeOrientation;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -108,6 +107,16 @@ public class App {
 
     private MenuManager menuManager;
 
+    /**
+     * Selection manager object
+     */
+
+    public SelectionManager selectionManager;
+
+    /**
+     * Different states of app
+     */
+
     public enum State {
         IDLE, DRAWING_EDGE, MOVING_NODE
     }
@@ -137,15 +146,16 @@ public class App {
      */
 
     public enum Problem {
-        SHORTEST_PATH, TRAVELLING_SALESMAN
+        SHORTEST_PATH, TRAVELLING_SALESMAN, ANT_COLONY
     }
 
     /**
      * Current application interaction mode
      */
 
-    private Mode currentMode;
-    private State currentState;
+    private Mode currentMode = Mode.SELECT;
+    private State currentState = State.IDLE;
+    private Problem currentProblem = Problem.SHORTEST_PATH;
 
     /**
      * Hover transitions
@@ -198,6 +208,11 @@ public class App {
          * Set menus
          */
         setMenus();
+
+        /*
+         * Set selections
+         */
+        setSelections();
 
         /*
          * Set transitions
@@ -374,6 +389,14 @@ public class App {
     }
 
     /**
+     * Sets selections
+     */
+
+    public void setSelections() {
+        this.selectionManager = new SelectionManager(menuManager, this);
+    }
+
+    /**
      * Hover graph edge
      */
 
@@ -450,6 +473,16 @@ public class App {
          * Instantiate menu manager object
          */
         menuManager = new MenuManager(app, buttons, menus);
+    }
+
+    /**
+     * Select item
+     *
+     * @param item the item
+     */
+
+    public void select(Node item) {
+        selectionManager.select(item);
     }
 
     /**
@@ -1176,6 +1209,60 @@ public class App {
     }
 
     /**
+     * Sets problem
+     */
+
+    public void changeProblem(Problem problem) {
+        if (this.currentProblem == problem) {
+            return;
+        }
+
+        switch (problem) {
+            case SHORTEST_PATH:
+                shortestPathProblem();
+                break;
+            case TRAVELLING_SALESMAN:
+                travellingSalesmanProblem();
+                break;
+            case ANT_COLONY:
+            default:
+                antColonyProblem();
+                break;
+        }
+    }
+
+    /**
+     * Shortest path problem
+     */
+    public void shortestPathProblem() {
+
+    }
+
+    /**
+     * Travelling salesman problem
+     */
+    public void travellingSalesmanProblem() {
+
+    }
+
+    /**
+     * Ant colony problem
+     */
+    public void antColonyProblem() {
+
+    }
+
+    /**
+     * Gets current problem.
+     *
+     * @return the current problem
+     */
+
+    public Problem getCurrentProblem() {
+        return this.currentProblem;
+    }
+
+    /**
      * Sets necessary objects on top
      */
 
@@ -1218,16 +1305,38 @@ public class App {
      */
 
     public void setSourceNode(GraphNode sourceNode) {
-        this.sourceNode = sourceNode;
+        if (this.targetNode == sourceNode) {
+            resetTargetNode();
+        }
+
+        if (this.sourceNode == sourceNode) {
+            resetSourceNode();
+        } else {
+            this.sourceNode = sourceNode;
+            sourceNode.setAsSource();
+        }
     }
 
     /**
      * Reset source node
      */
+
     public void resetSourceNode() {
+        if (this.sourceNode != null) {
+            this.sourceNode.setAsNormal();
+        }
 
+        this.sourceNode = null;
+    }
 
-        setSourceNode(null);
+    /**
+     * Gets source node
+     *
+     * @return the source node
+     */
+
+    public GraphNode getSourceNode() {
+        return this.sourceNode;
     }
 
     /**
@@ -1235,7 +1344,38 @@ public class App {
      */
 
     public void setTargetNode(GraphNode targetNode) {
-        this.targetNode = targetNode;
+        if (this.sourceNode == targetNode) {
+            resetSourceNode();
+        }
+
+        if (this.targetNode == targetNode) {
+            resetTargetNode();
+        } else {
+            this.targetNode = targetNode;
+            targetNode.setAsTarget();
+        }
+    }
+
+    /**
+     * Reset target node
+     */
+
+    public void resetTargetNode() {
+        if (this.targetNode != null) {
+            this.targetNode.setAsNormal();
+        }
+
+        this.targetNode = null;
+    }
+
+    /**
+     * Gets target node
+     *
+     * @return the target node
+     */
+
+    public GraphNode getTargetNode() {
+        return this.targetNode;
     }
 
     /**
@@ -1481,7 +1621,7 @@ public class App {
 
     public boolean isNumber(String string) {
         try {
-            double isNum = Double.parseDouble(string);
+            Double.parseDouble(string);
             return true;
         } catch (Exception e) {
             return false;
