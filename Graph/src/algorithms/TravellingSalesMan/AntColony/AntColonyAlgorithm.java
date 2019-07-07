@@ -55,11 +55,11 @@ public class AntColonyAlgorithm {
                     List<Integer> notVisitedCities = new ArrayList<>();
                     initForAnt(notVisitedCities);
                     int currentCity = antNo;
-                    int nextCity = -1;
-                    double maxP = -1;
 
 
                     for (int e = 0; e < nodesCount - 1; e++) {
+                        int nextCity = -1;
+                        double maxP = -1;
                         for (int i = 0; i < notVisitedCities.size(); i++) {
                             int city = notVisitedCities.get(i);
                             if (city != antNo) {
@@ -75,8 +75,6 @@ public class AntColonyAlgorithm {
                         notVisitedCities.remove(nextCity);
                         visitedCities.add(nextCity);
                         currentCity = nextCity;
-                        nextCity = -1;
-                        maxP = -1;
 
                     }
                     loopLength += distanceMatrix[currentCity][antNo];
@@ -111,13 +109,13 @@ public class AntColonyAlgorithm {
                 }
             }
 
-            int currentCityIndex = graph.getNodes().indexOf(baseNode);
+            int currentCityIndex = nodes.indexOf(baseNode);
 
             ArrayList<GraphNode> path = new ArrayList<>();
             path.add(graph.getNodes().get(currentCityIndex));
 
             float distance = 0;
-            for (int i = 0; i < nodesCount; i++) {
+            for (int i = 0; i < nodesCount - 1; i++) {
 
                 double max = -1;
                 int nextCity = -1;
@@ -127,15 +125,17 @@ public class AntColonyAlgorithm {
                         if (probabilityMatrix[currentCityIndex][j] > max) {
                             max = probabilityMatrix[currentCityIndex][j];
                             nextCity = j;
-
                         }
 
                     }
                 }
                 distance += distanceMatrix[currentCityIndex][nextCity];
                 currentCityIndex = nextCity;
-                path.add(graph.getNodes().get(currentCityIndex));
+                path.add(nodes.get(currentCityIndex));
             }
+            path.add(baseNode);
+            distance += distanceMatrix[currentCityIndex][nodes.indexOf(baseNode)];
+
             long end = System.currentTimeMillis();
             float sec = (end - start) / 1000F;
             System.out.println(sec);
@@ -184,11 +184,11 @@ public class AntColonyAlgorithm {
                     List<Integer> notVisitedCities = new ArrayList<>();
                     initForAnt(notVisitedCities);
                     int currentCity = antNo;
-                    int nextCity = -1;
-                    double maxP = -1;
 
 
                     for (int e = 0; e < nodesCount - 1; e++) {
+                        int nextCity = -1;
+                        double maxP = -1;
                         for (int i = 0; i < notVisitedCities.size(); i++) {
                             int city = notVisitedCities.get(i);
                             if (city != antNo) {
@@ -204,8 +204,6 @@ public class AntColonyAlgorithm {
                         notVisitedCities.remove(nextCity);
                         visitedCities.add(nextCity);
                         currentCity = nextCity;
-                        nextCity = -1;
-                        maxP = -1;
 
                     }
                     loopLength += distanceMatrix[currentCity][antNo];
@@ -240,13 +238,13 @@ public class AntColonyAlgorithm {
                 }
             }
 
-            int currentCityIndex = graph.getNodes().indexOf(baseNode);
+            int currentCityIndex = nodes.indexOf(baseNode);
 
             ArrayList<NodeGraphObject> path = new ArrayList<>();
             path.add(graph.getNodes().get(currentCityIndex));
 
             float distance = 0;
-            for (int i = 0; i < nodesCount; i++) {
+            for (int i = 0; i < nodesCount - 1; i++) {
 
                 double max = -1;
                 int nextCity = -1;
@@ -257,12 +255,16 @@ public class AntColonyAlgorithm {
                             max = probabilityMatrix[currentCityIndex][j];
                             nextCity = j;
                         }
+
                     }
                 }
                 distance += distanceMatrix[currentCityIndex][nextCity];
                 currentCityIndex = nextCity;
-                path.add(graph.getNodes().get(currentCityIndex));
+                path.add(nodes.get(currentCityIndex));
             }
+            path.add(baseNode);
+            distance += distanceMatrix[currentCityIndex][nodes.indexOf(baseNode)];
+
             long end = System.currentTimeMillis();
             float sec = (end - start) / 1000F;
             System.out.println(sec);
