@@ -25,7 +25,7 @@ public class AntColonyAlgorithm {
             int iterationThreshold,
             int antsNumber
     ) {
-
+        long start = System.currentTimeMillis();
         if (graph == null) return null;
         distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
         if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
@@ -136,6 +136,9 @@ public class AntColonyAlgorithm {
                 currentCityIndex = nextCity;
                 path.add(graph.getNodes().get(currentCityIndex));
             }
+            long end = System.currentTimeMillis();
+            float sec = (end - start) / 1000F;
+            System.out.println(sec);
             return new TravellingSalesManData(path, distance);
         } else {
             //TODO: Show error that the the salesMan
@@ -151,7 +154,7 @@ public class AntColonyAlgorithm {
             int iterationThreshold,
             int antsNumber
     ) {
-
+        long start = System.currentTimeMillis();
         if (graph == null) return null;
         distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
         if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
@@ -260,6 +263,9 @@ public class AntColonyAlgorithm {
                 currentCityIndex = nextCity;
                 path.add(graph.getNodes().get(currentCityIndex));
             }
+            long end = System.currentTimeMillis();
+            float sec = (end - start) / 1000F;
+            System.out.println(sec);
             return new TravellingSalesManData(path, distance);
         } else {
             //TODO: Show error that the the salesMan
@@ -323,4 +329,16 @@ public class AntColonyAlgorithm {
         deltaPheromoneMatrix = new double[nodesCount][nodesCount];
         probabilityMatrix = new double[nodesCount][nodesCount];
     }
+
+
+    // finding the time before the operation is executed
+//    long start = System.currentTimeMillis();
+//      for (int i = 0; i <5; i++) {
+//        Thread.sleep(60);
+//    }
+//    // finding the time after the operation is executed
+//    long end = System.currentTimeMillis();
+//    //finding the time difference and converting it into seconds
+//    float sec = (end - start) / 1000F; System.out.println(sec + " seconds");
+
 }
