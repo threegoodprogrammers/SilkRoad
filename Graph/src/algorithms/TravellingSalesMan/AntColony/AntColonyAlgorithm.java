@@ -23,7 +23,8 @@ public class AntColonyAlgorithm {
             final Graph graph,
             GraphNode baseNode,
             int iterationThreshold,
-            int antsNumber
+            int alpha,
+            int betha
     ) {
         long start = System.currentTimeMillis();
         if (graph == null) return null;
@@ -46,7 +47,7 @@ public class AntColonyAlgorithm {
             }
             initializeMatrices();
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {//for each iterate
-                for (int antNo = 0; antNo < antsNumber; antNo++) {//Placing each ant in different city
+                for (int antNo = 0; antNo < nodesCount; antNo++) {//Placing each ant in different city
                     double loopLength = 0;
 
 
@@ -104,7 +105,7 @@ public class AntColonyAlgorithm {
                 // Filling  the probability Matrix
                 for (int i = 0; i < nodesCount; i++) {
                     for (int j = 0; j < nodesCount; j++) {
-                        probabilityMatrix[i][j] = (pheromoneMatrix[i][j] * (1d / distanceMatrix[i][j])) / sigma;
+                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow(1d / distanceMatrix[i][j], betha)) / sigma;
                     }
                 }
             }
@@ -152,7 +153,8 @@ public class AntColonyAlgorithm {
             GraphObject graph,
             NodeGraphObject baseNode,
             int iterationThreshold,
-            int antsNumber
+            int alpha,
+            int betha
     ) {
         long start = System.currentTimeMillis();
         if (graph == null) return null;
@@ -175,7 +177,7 @@ public class AntColonyAlgorithm {
             }
             initializeMatrices();
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {//for each iterate
-                for (int antNo = 0; antNo < antsNumber; antNo++) {//Placing each ant in different city
+                for (int antNo = 0; antNo < nodesCount; antNo++) {//Placing each ant in different city
                     double loopLength = 0;
 
 
@@ -233,7 +235,7 @@ public class AntColonyAlgorithm {
                 // Filling  the probability Matrix
                 for (int i = 0; i < nodesCount; i++) {
                     for (int j = 0; j < nodesCount; j++) {
-                        probabilityMatrix[i][j] = (pheromoneMatrix[i][j] * (1d / distanceMatrix[i][j])) / sigma;
+                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow((1d / distanceMatrix[i][j]), betha)) / sigma;
                     }
                 }
             }
