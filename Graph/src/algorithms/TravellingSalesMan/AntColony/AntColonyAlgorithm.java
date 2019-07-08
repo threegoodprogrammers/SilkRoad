@@ -30,7 +30,7 @@ public class AntColonyAlgorithm {
         if (graph == null) return null;
         distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
         if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
-            ArrayList<GraphNode> nodes = graph.getNodes();
+            ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
             nodesCount = nodes.size();
             //Initialize
 
@@ -161,7 +161,7 @@ public class AntColonyAlgorithm {
         if (graph == null) return null;
         distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
         if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
-            ArrayList<NodeGraphObject> nodes = graph.getNodes();
+            ArrayList<NodeGraphObject> nodes = new ArrayList<>(graph.getNodes());
             nodesCount = nodes.size();
             //Initialize
 
