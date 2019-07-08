@@ -17,14 +17,14 @@ public class AntColonyAlgorithm {
     private static double[][] probabilityMatrix;
 
     private static int nodesCount = -1;
-    private final static double VAP = 0.3;
 
     public static TravellingSalesManData findShortestCycle(
             final Graph graph,
             GraphNode baseNode,
             int iterationThreshold,
             int alpha,
-            int betha
+            int betha,
+            double VAP
     ) {
         long start = System.currentTimeMillis();
         if (graph == null) return null;
@@ -154,7 +154,8 @@ public class AntColonyAlgorithm {
             NodeGraphObject baseNode,
             int iterationThreshold,
             int alpha,
-            int betha
+            int betha,
+            double VAP
     ) {
         long start = System.currentTimeMillis();
         if (graph == null) return null;
