@@ -83,6 +83,7 @@ public class AntColonyAlgorithm {
 
                     for (int node = 0; node < visitedCities.size() - 1; node++) {
                         deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
+                        deltaPheromoneMatrix[visitedCities.get(node + 1)][visitedCities.get(node)] += (1d / loopLength);
                     }
                 }
                 for (int i = 0; i < nodesCount; i++) {
@@ -214,6 +215,7 @@ public class AntColonyAlgorithm {
 
                     for (int node = 0; node < visitedCities.size() - 1; node++) {
                         deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
+                        deltaPheromoneMatrix[visitedCities.get(node + 1)][visitedCities.get(node)] += (1d / loopLength);
                     }
                 }
                 for (int i = 0; i < nodesCount; i++) {
