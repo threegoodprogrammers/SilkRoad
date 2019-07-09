@@ -286,8 +286,7 @@
                                         </graphic>
                                         <styleClass>
                                             <String fx:value="menu-button-general"/>
-                                            <String fx:value="menu-button-transparent"/>
-                                            <String fx:value="menu-button-hover-blue-outline"/>
+                                            <String fx:value="menu-button-blue"/>
                                         </styleClass>
                                     </JFXButton>
                                     <JFXButton fx:id="travellingSalesmanButton">
@@ -299,7 +298,8 @@
                                         </graphic>
                                         <styleClass>
                                             <String fx:value="menu-button-general"/>
-                                            <String fx:value="menu-button-blue"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-blue-outline"/>
                                         </styleClass>
                                     </JFXButton>
                                 </children>

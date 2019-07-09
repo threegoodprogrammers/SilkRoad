@@ -116,8 +116,8 @@ Button, JFXButton {
     -fx-opacity: 1;
 }
 
-.edge-select {
-    -fx-stroke: #f1f48e;
+.edge-selected {
+    -fx-stroke: #f0dd4e;
     -fx-opacity: 1;
 }
 
@@ -138,7 +138,7 @@ Button, JFXButton {
 }
 
 .edge-arrow-selected {
-    -fx-stroke: #f1f48e;
+    -fx-stroke: #f0dd4e;
     -fx-opacity: 1;
 }
 
@@ -170,8 +170,8 @@ Button, JFXButton {
 }
 
 .edge-weight-selected {
-    -fx-border-color: #f1f48e;
-    -fx-text-fill: #f1f48e;
+    -fx-border-color: #f0dd4e;
+    -fx-text-fill: #f0dd4e;
     -fx-opacity: 1;
 }
 
@@ -506,7 +506,7 @@ Button, JFXButton {
 
 .menu-button-blue {
     /*-fx-background-color: #e1e1e1;*/
-    -fx-border-color: #72c1dd;
+    -fx-border-color: #76c6e1;
     -fx-background-color: #76c6e1;
     /*-fx-border-color: #61a4cd;*/
 }

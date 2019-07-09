@@ -10,7 +10,7 @@ import javafx.scene.shape.Path;
 /**
  * The type Arrow.
  */
-public class Arrow extends Path {
+public class Arrow extends Path implements Cloneable {
     private Point2D ori;
     private Point2D tan;
     private double scale;

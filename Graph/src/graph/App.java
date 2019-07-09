@@ -6,7 +6,6 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
-import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -23,10 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static graph.Main.app;
 
@@ -153,7 +149,7 @@ public class App {
      * Current application interaction mode
      */
 
-    private Mode currentMode = Mode.SELECT;
+    private Mode currentMode = null;
     private State currentState = State.IDLE;
     private Problem currentProblem = Problem.SHORTEST_PATH;
 
@@ -179,18 +175,10 @@ public class App {
 
     private static Graph mainGraph = new Graph();
     private boolean mouseOnMenu = false;
-    private boolean mouseOnNode = false;
+    private boolean mouseOnItem = false;
     private boolean menuVisible = true;
 
     public void set(Scene scene, Stage primaryStage) {
-        this.newNode = new GraphNode("•");
-        newNode.setTranslateX(0);
-        newNode.setTranslateY(0);
-        newNode.setPrefHeight(70);
-        newNode.setPrefWidth(70);
-        newNode.getStyleClass().add("node-transparent");
-        newNode.setVisible(false);
-
 //        EventHandler<MouseEvent> handler = MouseEvent::consume;
 //        newNode.addEventFilter(MouseEvent.ANY, handler);
 
@@ -220,6 +208,11 @@ public class App {
         setTransitions();
 
         /*
+         * Set new node
+         */
+        setNewNode();
+
+        /*
          * Set hidden drawing tools
          */
         setHiddenDrawingTools();
@@ -227,59 +220,8 @@ public class App {
         /*
          * Set current mode to node mode
          */
-        setCurrentMode(Mode.SELECT);
-
-        this.canvas.getChildren().add(newNode);
-
-//        FontAwesomeIconView font = new FontAwesomeIconView(FontAwesomeIcon.MAP_PIN);
-
-//        GraphNode node1 = mainGraph.addNode("1");
-//        node1.setTranslateX(1000);
-//        node1.setTranslateY(400);
-//
-//        GraphNode node2 = mainGraph.addNode("2");
-//        node2.setTranslateX(100);
-//        node2.setTranslateY(100);
-//
-//        GraphNode node3 = mainGraph.addNode("3");
-//        node3.setTranslateX(350);
-//        node3.setTranslateY(500);
-//
-//        node1.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-//        node1.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
-//        node1.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
-//
-//        GraphEdge newEdge = mainGraph.addDirectionalEdge(1, node1, node2);
-//        newEdge.initialize();
-//        newEdge.addToCanvas(this.canvas);
-//
-//        GraphEdge newEdge2 = mainGraph.addDirectionalEdge(2, node2, node1);
-//        newEdge2.initialize();
-//        newEdge2.addToCanvas(this.canvas);
-//
-//        NonDirectionalEdge newEdge3 = mainGraph.addNonDirectionalEdge(3, node2, node3);
-//        newEdge3.initialize();
-//        newEdge3.getFirstEdge().initialize();
-//        newEdge3.getSecondEdge().initialize();
-//        newEdge3.addToCanvas(this.canvas);
-
-//        final Rectangle selectionRect = new Rectangle(10, 10, Color.TRANSPARENT);
-//        selectionRect.getStyleClass().add("selection-rect");
-
-        EventHandler<MouseEvent> mouseDragHandler = new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-//                System.out.println(selectionRect.intersects(newEdge.getTranslateX(),
-//                        newEdge.getTranslateY(),
-//                        newEdge.getBoundsInLocal().getWidth(),
-//                        newEdge.getBoundsInLocal().getHeight()));
-//                System.out.println(selectionRect.intersects(node2.localToParent(node2.getBoundsInLocal())));
-            }
-        };
-
-        // Add selection gesture
-//        MouseControlUtil.addSelectionRectangleGesture(canvas, selectionRect, mouseDragHandler, null, null);
-
-//        canvas.getChildren().addAll(node1, node2, node3);
+        changeMode(Mode.SELECT);
+        menuManager.updateButtons(MenuManager.State.NOTHING_SELECTED);
 
         setMenuOnTop();
     }
@@ -293,16 +235,16 @@ public class App {
     private void setScene(Scene scene) {
         appCanvas = this.canvas;
         staticDummyPane = this.dummyPane;
+        App.scene = scene;
 
         this.nodeGestures = new NodeGestures(this.canvas, this, mainGraph);
-        App.scene = scene;
         this.sceneGestures = new SceneGestures(this.canvas, this, this.background);
-        App.scene.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
-        App.scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
-        window.addEventFilter(MouseEvent.MOUSE_MOVED, sceneGestures.getOnMouseMovedEventHandler());
-        App.scene.addEventFilter(MouseDragEvent.MOUSE_RELEASED, sceneGestures.getOnMouseReleasedEventHandler());
-        App.scene.addEventFilter(KeyEvent.KEY_PRESSED, sceneGestures.getOnKeyPressedEventHandler());
-        App.scene.addEventFilter(KeyEvent.KEY_RELEASED, sceneGestures.getOnKeyReleasedEventHandler());
+        scene.addEventFilter(MouseEvent.MOUSE_PRESSED, sceneGestures.getOnMousePressedEventHandler());
+        scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, sceneGestures.getOnMouseDraggedEventHandler());
+        scene.addEventFilter(MouseEvent.MOUSE_MOVED, sceneGestures.getOnMouseMovedEventHandler());
+        scene.addEventFilter(MouseDragEvent.MOUSE_RELEASED, sceneGestures.getOnMouseReleasedEventHandler());
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, sceneGestures.getOnKeyPressedEventHandler());
+        scene.addEventFilter(KeyEvent.KEY_RELEASED, sceneGestures.getOnKeyReleasedEventHandler());
 
         App.scene.addEventFilter(ScrollEvent.ANY, sceneGestures.getOnScrollEventHandler());
         background.toBack();
@@ -362,6 +304,21 @@ public class App {
     }
 
     /**
+     * Set new node transparent object
+     */
+
+    private void setNewNode() {
+        this.newNode = new GraphNode("•");
+        newNode.setTranslateX(0);
+        newNode.setTranslateY(0);
+        newNode.setPrefHeight(70);
+        newNode.setPrefWidth(70);
+        newNode.getStyleClass().add("node-transparent");
+        newNode.setVisible(false);
+        this.canvas.getChildren().add(newNode);
+    }
+
+    /**
      * Set hidden nodes an edges for drawing
      */
 
@@ -394,6 +351,9 @@ public class App {
 
     public void setSelections() {
         this.selectionManager = new SelectionManager(menuManager, this);
+        canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+
+        });
     }
 
     /**
@@ -494,6 +454,16 @@ public class App {
         node.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
         node.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
     }
+
+//    /**
+//     * Add event filter to edge
+//     */
+//
+//    public void addEventFilterToEdge(GraphEdge edge) {
+//        edge.addEventFilter(MouseEvent.MOUSE_CLICKED, nodeGestures.getOnMouseClickedForEdge());
+//
+//
+//    }
 
     /**
      * Set cursor
@@ -661,6 +631,11 @@ public class App {
          * Set new current mode
          */
         setCurrentMode(Mode.NODE);
+
+        /*
+         * Deselect everything
+         */
+        selectionManager.deselectAll();
     }
 
     /**
@@ -687,6 +662,11 @@ public class App {
          * Set new current mode
          */
         setCurrentMode(Mode.NON_DIRECTIONAL_EDGE);
+
+        /*
+         * Deselect everything
+         */
+        selectionManager.deselectAll();
     }
 
     /**
@@ -700,6 +680,11 @@ public class App {
          * Set new current mode
          */
         setCurrentMode(Mode.DIRECTIONAL_EDGE);
+
+        /*
+         * Deselect everything
+         */
+        selectionManager.deselectAll();
     }
 
     /**
@@ -769,7 +754,7 @@ public class App {
         /*
          * Add the new node to the canvas
          */
-        canvas.getChildren().add(newNode);
+        addNodeToCanvas(newNode);
 
         /*
          * Set the co-ordinates as translate values
@@ -805,40 +790,62 @@ public class App {
         }
 
         if (nonDirectional) {
-            /*
-             * Create a new graph edge
-             */
-            NonDirectionalEdge newEdge = mainGraph.addNonDirectionalEdge(weight, sourceNode, targetNode);
-
-            /*
-             * Initialize the new edge
-             */
-            newEdge.initialize();
-            newEdge.getFirstEdge().initialize();
-            newEdge.getSecondEdge().initialize();
-
-            /*
-             * Place the new edge on the canvas
-             */
-
-            newEdge.addToCanvas(this.canvas);
+            placeNewNonDirectionalEdge(weight, sourceNode, targetNode);
         } else {
-            /*
-             * Create a new graph edge
-             */
-            GraphEdge newEdge = mainGraph.addDirectionalEdge(weight, sourceNode, targetNode);
-
-            /*
-             * Initialize the new edge
-             */
-            newEdge.initialize();
-
-            /*
-             * Place the new edge on the canvas
-             */
-
-            newEdge.addToCanvas(this.canvas);
+            placeNewEdge(weight, sourceNode, targetNode);
         }
+    }
+
+    /**
+     * Place new edge
+     *
+     * @param weight     the weight
+     * @param sourceNode the source node
+     * @param targetNode the target node
+     */
+    public void placeNewEdge(double weight, GraphNode sourceNode, GraphNode targetNode) {
+        /*
+         * Create a new graph edge
+         */
+        GraphEdge newEdge = mainGraph.addDirectionalEdge(weight, sourceNode, targetNode);
+
+        /*
+         * Initialize the new edge
+         */
+        newEdge.initialize();
+
+        /*
+         * Place the new edge on the canvas
+         */
+
+        newEdge.addToCanvas(this.canvas);
+    }
+
+    /**
+     * Place non directional edge
+     *
+     * @param weight     the weight
+     * @param sourceNode the source node
+     * @param targetNode the target node
+     */
+    public void placeNewNonDirectionalEdge(double weight, GraphNode sourceNode, GraphNode targetNode) {
+        /*
+         * Create a new graph edge
+         */
+        NonDirectionalEdge newEdge = mainGraph.addNonDirectionalEdge(weight, sourceNode, targetNode);
+
+        /*
+         * Initialize the new edge
+         */
+        newEdge.initialize();
+        newEdge.getFirstEdge().initialize();
+        newEdge.getSecondEdge().initialize();
+
+        /*
+         * Place the new edge on the canvas
+         */
+
+        newEdge.addToCanvas(this.canvas);
     }
 
     /**
@@ -861,7 +868,42 @@ public class App {
     }
 
     /**
-     * Show edge error dialog
+     * Show ID string input dialog
+     */
+
+    public String showIDInputDialog() {
+        TextInputDialog alert = new TextInputDialog("");
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("main.css").toExternalForm());
+        alert.getDialogPane().getStyleClass().add("custom-dialog");
+        alert.setTitle("");
+        alert.setHeaderText("Node ID Input...");
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.WARNING);
+        icon.setGlyphSize(40);
+        icon.setFill(Color.valueOf("#29a2b0"));
+        alert.setGraphic(icon);
+        alert.setContentText("Enter ID:");
+        Optional<String> input = alert.showAndWait();
+
+        if (!input.isPresent()) {
+            return "";
+        }
+
+        while (input.get().equals("")) {
+            showInputErrorDialog();
+            input = alert.showAndWait();
+
+            if (input.isPresent()) {
+                return "";
+            }
+        }
+
+        return input.orElse("");
+
+    }
+
+    /**
+     * Show number input dialog
      */
 
     public double showNumberInputDialog() {
@@ -883,7 +925,7 @@ public class App {
         }
 
         while (!isNumber(input.get()) || Double.parseDouble(input.get()) <= 0) {
-            showNumberErrorDialog();
+            showInputErrorDialog();
             input = alert.showAndWait();
 
             if (!input.isPresent()) {
@@ -895,16 +937,16 @@ public class App {
     }
 
     /**
-     * Show number error dialog
+     * Show input error dialog
      */
 
-    public void showNumberErrorDialog() {
+    public void showInputErrorDialog() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.getDialogPane().getStylesheets().add(
                 getClass().getResource("main.css").toExternalForm());
         alert.getDialogPane().getStyleClass().add("error-dialog");
         alert.setTitle("");
-        alert.setHeaderText("Number Error...");
+        alert.setHeaderText("Input Error...");
         FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.WARNING);
         icon.setGlyphSize(40);
         icon.setFill(Color.valueOf("#b41c1c"));
@@ -1045,14 +1087,6 @@ public class App {
 
     public void newNodeOnTop() {
         newNode.toFront();
-    }
-
-    private void addNewNodeListener() {
-
-    }
-
-    private void removeNewNodeListener() {
-
     }
 
     /**
@@ -1209,6 +1243,40 @@ public class App {
     }
 
     /**
+     * Deselect all problem buttons.
+     *
+     * @param buttons the buttons
+     */
+
+    public void deselectAllProblemButtons(List<JFXButton> buttons) {
+        for (JFXButton button : buttons) {
+            button.getStyleClass().remove("menu-button-blue");
+            button.getStyleClass().addAll("menu-button-transparent", "menu-button-hover-blue-outline");
+        }
+    }
+
+    /**
+     * Select problem button
+     *
+     * @param button the button
+     */
+
+    public void selectProblemButton(JFXButton button) {
+        button.getStyleClass().removeAll("menu-button-transparent", "menu-button-hover-blue-outline");
+        button.getStyleClass().add("menu-button-blue");
+    }
+
+    /**
+     * Sets current problem
+     *
+     * @param problem the problem
+     */
+
+    public void setCurrentProblem(Problem problem) {
+        this.currentProblem = problem;
+    }
+
+    /**
      * Sets problem
      */
 
@@ -1216,6 +1284,12 @@ public class App {
         if (this.currentProblem == problem) {
             return;
         }
+
+        /*
+         * Change the menu layout according to the
+         * new application interaction mode
+         */
+        menuManager.changeProblem(problem);
 
         switch (problem) {
             case SHORTEST_PATH:
@@ -1235,14 +1309,14 @@ public class App {
      * Shortest path problem
      */
     public void shortestPathProblem() {
-
+        setCurrentProblem(Problem.SHORTEST_PATH);
     }
 
     /**
      * Travelling salesman problem
      */
     public void travellingSalesmanProblem() {
-
+        setCurrentProblem(Problem.TRAVELLING_SALESMAN);
     }
 
     /**
@@ -1312,6 +1386,10 @@ public class App {
         if (this.sourceNode == sourceNode) {
             resetSourceNode();
         } else {
+            if (this.sourceNode != null) {
+                resetSourceNode();
+            }
+
             this.sourceNode = sourceNode;
             sourceNode.setAsSource();
         }
@@ -1351,6 +1429,9 @@ public class App {
         if (this.targetNode == targetNode) {
             resetTargetNode();
         } else {
+            if (this.targetNode != null) {
+                resetTargetNode();
+            }
             this.targetNode = targetNode;
             targetNode.setAsTarget();
         }
@@ -1376,6 +1457,232 @@ public class App {
 
     public GraphNode getTargetNode() {
         return this.targetNode;
+    }
+
+    /**
+     * Sets label for the selected node
+     */
+    public void setLabel(GraphNode node) {
+        String newID = showIDInputDialog();
+
+        if (newID.equals("")) {
+            return;
+        }
+
+        node.setIdentifier(newID);
+    }
+
+    /**
+     * Sets weight for the selected edge or edges
+     */
+    public void setWeight() {
+        double newWeight = showNumberInputDialog();
+
+        if (newWeight == 0) {
+            return;
+        }
+
+        ArrayList<GraphEdge> edges = selectionManager.getEdges();
+        ArrayList<NonDirectionalEdge> nonDirectionalEdges = selectionManager.getNonDirectionalEdges();
+
+        /*
+         * Set weight for every selected edge
+         */
+        for (GraphEdge edge : edges) {
+            edge.setWeight(newWeight);
+        }
+
+        /*
+         * Set weight for every selected non-directional edge
+         */
+        for (NonDirectionalEdge edge : nonDirectionalEdges) {
+            edge.setWeight(newWeight);
+        }
+    }
+
+    /**
+     * Invert edge direction
+     *
+     * @param edge the edge
+     */
+
+    public void invertEdgeDirection(GraphEdge edge) {
+        GraphNode sourceNode = edge.getSourceNode(), targetNode = edge.getTargetNode();
+
+        /*
+         * Check if it's possible to draw inverted edge
+         */
+        boolean possible = possibleToDrawEdge(targetNode, sourceNode, false);
+
+        if (possible) {
+            /*
+             * Delete selected items
+             */
+            deleteItems();
+
+            /*
+             * Add new edge in opposite direction
+             */
+            double weight = edge.getWeight();
+            placeNewEdge(weight, targetNode, sourceNode);
+        } else {
+            showEdgeErrorDialog();
+        }
+    }
+
+    /**
+     * Delete items
+     */
+
+    public void deleteItems() {
+        if (selectionManager.nothing()) {
+            boolean confirm = showConfirmDeleteDialog();
+
+            if (!confirm) {
+                return;
+            }
+
+            /*
+             * Delete all of the nodes, so the attached edges and non-directional
+             * edges are removed themselves automatically
+             */
+            ArrayList<GraphNode> nodes = (ArrayList<GraphNode>) mainGraph.getNodes().clone();
+
+            for (GraphNode node : nodes) {
+                deleteNode(node);
+            }
+        } else {
+            /*
+             * Delete selected non-directional edges
+             */
+            for (NonDirectionalEdge edge : selectionManager.getNonDirectionalEdges()) {
+                deleteNonDirectionalEdge(edge);
+            }
+
+            /*
+             * Delete selected edges
+             */
+            for (GraphEdge edge : selectionManager.getEdges()) {
+                deleteEdge(edge);
+            }
+
+            /*
+             * Delete selected nodes
+             */
+            for (GraphNode node : selectionManager.getNodes()) {
+                deleteNode(node);
+            }
+        }
+
+        /*
+         * Deselect everything
+         */
+        selectionManager.deselectAll();
+    }
+
+    /**
+     * Delete node.
+     *
+     * @param node the node
+     */
+
+    public void deleteNode(GraphNode node) {
+        /*
+         * Delete all non-directional edges
+         */
+        ArrayList<NonDirectionalEdge> nonDirectionalEdges = new ArrayList<>(node.getTwoWayNodes().values());
+        for (NonDirectionalEdge edge : nonDirectionalEdges) {
+            deleteNonDirectionalEdge(edge);
+        }
+
+        /*
+         * Delete all incoming edges
+         */
+        ArrayList<GraphEdge> incomingEdges = new ArrayList<>(node.getIncomingNodes().values());
+        for (GraphEdge edge : incomingEdges) {
+            deleteEdge(edge);
+        }
+
+        /*
+         * Delete all outgoing edges
+         */
+        ArrayList<GraphEdge> outgoingEdges = new ArrayList<>(node.getOutgoingNodes().values());
+        for (GraphEdge edge : outgoingEdges) {
+            deleteEdge(edge);
+        }
+
+        /*
+         * Check if node is source node or target node
+         */
+        if (this.sourceNode == node) {
+            resetSourceNode();
+        } else if (this.targetNode == node) {
+            resetTargetNode();
+        }
+
+        /*
+         * Remove from canvas
+         */
+        removeNodeFromCanvas(node);
+
+        /*
+         * Remove node from the main graph
+         */
+        mainGraph.removeNode(node);
+    }
+
+    /**
+     * Delete edge.
+     *
+     * @param edge the edge
+     */
+
+    public void deleteEdge(GraphEdge edge) {
+        /*
+         * Remove from canvas
+         */
+        edge.removeFromCanvas(this.canvas);
+
+        /*
+         * Remove edge from main graph
+         */
+        mainGraph.removeDirectionalEdge(edge);
+    }
+
+    /**
+     * Delete non-directional edge
+     *
+     * @param edge the edge
+     */
+
+    public void deleteNonDirectionalEdge(NonDirectionalEdge edge) {
+        /*
+         * Remove from canvas
+         */
+        edge.removeFromCanvas(this.canvas);
+
+        /*
+         * Remove edge from main graph
+         */
+        mainGraph.removeNonDirectionalEdge(edge);
+    }
+
+    /**
+     * Get non-directional edges on the canvas
+     *
+     * @return
+     */
+
+    private ArrayList<NonDirectionalEdge> getNonDirectionalEdgesOnCanvas() {
+        ArrayList<NonDirectionalEdge> edges = new ArrayList<>();
+
+        for (Node node : this.canvas.getChildren()) {
+            if (node.getClass() == NonDirectionalEdge.class) {
+                edges.add((NonDirectionalEdge) node);
+            }
+        }
+
+        return edges;
     }
 
     /**
@@ -1502,16 +1809,16 @@ public class App {
      * Hover nodes
      */
 
-    public void hoverNode() {
-        this.mouseOnNode = true;
+    public void hoverItem() {
+        this.mouseOnItem = true;
     }
 
     /**
      * Leave node
      */
 
-    public void leaveNode() {
-        this.mouseOnNode = false;
+    public void leaveItem() {
+        this.mouseOnItem = false;
     }
 
     /**
@@ -1520,8 +1827,8 @@ public class App {
      * @return the boolean
      */
 
-    public boolean isNodeHovered() {
-        return this.mouseOnNode;
+    public boolean isAnythingHovered() {
+        return this.mouseOnItem;
     }
 
 
@@ -1542,17 +1849,17 @@ public class App {
      * @param node the node
      */
 
-    public static void addToCanvas(Node node) {
+    public static void addNodeToCanvas(GraphNode node) {
         appCanvas.getChildren().add(node);
     }
 
     /**
-     * Remove from canvas
+     * Remove node from canvas
      *
      * @param node the node
      */
 
-    public static void removeFromCanvas(Node node) {
+    public static void removeNodeFromCanvas(GraphNode node) {
         appCanvas.getChildren().remove(node);
     }
 

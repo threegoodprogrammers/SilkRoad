@@ -300,7 +300,7 @@ public class MenuManager {
                 map.put(setWeightButton, false);
                 map.put(setLabelButton, false);
                 map.put(changeDirectionButton, false);
-                map.put(removeButton, false);
+                map.put(removeButton, true);
                 map.put(nodeButton, true);
                 map.put(directionalEdgeButton, true);
                 map.put(nonDirectionalEdgeButton, true);
@@ -363,12 +363,62 @@ public class MenuManager {
     }
 
     /**
+     * Change app problem mode
+     *
+     * @param newProblem the new problem mode
+     */
+
+    public void changeProblem(App.Problem newProblem) {
+        /*
+         * Return if the desired new problem is already selected
+         */
+        if (app.getCurrentProblem() == newProblem) {
+            return;
+        }
+
+        /*
+         * Add menu buttons to a list
+         */
+
+        List<JFXButton> problemButton = Arrays.asList(shortestPathButton, travellingSalesmanButton);
+
+        switch (newProblem) {
+            case SHORTEST_PATH:
+                app.deselectAllProblemButtons(problemButton);
+                app.selectProblemButton(shortestPathButton);
+
+                break;
+            case TRAVELLING_SALESMAN:
+                app.deselectAllProblemButtons(problemButton);
+                app.selectProblemButton(travellingSalesmanButton);
+
+                break;
+            case ANT_COLONY:
+//                app.deselectAllProblemButtons(problemButton);
+//                app.selectProblemButton(nonDirectionalEdgeButton);
+
+                break;
+            default:
+//                app.deselectAllProblemButtons(problemButton);
+//                app.selectProblemButton(selectButton);
+
+                break;
+        }
+    }
+
+    /**
      * Sets menu buttons actions
      */
 
     public void setMenuButtons() {
+        shortestPathButton.setOnAction(event -> app.changeProblem(App.Problem.SHORTEST_PATH));
+        travellingSalesmanButton.setOnAction(event -> app.changeProblem(App.Problem.TRAVELLING_SALESMAN));
         setSourceNodeButton.setOnAction(event -> app.setSourceNode(app.selectionManager.getNode()));
         setTargetNodeButton.setOnAction(event -> app.setTargetNode(app.selectionManager.getNode()));
+        setLabelButton.setOnAction(event -> app.setLabel(app.selectionManager.getNode()));
+        setWeightButton.setOnAction(event -> app.setWeight());
+        removeButton.setOnAction(event -> app.deleteItems());
+        changeDirectionButton.setOnAction(event -> app.invertEdgeDirection(app.selectionManager.getEdge()));
         selectButton.setOnAction(event -> app.changeMode(App.Mode.SELECT));
         nodeButton.setOnAction(event -> app.changeMode(App.Mode.NODE));
         directionalEdgeButton.setOnAction(event -> app.changeMode(App.Mode.DIRECTIONAL_EDGE));

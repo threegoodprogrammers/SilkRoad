@@ -47,12 +47,22 @@ public class SelectionManager {
                 /*
                  * First deselect everything
                  */
-                if (nodesNumber() == 1 && getNode() != item) {
+                if (edgesNumber() == 0 && nonDirectionalEdgesNumber() == 0) {
+                    if (nodesNumber() == 1 && getNode() != item) {
+                        deselectAll();
+                    } else if (nodesNumber() > 1) {
+                        deselectAll();
+                    }
+                } else {
                     deselectAll();
                 }
-                if (nodesNumber() > 1) {
-                    deselectAll();
-                }
+
+//                if (nodesNumber() == 1 && getNode() != item) {
+//                    deselectAll();
+//                }
+//                if (nodesNumber() > 1) {
+//                    deselectAll();
+//                }
 
                 /*
                  * Then select item
@@ -82,7 +92,15 @@ public class SelectionManager {
                 /*
                  * First deselect everything
                  */
-                deselectAll();
+                if (nodesNumber() == 0 && nonDirectionalEdgesNumber() == 0) {
+                    if (edgesNumber() == 1 && getEdge() != item) {
+                        deselectAll();
+                    } else if (edgesNumber() > 1) {
+                        deselectAll();
+                    }
+                } else {
+                    deselectAll();
+                }
 
                 /*
                  * Then select edge
@@ -112,7 +130,15 @@ public class SelectionManager {
                 /*
                  * First deselect everything
                  */
-                deselectAll();
+                if (nodesNumber() == 0 && edgesNumber() == 0) {
+                    if (nonDirectionalEdgesNumber() == 1 && getNonDirectionalEdge() != item) {
+                        deselectAll();
+                    } else if (nonDirectionalEdgesNumber() > 1) {
+                        deselectAll();
+                    }
+                } else {
+                    deselectAll();
+                }
 
                 /*
                  * Then select edge
@@ -155,20 +181,7 @@ public class SelectionManager {
      *
      * @param node Node to deselect
      */
-    private void deselectNode(GraphNode node, boolean remove) {
-        node.deselectNode();
-
-        if (remove) {
-            selectedNodes.remove(node);
-        }
-    }
-
-    /**
-     * Deselect node
-     *
-     * @param node Node to deselect
-     */
-    private void deselectNode(GraphNode node) {
+    public void deselectNode(GraphNode node) {
         node.deselectNode();
         selectedNodes.remove(node);
     }
@@ -191,7 +204,7 @@ public class SelectionManager {
      *
      * @param edge the edge
      */
-    private void deselectEdge(GraphEdge edge) {
+    public void deselectEdge(GraphEdge edge) {
         edge.deselectEdge();
         selectedEdges.remove(edge);
     }
@@ -201,7 +214,7 @@ public class SelectionManager {
      *
      * @param edge the edge
      */
-    private void selectNonDirectionalEdge(NonDirectionalEdge edge) {
+    public void selectNonDirectionalEdge(NonDirectionalEdge edge) {
         edge.selectEdge();
 
         if (!selectedNonDirectionalEdges.contains(edge)) {
@@ -214,7 +227,7 @@ public class SelectionManager {
      *
      * @param edge the edge
      */
-    private void deselectNonDirectionalEdge(NonDirectionalEdge edge) {
+    public void deselectNonDirectionalEdge(NonDirectionalEdge edge) {
         edge.deselectEdge();
         selectedNonDirectionalEdges.remove(edge);
     }
@@ -226,28 +239,26 @@ public class SelectionManager {
         /*
          * Deselect all nodes
          */
-//        for (GraphNode node : selectedNodes) {
-//            deselectNode(node);
-//        }
-
-        for (Iterator<GraphNode> iterator = selectedNodes.iterator(); iterator.hasNext(); ) {
-            GraphNode node = iterator.next();
-            deselectNode(node, false);
-            iterator.remove();
+        ArrayList<GraphNode> nodes = (ArrayList<GraphNode>) selectedNodes.clone();
+        for (GraphNode node : nodes) {
+            deselectNode(node);
         }
 
         /*
          * Deselect all edges
          */
-        for (GraphEdge edge : selectedEdges) {
+        ArrayList<GraphEdge> edges = (ArrayList<GraphEdge>) selectedEdges.clone();
+        for (GraphEdge edge : edges) {
             deselectEdge(edge);
         }
 
         /*
          * Deselect all non-directional edges
          */
-        for (NonDirectionalEdge edge : selectedNonDirectionalEdges) {
-            deselectNonDirectionalEdge(edge);
+        ArrayList<NonDirectionalEdge> nonDirectionalEdges =
+                (ArrayList<NonDirectionalEdge>) selectedNonDirectionalEdges.clone();
+        for (NonDirectionalEdge nonDirectionalEdge : nonDirectionalEdges) {
+            deselectNonDirectionalEdge(nonDirectionalEdge);
         }
 
         /*
@@ -309,6 +320,13 @@ public class SelectionManager {
                      */
                     menuManager.updateButtons(MenuManager.State.SELECTED_MULTIPLE_EDGES);
                 }
+            }
+
+            if (edgesNumber() >= 1 && nonDirectionalEdgesNumber() >= 1) {
+                /*
+                 * SELECTED BOTH NON-DIR EDGES AND EDGES
+                 */
+                menuManager.updateButtons(MenuManager.State.SELECTED_MULTIPLE_EDGES);
             }
         } else if (nonDirEdgesNumber == 0) {
             if (edgesNumber >= 1 && nodesNumber >= 1) {
@@ -381,8 +399,18 @@ public class SelectionManager {
      * @return the selected non directional edges list
      */
 
-    public ArrayList<NonDirectionalEdge> getNonDirectionalEdgesList() {
+    public ArrayList<NonDirectionalEdge> getNonDirectionalEdges() {
         return selectedNonDirectionalEdges;
+    }
+
+    /**
+     * Check if nothing is selected
+     *
+     * @return the boolean
+     */
+
+    public boolean nothing() {
+        return nodesNumber() == 0 && edgesNumber() == 0 && nonDirectionalEdgesNumber() == 0;
     }
 
     /**

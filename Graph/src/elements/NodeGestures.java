@@ -199,18 +199,6 @@ public class NodeGestures {
         }
     };
 
-    private EventHandler<MouseEvent> onMouseEnteredEventHandler = new EventHandler<MouseEvent>() {
-        public void handle(MouseEvent event) {
-
-        }
-    };
-
-    private EventHandler<MouseEvent> onMouseLeavedEventHandler = new EventHandler<MouseEvent>() {
-        public void handle(MouseEvent event) {
-
-        }
-    };
-
     /**
      * Attach new edge to a specific node
      *
@@ -250,5 +238,4 @@ public class NodeGestures {
     public GraphEdge newEdge() {
         return app.newEdge;
     }
-
 }

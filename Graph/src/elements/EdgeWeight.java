@@ -10,7 +10,7 @@ import javafx.util.Duration;
 /**
  * The type Edge weight.
  */
-public class EdgeWeight extends Label {
+public class EdgeWeight extends Label implements Cloneable {
     private double posX;
     private double posY;
 

@@ -1,8 +1,10 @@
 package elements;
 
 import graph.App;
+import graph.Main;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.CubicCurve;
@@ -10,7 +12,7 @@ import javafx.scene.shape.CubicCurve;
 /**
  * The type Graph edge.
  */
-public class GraphEdge extends CubicCurve {
+public class GraphEdge extends CubicCurve implements Cloneable {
     private double weight;
     private GraphNode sourceNode;
     private GraphNode targetNode;
@@ -61,7 +63,6 @@ public class GraphEdge extends CubicCurve {
         this.sourceNode = sourceNode;
         this.targetNode = targetNode;
         this.edgeOrientation = edgeOrientation;
-//        setHoverTransitions();
     }
 
     /**
@@ -79,6 +80,7 @@ public class GraphEdge extends CubicCurve {
          */
         addHoverListeners();
         addLeaveListeners();
+        addClickListeners();
 
         /*
          * Set styles
@@ -240,6 +242,16 @@ public class GraphEdge extends CubicCurve {
     }
 
     /**
+     * Remove from canvas.
+     *
+     * @param canvas the canvas
+     */
+
+    public void removeFromCanvas(PannableCanvas canvas) {
+        canvas.getChildren().removeAll(this, this.arrowHead, this.weightLabel);
+    }
+
+    /**
      * Delete edge elements from canvas
      *
      * @param canvas the canvas
@@ -332,16 +344,6 @@ public class GraphEdge extends CubicCurve {
                 weightLabel.style().add("edge-weight-hover");
             }
         }
-    }
-
-    /**
-     * Select edge with mouse click
-     */
-
-    public void select() {
-        this.getStyleClass().remove("edge-idle");
-        this.getStyleClass().remove("edge-hover");
-        this.getStyleClass().add("edge-select");
     }
 
     /**
@@ -538,8 +540,6 @@ public class GraphEdge extends CubicCurve {
 
     public void hoverEdge() {
         hover();
-//        this.weightLabel.hover();
-//        this.arrowHead.hover();
         this.sourceNode.sendToFront();
         this.targetNode.sendToFront();
 
@@ -561,8 +561,6 @@ public class GraphEdge extends CubicCurve {
     public void selectEdge() {
         this.isSelected = true;
         idle();
-//        this.weightLabel.select();
-//        this.arrowHead.select();
     }
 
     /**
@@ -614,6 +612,7 @@ public class GraphEdge extends CubicCurve {
     private void addHoverListeners() {
         EventHandler<MouseEvent> mouseHover = event -> {
             hoverEdge();
+            Main.app.hoverItem();
             event.consume();
         };
 
@@ -629,12 +628,30 @@ public class GraphEdge extends CubicCurve {
     private void addLeaveListeners() {
         EventHandler<MouseEvent> mouseLeave = event -> {
             leaveEdge();
+            Main.app.leaveItem();
             event.consume();
         };
 
         this.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
         this.arrowHead.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
         this.weightLabel.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
+    }
+
+    /**
+     * Add click listener to edge elements
+     */
+
+    private void addClickListeners() {
+        EventHandler<MouseEvent> mouseClick = event -> {
+            if (Main.app.getCurrentMode() == App.Mode.SELECT) {
+                Main.app.select(this);
+            }
+            event.consume();
+        };
+
+        this.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
+        this.arrowHead.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
+        this.weightLabel.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
     }
 
     /**

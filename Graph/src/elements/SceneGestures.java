@@ -85,7 +85,10 @@ public class SceneGestures {
             /*
              * Return if Control key is not pressed
              */
-            if (!app.isCtrlPressed() || app.isMenuHovered()) {
+            if (!app.isCtrlPressed()) {
+                if (!app.isAnythingHovered() && !app.isMenuHovered()) {
+                    app.selectionManager.deselectAll();
+                }
                 return;
             }
 
@@ -282,27 +285,6 @@ public class SceneGestures {
             app.showMenu();
         }
     };
-
-//    private EventHandler<MouseEvent> onMouseReleasedEventHandler = new EventHandler<MouseEvent>() {
-//        public void handle(MouseEvent event) {
-//            /*
-//             * Return if the left click is not released
-//             */
-////            if (!event.isPrimaryButtonDown()) {
-////                return;
-////            }
-////
-//            /*
-//             * Hide pan icon
-//             */
-//            app.hidePanIcon();
-//
-//            /*
-//             * Release left mouse click
-//             */
-//            app.releaseLeftClick();
-//        }
-//    };
 
     private EventHandler<KeyEvent> onKeyPressedEventHandler = new EventHandler<KeyEvent>() {
         public void handle(KeyEvent event) {

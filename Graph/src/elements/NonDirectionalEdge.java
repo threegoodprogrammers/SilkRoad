@@ -1,6 +1,8 @@
 package elements;
 
 import graph.App;
+import graph.Main;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -9,7 +11,7 @@ import javafx.scene.shape.CubicCurve;
 /**
  * The type non-directional edge
  */
-public class NonDirectionalEdge extends CubicCurve {
+public class NonDirectionalEdge extends CubicCurve implements Cloneable {
     private double weight;
     private GraphEdge firstEdge;
     private GraphEdge secondEdge;
@@ -51,11 +53,6 @@ public class NonDirectionalEdge extends CubicCurve {
         this.weight = weight;
         this.firstEdge = firstEdge;
         this.secondEdge = secondEdge;
-
-        /*
-         * Set styles
-         */
-        setStyle();
     }
 
     /**
@@ -72,6 +69,12 @@ public class NonDirectionalEdge extends CubicCurve {
          */
         addHoverListeners();
         addLeaveListeners();
+        addClickListeners();
+
+        /*
+         * Set styles
+         */
+        setStyle();
     }
 
     /**
@@ -161,6 +164,16 @@ public class NonDirectionalEdge extends CubicCurve {
     }
 
     /**
+     * Remove from canvas.
+     *
+     * @param canvas the canvas
+     */
+
+    public void removeFromCanvas(PannableCanvas canvas) {
+        canvas.getChildren().removeAll(this, this.weightLabel);
+    }
+
+    /**
      * Delete edge elements from canvas
      *
      * @param canvas the canvas
@@ -184,9 +197,37 @@ public class NonDirectionalEdge extends CubicCurve {
      */
 
     public void idle() {
-        this.getStyleClass().remove("edge-select");
-        this.getStyleClass().remove("edge-hover");
-        this.getStyleClass().add("edge-idle");
+        if (isSelected) {
+            /*
+             * If edge is SELECTED
+             */
+            style().remove("edge-idle");
+            style().remove("edge-hover");
+            weightLabel.style().remove("edge-weight-idle");
+            weightLabel.style().remove("edge-weight-hover");
+
+            if (!style().contains("edge-selected")) {
+                style().add("edge-selected");
+            }
+            if (!weightLabel.style().contains("edge-weight-selected")) {
+                weightLabel.style().add("edge-weight-selected");
+            }
+        } else {
+            /*
+             * If edge is not SELECTED
+             */
+            style().remove("edge-selected");
+            style().remove("edge-hover");
+            weightLabel.style().remove("edge-weight-selected");
+            weightLabel.style().remove("edge-weight-hover");
+
+            if (!style().contains("edge-idle")) {
+                style().add("edge-idle");
+            }
+            if (!weightLabel.style().contains("edge-weight-idle")) {
+                weightLabel.style().add("edge-weight-idle");
+            }
+        }
     }
 
     /**
@@ -194,19 +235,22 @@ public class NonDirectionalEdge extends CubicCurve {
      */
 
     public void hover() {
-        this.getStyleClass().remove("edge-idle");
-        this.getStyleClass().remove("edge-select");
-        this.getStyleClass().add("edge-hover");
-    }
+        if (!isSelected) {
+            /*
+             * If edge is not SELECTED
+             */
+            style().remove("edge-selected");
+            style().remove("edge-idle");
+            weightLabel.style().remove("edge-weight-selected");
+            weightLabel.style().remove("edge-weight-idle");
 
-    /**
-     * Select edge with mouse click
-     */
-
-    public void select() {
-        this.getStyleClass().remove("edge-idle");
-        this.getStyleClass().remove("edge-hover");
-        this.getStyleClass().add("edge-select");
+            if (!style().contains("edge-hover")) {
+                style().add("edge-hover");
+            }
+            if (!weightLabel.style().contains("edge-weight-hover")) {
+                weightLabel.style().add("edge-weight-hover");
+            }
+        }
     }
 
     /**
@@ -283,7 +327,6 @@ public class NonDirectionalEdge extends CubicCurve {
 
     public void hoverEdge() {
         hover();
-        this.weightLabel.hover();
         this.firstNode().sendToFront();
         this.secondNode().sendToFront();
 
@@ -304,8 +347,7 @@ public class NonDirectionalEdge extends CubicCurve {
 
     public void selectEdge() {
         this.isSelected = true;
-        select();
-        this.weightLabel.select();
+        idle();
     }
 
     /**
@@ -322,19 +364,7 @@ public class NonDirectionalEdge extends CubicCurve {
      */
 
     public void leaveEdge() {
-        if (isSelected) {
-            /*
-             * Set "SELECT" style on edge elements
-             */
-            select();
-            this.weightLabel.select();
-        } else {
-            /*
-             * Set "IDLE" styles on edge elements
-             */
-            idle();
-            this.weightLabel.idle();
-        }
+        idle();
 
         /*
          * Set solid style on edge
@@ -354,6 +384,7 @@ public class NonDirectionalEdge extends CubicCurve {
     private void addHoverListeners() {
         EventHandler<MouseEvent> mouseHover = event -> {
             hoverEdge();
+            Main.app.hoverItem();
             event.consume();
         };
 
@@ -368,11 +399,28 @@ public class NonDirectionalEdge extends CubicCurve {
     private void addLeaveListeners() {
         EventHandler<MouseEvent> mouseLeave = event -> {
             leaveEdge();
+            Main.app.leaveItem();
             event.consume();
         };
 
         this.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
         this.weightLabel.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);
+    }
+
+    /**
+     * Add click listener to edge elements
+     */
+
+    private void addClickListeners() {
+        EventHandler<MouseEvent> mouseClick = event -> {
+            if (Main.app.getCurrentMode() == App.Mode.SELECT) {
+                Main.app.select(this);
+            }
+            event.consume();
+        };
+
+        this.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
+        this.weightLabel.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
     }
 
     /**
@@ -440,5 +488,9 @@ public class NonDirectionalEdge extends CubicCurve {
      */
     public GraphNode secondNode() {
         return this.firstEdge.getTargetNode();
+    }
+
+    private ObservableList<String> style() {
+        return this.getStyleClass();
     }
 }

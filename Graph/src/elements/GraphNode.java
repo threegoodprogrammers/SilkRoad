@@ -1,6 +1,7 @@
 package elements;
 
 import graph.App;
+import graph.Main;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -436,6 +437,7 @@ public class GraphNode extends Button {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+        this.setText(identifier);
     }
 
     /**
@@ -445,7 +447,7 @@ public class GraphNode extends Button {
     private void addHoverListeners() {
         EventHandler<MouseEvent> mouseHover = event -> {
             hoverNode(true);
-//            event.consume();
+            Main.app.hoverItem();
         };
 
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouseHover);
@@ -457,7 +459,7 @@ public class GraphNode extends Button {
     private void addLeaveListeners() {
         EventHandler<MouseEvent> mouseLeave = event -> {
             leaveNode(true);
-//            event.consume();
+            Main.app.leaveItem();
         };
 
         this.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);

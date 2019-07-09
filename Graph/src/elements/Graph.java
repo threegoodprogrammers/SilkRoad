@@ -1,6 +1,5 @@
 package elements;
 
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
@@ -218,10 +217,7 @@ public class Graph {
      */
 
     public void removeNode(GraphNode node) {
-        /* TODO: 5/9/2019
-        Remove from main graph nodes array list, remove node from the canvas, remove the connected edges to
-        node and finally remove the node from the connected nodes "attachedNodes" array list
-         */
+        this.getNodes().remove(node);
     }
 
     /**
@@ -231,10 +227,7 @@ public class Graph {
      */
 
     public void removeDirectionalEdge(GraphEdge edge) {
-        /* TODO: 5/9/2019 */
-
         edges.remove(edge);
-
         detachNodes(edge.getSourceNode(), edge.getTargetNode());
     }
 
@@ -245,7 +238,14 @@ public class Graph {
      */
 
     public void removeNonDirectionalEdge(NonDirectionalEdge edge) {
-        /* TODO: 5/9/2019 */
+        twoWayDetachNodes(edge.getFirstEdge().getSourceNode(),
+                edge.getFirstEdge().getTargetNode());
+
+        detachNodes(edge.getFirstEdge().getSourceNode(), edge.getFirstEdge().getTargetNode());
+        this.edges.remove(edge.getFirstEdge());
+
+        detachNodes(edge.getSecondEdge().getSourceNode(), edge.getSecondEdge().getTargetNode());
+        this.edges.remove(edge.getSecondEdge());
 
     }
 
