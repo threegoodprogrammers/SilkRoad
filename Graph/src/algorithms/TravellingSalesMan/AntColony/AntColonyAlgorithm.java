@@ -60,16 +60,25 @@ public class AntColonyAlgorithm {
 
                     for (int e = 0; e < nodesCount - 1; e++) {
                         int nextCity = -1;
-                        double maxP = -1;
+                        double sumProb = 0;
+                        for (int i = 0; i < nodesCount; i++) {
+                            if (i == currentCity) continue;
+                            sumProb += probabilityMatrix[currentCity][i];
+                        }
+
+                        double randNumber = Math.random() * sumProb;
+                        sumProb = 0.0;
+
                         for (int i = 0; i < notVisitedCities.size(); i++) {
                             int city = notVisitedCities.get(i);
                             if (city != antNo) {
-                                if (probabilityMatrix[currentCity][city] > maxP) {
-                                    maxP = probabilityMatrix[currentCity][city];
+                                sumProb += probabilityMatrix[currentCity][city];
+                                if (randNumber <= sumProb) {
                                     nextCity = city;
                                 }
                             }
                         }
+
 
                         loopLength += distanceMatrix[currentCity][nextCity];
 
@@ -192,16 +201,25 @@ public class AntColonyAlgorithm {
 
                     for (int e = 0; e < nodesCount - 1; e++) {
                         int nextCity = -1;
-                        double maxP = -1;
+                        double sumProb = 0;
+                        for (int i = 0; i < nodesCount; i++) {
+                            if (i == currentCity) continue;
+                            sumProb += probabilityMatrix[currentCity][i];
+                        }
+
+                        double randNumber = Math.random() * sumProb;
+                        sumProb = 0.0;
+
                         for (int i = 0; i < notVisitedCities.size(); i++) {
                             int city = notVisitedCities.get(i);
                             if (city != antNo) {
-                                if (probabilityMatrix[currentCity][city] > maxP) {
-                                    maxP = probabilityMatrix[currentCity][city];
+                                sumProb += probabilityMatrix[currentCity][city];
+                                if (randNumber <= sumProb) {
                                     nextCity = city;
                                 }
                             }
                         }
+
 
                         loopLength += distanceMatrix[currentCity][nextCity];
 
@@ -238,7 +256,7 @@ public class AntColonyAlgorithm {
                 // Filling  the probability Matrix
                 for (int i = 0; i < nodesCount; i++) {
                     for (int j = 0; j < nodesCount; j++) {
-                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow((1d / distanceMatrix[i][j]), betha)) / sigma;
+                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow(1d / distanceMatrix[i][j], betha)) / sigma;
                     }
                 }
             }
