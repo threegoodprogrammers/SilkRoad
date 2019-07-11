@@ -1291,6 +1291,11 @@ public class App {
          */
         menuManager.changeProblem(problem);
 
+        /*
+         * Update the menu based of selections
+         */
+        selectionManager.deselectAll();
+
         switch (problem) {
             case SHORTEST_PATH:
                 shortestPathProblem();
@@ -1317,13 +1322,23 @@ public class App {
      */
     public void travellingSalesmanProblem() {
         setCurrentProblem(Problem.TRAVELLING_SALESMAN);
+
+        /*
+         * Reset target node
+         */
+        resetTargetNode();
     }
 
     /**
      * Ant colony problem
      */
     public void antColonyProblem() {
+        setCurrentProblem(Problem.ANT_COLONY);
 
+        /*
+         * Reset target node
+         */
+        resetTargetNode();
     }
 
     /**

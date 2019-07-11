@@ -269,7 +269,8 @@
                 <children>
                     <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneBlue"/>
                     <Label styleClass="menuTitle" text="Problem"/>
-                    <VBox GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                    <VBox GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP"
+                          alignment="CENTER">
                         <children>
                             <HBox alignment="CENTER" spacing="20">
                                 <padding>
