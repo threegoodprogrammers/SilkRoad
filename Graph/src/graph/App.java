@@ -16,6 +16,7 @@ import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -34,7 +35,6 @@ public class App {
     public StackPane panIconPane;
     public PannableGridPane background;
     public Pane overlay;
-    public Button traverseButton;
 
     /**
      * Menus grid panes
@@ -44,6 +44,20 @@ public class App {
     public GridPane problemsMenu;
     public GridPane toolsMenu;
     public GridPane modeMenu;
+    public HBox expandingProblemsMenu;
+    public boolean expandingProblemsMenuVisible = false;
+    private boolean expandingProblemsMenuHovered = false;
+
+    /**
+     * Runtime menu elements
+     */
+
+    public GridPane runtimeMenu;
+    public JFXButton playButton;
+    public JFXButton stopButton;
+    public JFXButton speedUpButton;
+    public JFXButton speedDownButton;
+    private boolean runtimeMenuVisible = false;
 
     /**
      * Problems menu buttons
@@ -51,6 +65,8 @@ public class App {
 
     public JFXButton shortestPathButton;
     public JFXButton travellingSalesmanButton;
+    public JFXButton antColonyButton;
+    public JFXButton dynamicProgrammingButton;
 
     /**
      * Tools menu buttons
@@ -76,8 +92,7 @@ public class App {
      * New temp node
      */
 
-    public GraphNode newNode;
-    public Pane tempNodePane;
+    private GraphNode newNode;
     private boolean newNodeVisible = false;
 
     /**
@@ -142,7 +157,7 @@ public class App {
      */
 
     public enum Problem {
-        SHORTEST_PATH, TRAVELLING_SALESMAN, ANT_COLONY
+        SHORTEST_PATH, DYNAMIC_PROGRAMMING, ANT_COLONY
     }
 
     /**
@@ -218,6 +233,11 @@ public class App {
         setHiddenDrawingTools();
 
         /*
+         * Set expanding menu listeners
+         */
+        setExpandingMenuListeners();
+
+        /*
          * Set current mode to node mode
          */
         changeMode(Mode.SELECT);
@@ -250,28 +270,6 @@ public class App {
         background.toBack();
         panIconPane.toBack();
         canvas.toFront();
-
-//        TranslateTransition hideMenu = new TranslateTransition(Duration.millis(500), mainMenu);
-//        hideMenu.setToX(-220);
-//        hideMenu.setOnFinished(event -> {
-//            hideMenu.setToX(0);
-//        });
-//
-        PauseTransition wait = new PauseTransition(Duration.millis(3000));
-        wait.setOnFinished(event -> {
-//            hideMenu.play();
-//            menuManager.hideMenu();
-        });
-        wait.play();
-//
-//        PauseTransition wait2 = new PauseTransition(Duration.millis(6000));
-//        wait2.setOnFinished(event -> {
-//            hideMenu.play();
-//        });
-//        wait2.play();
-
-//        menuManager.hideMenu();
-
     }
 
     private void setPrimaryStage(Stage primaryStage) {
@@ -351,47 +349,15 @@ public class App {
 
     public void setSelections() {
         this.selectionManager = new SelectionManager(menuManager, this);
-        canvas.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-
-        });
     }
 
     /**
-     * Hover graph edge
+     * Sets expanding menu listeners
      */
 
-    public static void hoverEdge(GraphEdge edge) {
-        /*
-         * Get the weight label node
-         */
-        Label weightLabel = edge.getWeightLabel();
-
-        /*
-         * Set the transition node, stop the hide transition and play the show one
-         */
-        showOnHover.setNode(weightLabel);
-        hideOnHover.stop();
-        showOnHover.play();
-    }
-
-    /**
-     * Leave edge
-     *
-     * @param edge the edge
-     */
-
-    public static void leaveEdge(GraphEdge edge) {
-        /*
-         * Get the weight label node
-         */
-        Label weightLabel = edge.getWeightLabel();
-
-        /*
-         * Set the transition node, stop the show transition and play the hide one
-         */
-        hideOnHover.setNode(weightLabel);
-        showOnHover.stop();
-        hideOnHover.play();
+    public void setExpandingMenuListeners() {
+        this.expandingProblemsMenu.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> hoverExpandingProblemsMenu());
+        this.expandingProblemsMenu.addEventFilter(MouseEvent.MOUSE_EXITED, event -> leaveExpandingProblemsMenu());
     }
 
     /**
@@ -412,6 +378,7 @@ public class App {
         menus.put(1, problemsMenu);
         menus.put(2, toolsMenu);
         menus.put(3, modeMenu);
+        menus.put(4, runtimeMenu);
 
         /*
          * Put menu buttons in hash map
@@ -428,11 +395,13 @@ public class App {
         buttons.put(9, directionalEdgeButton);
         buttons.put(10, nonDirectionalEdgeButton);
         buttons.put(11, selectButton);
+        buttons.put(12, dynamicProgrammingButton);
+        buttons.put(13, antColonyButton);
 
         /*
          * Instantiate menu manager object
          */
-        menuManager = new MenuManager(app, buttons, menus);
+        menuManager = new MenuManager(app, buttons, menus, expandingProblemsMenu);
     }
 
     /**
@@ -540,10 +509,7 @@ public class App {
     public void setPanOnTop() {
         overlay.getStyleClass().add("dark-overlay");
         overlay.setDisable(false);
-
         panIconPane.toFront();
-        canvas.toBack();
-        background.toBack();
     }
 
     /**
@@ -552,10 +518,6 @@ public class App {
 
     public void setSceneOnTop() {
         overlay.getStyleClass().remove("dark-overlay");
-//        overlay.setDisable(true);
-//        canvas.toBack();
-        panIconPane.toBack();
-        panIcon.toBack();
         canvas.toFront();
         setMenuOnTop();
     }
@@ -989,6 +951,53 @@ public class App {
     }
 
     /**
+     * Show expanding problems menu
+     */
+
+    public void showExpandingProblemsMenu() {
+        if (!expandingProblemsMenuVisible && !menuManager.isExpandingProblemsMenuTransitionRunning()) {
+            menuManager.showExpandingProblemsMenu();
+            expandingProblemsMenu.setVisible(true);
+        }
+    }
+
+    /**
+     * Hide expanding problems menu
+     */
+
+    public void hideExpandingProblemsMenu() {
+        if (expandingProblemsMenuVisible && !menuManager.isExpandingProblemsMenuTransitionRunning()) {
+            menuManager.hideExpandingProblemsMenu();
+        }
+    }
+
+    /**
+     * Check expanding menu status after click
+     */
+
+    public void checkExpandingMenuStatusAfterClick() {
+        if (expandingProblemsMenuVisible && !expandingProblemsMenuHovered) {
+            hideExpandingProblemsMenu();
+        }
+    }
+
+    /**
+     * Hover expanding problems menu
+     */
+
+    public void hoverExpandingProblemsMenu() {
+        this.expandingProblemsMenuHovered = true;
+    }
+
+    /**
+     * Leave expanding problems menu
+     */
+
+    public void leaveExpandingProblemsMenu() {
+        this.expandingProblemsMenuHovered = false;
+    }
+
+    /**
      * Find intersecting node graph node.
      *
      * @param event the event
@@ -1300,8 +1309,8 @@ public class App {
             case SHORTEST_PATH:
                 shortestPathProblem();
                 break;
-            case TRAVELLING_SALESMAN:
-                travellingSalesmanProblem();
+            case DYNAMIC_PROGRAMMING:
+                dynamicProgrammingProblem();
                 break;
             case ANT_COLONY:
             default:
@@ -1320,8 +1329,8 @@ public class App {
     /**
      * Travelling salesman problem
      */
-    public void travellingSalesmanProblem() {
-        setCurrentProblem(Problem.TRAVELLING_SALESMAN);
+    public void dynamicProgrammingProblem() {
+        setCurrentProblem(Problem.DYNAMIC_PROGRAMMING);
 
         /*
          * Reset target node
@@ -1818,6 +1827,32 @@ public class App {
 
         menuManager.hideMenu();
         menuVisible = false;
+    }
+
+    /**
+     * Show runtime menu
+     */
+
+    public void showRuntimeMenu() {
+        if (runtimeMenuVisible) {
+            return;
+        }
+
+        menuManager.showRuntimeMenu();
+        runtimeMenuVisible = true;
+    }
+
+    /**
+     * Hide runtime menu
+     */
+
+    public void hideRuntimeMenu() {
+        if (!runtimeMenuVisible) {
+            return;
+        }
+
+        menuManager.hideRuntimeMenu();
+        runtimeMenuVisible = false;
     }
 
     /**

@@ -2,9 +2,10 @@ package elements;
 
 import com.jfoenix.controls.JFXButton;
 import graph.App;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 
 import java.util.*;
@@ -23,7 +24,8 @@ public class MenuManager {
     private GridPane problemsMenu;
     private GridPane toolsMenu;
     private GridPane modeMenu;
-
+    private GridPane runtimeMenu;
+    private HBox expandingProblemsMenu;
 
     /**
      * Problems menu buttons
@@ -31,6 +33,8 @@ public class MenuManager {
 
     private JFXButton shortestPathButton;
     private JFXButton travellingSalesmanButton;
+    private JFXButton dynamicProgrammingButton;
+    private JFXButton antColonyButton;
 
     /**
      * Tools menu buttons
@@ -58,6 +62,11 @@ public class MenuManager {
 
     private TranslateTransition hideMenu;
     private TranslateTransition showMenu;
+    private TranslateTransition hideRuntimeMenu;
+    private TranslateTransition showRuntimeMenu;
+    private ParallelTransition hideExpandingProblemsMenu;
+    private ParallelTransition showExpandingProblemsMenu;
+    private boolean expandingProblemsMenuTransitionRunning = false;
 
     public enum State {
         SELECTED_BOTH_NODES_AND_EDGES, SELECTED_SINGLE_DIRECTIONAL_EDGE, SELECTED_SINGLE_NON_DIRECTIONAL_EDGE,
@@ -71,7 +80,7 @@ public class MenuManager {
      * @param menus   Hash map containing menus
      */
 
-    public MenuManager(App app, HashMap<Integer, JFXButton> buttons, HashMap<Integer, GridPane> menus) {
+    public MenuManager(App app, HashMap<Integer, JFXButton> buttons, HashMap<Integer, GridPane> menus, HBox expandingProblemsMenu) {
         /*
          * Set main app
          */
@@ -84,6 +93,8 @@ public class MenuManager {
         problemsMenu = menus.get(1);
         toolsMenu = menus.get(2);
         modeMenu = menus.get(3);
+        runtimeMenu = menus.get(4);
+        this.expandingProblemsMenu = expandingProblemsMenu;
 
         /*
          * Problem buttons
@@ -108,6 +119,12 @@ public class MenuManager {
         directionalEdgeButton = buttons.get(9);
         nonDirectionalEdgeButton = buttons.get(10);
         selectButton = buttons.get(11);
+
+        /*
+         * Travelling salesperson buttons
+         */
+        dynamicProgrammingButton = buttons.get(12);
+        antColonyButton = buttons.get(13);
 
         /*
          * Set menu animations
@@ -136,6 +153,52 @@ public class MenuManager {
          */
         showMenu = new TranslateTransition(Duration.millis(500), mainMenu);
         showMenu.setToX(0);
+
+        /*
+         * Hide runtime menu animation
+         */
+        hideRuntimeMenu = new TranslateTransition(Duration.millis(500), runtimeMenu);
+        hideRuntimeMenu.setToY(-160);
+
+        /*
+         * Show runtime menu animation
+         */
+        showRuntimeMenu = new TranslateTransition(Duration.millis(500), runtimeMenu);
+        showRuntimeMenu.setToY(15);
+
+        /*
+         * Hide menu expanding problems animation
+         */
+        RotateTransition rotateOutExpandingProblemsMenu = new RotateTransition(Duration.millis(500), expandingProblemsMenu);
+        rotateOutExpandingProblemsMenu.setToAngle(0);
+        TranslateTransition moveUpExpandingProblemsMenu = new TranslateTransition(Duration.millis(500), expandingProblemsMenu);
+        moveUpExpandingProblemsMenu.setToY(-5);
+        FadeTransition fadeOutExpandingProblemsMenu = new FadeTransition(Duration.millis(500), expandingProblemsMenu);
+        fadeOutExpandingProblemsMenu.setToValue(0);
+        hideExpandingProblemsMenu = new ParallelTransition(moveUpExpandingProblemsMenu, fadeOutExpandingProblemsMenu, rotateOutExpandingProblemsMenu);
+        hideExpandingProblemsMenu.setOnFinished(event -> {
+            expandingProblemsMenu.setVisible(false);
+            app.expandingProblemsMenuVisible = false;
+            expandingProblemsMenuTransitionRunning = false;
+        });
+        hideExpandingProblemsMenu.setInterpolator(Interpolator.EASE_OUT);
+
+        /*
+         * Show menu expanding problems animation
+         */
+        RotateTransition rotateInExpandingProblemsMenu = new RotateTransition(Duration.millis(500), expandingProblemsMenu);
+        rotateInExpandingProblemsMenu.setToAngle(360);
+        TranslateTransition moveDownExpandingProblemsMenu = new TranslateTransition(Duration.millis(500), expandingProblemsMenu);
+        moveDownExpandingProblemsMenu.setToY(45);
+        FadeTransition fadeInExpandingProblemsMenu = new FadeTransition(Duration.millis(500), expandingProblemsMenu);
+        fadeInExpandingProblemsMenu.setToValue(100);
+        showExpandingProblemsMenu = new ParallelTransition(moveDownExpandingProblemsMenu, fadeInExpandingProblemsMenu, rotateInExpandingProblemsMenu);
+        showExpandingProblemsMenu.setInterpolator(Interpolator.EASE_OUT);
+        showExpandingProblemsMenu.setOnFinished(event -> {
+            app.expandingProblemsMenuVisible = true;
+            expandingProblemsMenuTransitionRunning = false;
+        });
+
     }
 
     /**
@@ -154,6 +217,24 @@ public class MenuManager {
     public void hideMenu() {
         showMenu.stop();
         hideMenu.play();
+    }
+
+    /**
+     * Show menu
+     */
+
+    public void showRuntimeMenu() {
+        hideRuntimeMenu.stop();
+        showRuntimeMenu.play();
+    }
+
+    /**
+     * Hide menu
+     */
+
+    public void hideRuntimeMenu() {
+        showRuntimeMenu.stop();
+        hideRuntimeMenu.play();
     }
 
     /**
@@ -380,22 +461,24 @@ public class MenuManager {
          * Add menu buttons to a list
          */
 
-        List<JFXButton> problemButton = Arrays.asList(shortestPathButton, travellingSalesmanButton);
+        List<JFXButton> problemButtons = Arrays.asList(shortestPathButton, travellingSalesmanButton, dynamicProgrammingButton, antColonyButton);
 
         switch (newProblem) {
             case SHORTEST_PATH:
-                app.deselectAllProblemButtons(problemButton);
+                app.deselectAllProblemButtons(problemButtons);
                 app.selectProblemButton(shortestPathButton);
 
                 break;
-            case TRAVELLING_SALESMAN:
-                app.deselectAllProblemButtons(problemButton);
+            case DYNAMIC_PROGRAMMING:
+                app.deselectAllProblemButtons(problemButtons);
                 app.selectProblemButton(travellingSalesmanButton);
+                app.selectProblemButton(dynamicProgrammingButton);
 
                 break;
             case ANT_COLONY:
-//                app.deselectAllProblemButtons(problemButton);
-//                app.selectProblemButton(nonDirectionalEdgeButton);
+                app.deselectAllProblemButtons(problemButtons);
+                app.selectProblemButton(travellingSalesmanButton);
+                app.selectProblemButton(antColonyButton);
 
                 break;
             default:
@@ -412,7 +495,10 @@ public class MenuManager {
 
     public void setMenuButtons() {
         shortestPathButton.setOnAction(event -> app.changeProblem(App.Problem.SHORTEST_PATH));
-        travellingSalesmanButton.setOnAction(event -> app.changeProblem(App.Problem.TRAVELLING_SALESMAN));
+//        travellingSalesmanButton.setOnAction(event -> app.changeProblem(App.Problem.DYNAMIC_PROGRAMMING));
+        travellingSalesmanButton.setOnAction(event -> app.showExpandingProblemsMenu());
+        dynamicProgrammingButton.setOnAction(event -> app.changeProblem(App.Problem.DYNAMIC_PROGRAMMING));
+        antColonyButton.setOnAction(event -> app.changeProblem(App.Problem.ANT_COLONY));
         setSourceNodeButton.setOnAction(event -> app.setSourceNode(app.selectionManager.getNode()));
         setTargetNodeButton.setOnAction(event -> app.setTargetNode(app.selectionManager.getNode()));
         setLabelButton.setOnAction(event -> app.setLabel(app.selectionManager.getNode()));
@@ -426,11 +512,42 @@ public class MenuManager {
     }
 
     /**
+     * Show expanding problems menu
+     */
+
+    public void showExpandingProblemsMenu() {
+        hideExpandingProblemsMenu.stop();
+        showExpandingProblemsMenu.play();
+        expandingProblemsMenuTransitionRunning = true;
+    }
+
+    /**
+     * Hide expanding problems menu
+     */
+
+    public void hideExpandingProblemsMenu() {
+        showExpandingProblemsMenu.stop();
+        hideExpandingProblemsMenu.play();
+        expandingProblemsMenuTransitionRunning = true;
+    }
+
+    /**
+     * Is expanding problems menu transition running boolean
+     *
+     * @return the boolean
+     */
+
+    public boolean isExpandingProblemsMenuTransitionRunning() {
+        return this.expandingProblemsMenuTransitionRunning;
+    }
+
+    /**
      * Menu on top
      */
 
     public void menuOnTop() {
         mainMenu.toFront();
+        runtimeMenu.toFront();
     }
 
     /**

@@ -71,6 +71,11 @@ public class SceneGestures {
             setSceneDragContext(event);
 
             /*
+             * Check for expanding menu after mouse click
+             */
+            app.checkExpandingMenuStatusAfterClick();
+
+            /*
              * Return if the left click is not pressed
              */
             if (!event.isPrimaryButtonDown() || app.isLeftClickPressed()) {

@@ -194,6 +194,20 @@ Button, JFXButton {
     -fx-opacity: .3;
 }
 
+.tooltip {
+    -fx-font-size: 20;
+}
+
+.expanding-menu {
+    -fx-background-color: linear-gradient(to bottom right, rgba(250, 250, 250, .95), rgba(253, 253, 253, .95));
+    -fx-background-radius: 10;
+    -fx-border-style: solid;
+    -fx-border-width: 3;
+    -fx-border-color: #72c1dd;
+    -fx-border-radius: 10;
+    -fx-shape: "M99.213,632.017l399.685,0.634c60.305,0.105,90.326,10.001,90.432-50.306l0.004-309.919 c0.102-60.308,8.111-109.694-40.285-110.687l-183.379,0.89c-20.196-0.185-21.2-2.836-36.711-25.997l-20.619-33.839 c-2.277-3.262-5.994-9.244-9.957-9.25c-3.962-0.007-7.684,5.963-9.974,9.191l-20.934,33.62 c-16.325,24.092-18.058,25.883-37.868,25.849l-170.079-0.105c-60.306-0.104-53.126,50.02-53.231,110.327l0.507,309.919 C6.698,642.65,38.908,631.912,99.213,632.017z";
+}
+
 .node-transparent {
     /*-fx-background-color: linear-gradient(rgba(242, 242, 242, 0.8), rgba(214, 214, 214, 0.8)),*/
     /*linear-gradient(rgba(252, 252, 252, 0.61) 0%, rgba(217, 217, 217, 0.6) 20%, rgba(214, 214, 214, 0.6) 100%),*/
@@ -238,6 +252,24 @@ Button, JFXButton {
     -fx-text-fill: #f5f5f5;
 }
 
+.menuTitleSmall {
+    -fx-font-size: 18;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #fff;
+}
+
+.textSmallDark {
+    -fx-font-size: 24;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #626262;
+}
+
+.textSmallBlue {
+    -fx-font-size: 24;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #63a3bb;
+}
+
 .menuTitlePaneBlue {
     -fx-background-color: #72c1dd;
     -fx-background-radius: 10 10 0 0;
@@ -250,6 +282,11 @@ Button, JFXButton {
 
 .menuTitlePanePink {
     -fx-background-color: #ff7979;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.menuTitlePaneDark {
+    -fx-background-color: #878787;
     -fx-background-radius: 10 10 0 0;
 }
 
