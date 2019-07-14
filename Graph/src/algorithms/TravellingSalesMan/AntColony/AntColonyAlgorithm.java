@@ -24,7 +24,8 @@ public class AntColonyAlgorithm {
             int iterationThreshold,
             int alpha,
             int betha,
-            double VAP
+            double VAP,
+            int antCount
     ) {
         long start = System.currentTimeMillis();
         if (graph == null) return null;
@@ -47,15 +48,19 @@ public class AntColonyAlgorithm {
             }
             initializeMatrices();
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {//for each iterate
-                for (int antNo = 0; antNo < nodesCount; antNo++) {//Placing each ant in different city
+                int cityCounter = -1;
+                for (int antNo = 0; antNo < antCount; antNo++) {//Placing each ant in different city
                     double loopLength = 0;
 
-
+                    cityCounter++;
+                    if(cityCounter >= nodesCount){
+                        cityCounter = 0;
+                    }
                     List<Integer> visitedCities = new ArrayList<>();
-                    visitedCities.add(antNo);
+                    visitedCities.add(cityCounter);
                     List<Integer> notVisitedCities = new ArrayList<>();
                     initForAnt(notVisitedCities);
-                    int currentCity = antNo;
+                    int currentCity = cityCounter;
 
 
                     for (int e = 0; e < nodesCount - 1; e++) {
@@ -165,7 +170,8 @@ public class AntColonyAlgorithm {
             int iterationThreshold,
             int alpha,
             int betha,
-            double VAP
+            double VAP,
+            int antCount
     ) {
         long start = System.currentTimeMillis();
         if (graph == null) return null;
@@ -188,15 +194,19 @@ public class AntColonyAlgorithm {
             }
             initializeMatrices();
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {//for each iterate
-                for (int antNo = 0; antNo < nodesCount; antNo++) {//Placing each ant in different city
+                int cityCounter = -1;
+                for (int antNo = 0; antNo < antCount; antNo++) {//Placing each ant in different city
                     double loopLength = 0;
 
-
+                    cityCounter++;
+                    if(cityCounter >= nodesCount){
+                        cityCounter = 0;
+                    }
                     List<Integer> visitedCities = new ArrayList<>();
-                    visitedCities.add(antNo);
+                    visitedCities.add(cityCounter);
                     List<Integer> notVisitedCities = new ArrayList<>();
                     initForAnt(notVisitedCities);
-                    int currentCity = antNo;
+                    int currentCity = cityCounter;
 
 
                     for (int e = 0; e < nodesCount - 1; e++) {
