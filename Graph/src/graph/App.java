@@ -1,16 +1,19 @@
 package graph;
 
+import algorithms.Dijkstra.PathData;
+import algorithms.TravellingSalesMan.TravellingSalesManData;
 import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
-import javafx.animation.FadeTransition;
-import javafx.animation.PauseTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
@@ -21,9 +24,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 import static graph.Main.app;
 
@@ -44,6 +49,7 @@ public class App {
     public GridPane problemsMenu;
     public GridPane toolsMenu;
     public GridPane modeMenu;
+    public GridPane antColonyMenu;
     public HBox expandingProblemsMenu;
     public boolean expandingProblemsMenuVisible = false;
     private boolean expandingProblemsMenuHovered = false;
@@ -58,6 +64,29 @@ public class App {
     public JFXButton speedUpButton;
     public JFXButton speedDownButton;
     private boolean runtimeMenuVisible = false;
+
+    /**
+     * Ant colony menu elements
+     */
+
+    public JFXButton antsCountButton;
+    public JFXButton alphaButton;
+    public JFXButton betaButton;
+    public JFXButton thresholdButton;
+    public Label antsCountValue;
+    public Label alphaValue;
+    public Label betaValue;
+    public Label thresholdValue;
+    private boolean antColonyMenuVisible = false;
+
+    /**
+     * Ant colony values
+     */
+
+    private int antsCount = 50;
+    private double alpha = 1.0;
+    private double beta = 1.0;
+    private int threshold = 40;
 
     /**
      * Problems menu buttons
@@ -89,6 +118,30 @@ public class App {
     public JFXButton selectButton;
 
     /**
+     * Loading elements
+     */
+
+    public FontAwesomeIconView algorithmFinishedIcon;
+    public StackPane loadingStack;
+    public GridPane loading;
+
+    /**
+     * Run threads
+     */
+
+    private Thread shortestPathThread;
+    private Thread dynamicProgrammingThread;
+    private Thread antColonyThread;
+
+    /**
+     * Problems results
+     */
+
+    private PathData shortestPathResult;
+    private TravellingSalesManData dynamicProgrammingResult;
+    private TravellingSalesManData antColonyResult;
+
+    /**
      * New temp node
      */
 
@@ -99,18 +152,18 @@ public class App {
      * Source and target nodes
      */
 
-    public GraphNode sourceNode;
-    public GraphNode targetNode;
+    private GraphNode sourceNode;
+    private GraphNode targetNode;
 
     public Pane dummyPane;
-    public static Pane staticDummyPane;
+    private static Pane staticDummyPane;
 
     /**
      * Hidden node and edges for drawing edge
      */
     public GraphNode hiddenNode;
     public GraphEdge newEdge;
-    public boolean newEdgeVisible;
+    private boolean newEdgeVisible;
 
     /**
      * Menu manager object
@@ -129,7 +182,7 @@ public class App {
      */
 
     public enum State {
-        IDLE, DRAWING_EDGE, MOVING_NODE
+        IDLE, DRAWING_EDGE, MOVING_NODE, RUNNING_ALGORITHM, PLAYING
     }
 
     /**
@@ -169,11 +222,8 @@ public class App {
     private Problem currentProblem = Problem.SHORTEST_PATH;
 
     /**
-     * Hover transitions
+     * Key press status
      */
-
-    private static FadeTransition showOnHover;
-    private static FadeTransition hideOnHover;
 
     private boolean shiftPressed = false;
     private boolean ctrlPressed = false;
@@ -218,11 +268,6 @@ public class App {
         setSelections();
 
         /*
-         * Set transitions
-         */
-        setTransitions();
-
-        /*
          * Set new node
          */
         setNewNode();
@@ -244,6 +289,10 @@ public class App {
         menuManager.updateButtons(MenuManager.State.NOTHING_SELECTED);
 
         setMenuOnTop();
+
+        hideMenu();
+        showRuntimeMenu();
+
     }
 
     /**
@@ -284,24 +333,6 @@ public class App {
     }
 
     /**
-     * Set mouse hover show and hide transitions
-     */
-
-    private void setTransitions() {
-        /*
-         * Show node transition
-         */
-        showOnHover = new FadeTransition(Duration.millis(300));
-        showOnHover.setToValue(1);
-
-        /*
-         * Hide node transition
-         */
-        hideOnHover = new FadeTransition(Duration.millis(300));
-        hideOnHover.setToValue(.3);
-    }
-
-    /**
      * Set new node transparent object
      */
 
@@ -324,8 +355,6 @@ public class App {
         this.hiddenNode = new GraphNode("");
         this.hiddenNode.setVisible(false);
         this.hiddenNode.toBack();
-
-//        this.hiddenNode.setDisable(false);
 
         this.newEdge = new GraphEdge(0, this.hiddenNode, this.hiddenNode,
                 Graph.EdgeOrientation.HORIZONTAL);
@@ -355,7 +384,7 @@ public class App {
      * Sets expanding menu listeners
      */
 
-    public void setExpandingMenuListeners() {
+    private void setExpandingMenuListeners() {
         this.expandingProblemsMenu.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> hoverExpandingProblemsMenu());
         this.expandingProblemsMenu.addEventFilter(MouseEvent.MOUSE_EXITED, event -> leaveExpandingProblemsMenu());
     }
@@ -379,6 +408,7 @@ public class App {
         menus.put(2, toolsMenu);
         menus.put(3, modeMenu);
         menus.put(4, runtimeMenu);
+        menus.put(5, antColonyMenu);
 
         /*
          * Put menu buttons in hash map
@@ -397,11 +427,60 @@ public class App {
         buttons.put(11, selectButton);
         buttons.put(12, dynamicProgrammingButton);
         buttons.put(13, antColonyButton);
+        buttons.put(14, antsCountButton);
+        buttons.put(15, alphaButton);
+        buttons.put(16, betaButton);
+        buttons.put(17, thresholdButton);
+        buttons.put(18, playButton);
+        buttons.put(19, stopButton);
+        buttons.put(20, speedUpButton);
+        buttons.put(21, speedDownButton);
 
         /*
          * Instantiate menu manager object
          */
         menuManager = new MenuManager(app, buttons, menus, expandingProblemsMenu);
+
+        /*
+         * Set loading elements
+         */
+        menuManager.setLoading(loading, loadingStack, algorithmFinishedIcon);
+    }
+
+    /**
+     * Sets threads
+     */
+
+    public void setThreads() {
+
+    }
+
+    /**
+     * Sets shortest path thread.
+     */
+
+    public void setShortestPathThread() {
+        shortestPathThread = new Thread(() -> {
+            boolean test;
+
+            test = isNumber("3");
+        });
+    }
+
+    /**
+     * Sets dynamic programming thread.
+     */
+
+    public void setDynamicProgrammingThread() {
+
+    }
+
+    /**
+     * Sets shortest path thread.
+     */
+
+    public void setAntColonyThread() {
+
     }
 
     /**
@@ -423,16 +502,6 @@ public class App {
         node.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
         node.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
     }
-
-//    /**
-//     * Add event filter to edge
-//     */
-//
-//    public void addEventFilterToEdge(GraphEdge edge) {
-//        edge.addEventFilter(MouseEvent.MOUSE_CLICKED, nodeGestures.getOnMouseClickedForEdge());
-//
-//
-//    }
 
     /**
      * Set cursor
@@ -745,7 +814,7 @@ public class App {
         /*
          * Prompt for edge weight
          */
-        double weight = showNumberInputDialog();
+        double weight = showNumberInputDialog("Edge Weight Input...", "Enter weight:");
 
         if (weight == 0) {
             return;
@@ -811,6 +880,66 @@ public class App {
     }
 
     /**
+     * Set ants count
+     */
+
+    public void setAntsCount() {
+        int count = (int) showNumberInputDialog("Ants Count Input...", "Enter ants count:");
+
+        if (count == 0) {
+            return;
+        }
+
+        this.antsCount = count;
+        antsCountValue.setText(String.valueOf(count));
+    }
+
+    /**
+     * Set alpha value
+     */
+
+    public void setAlpha() {
+        double alpha = showNumberInputDialog("Alpha Input...", "Enter value of alpha:");
+
+        if (alpha == 0) {
+            return;
+        }
+
+        this.alpha = alpha;
+        alphaValue.setText(String.valueOf(alpha));
+    }
+
+    /**
+     * Set beta value
+     */
+
+    public void setBeta() {
+        double beta = showNumberInputDialog("Beta Input...", "Enter value of beta:");
+
+        if (beta == 0) {
+            return;
+        }
+
+        this.beta = beta;
+        betaValue.setText(String.valueOf(beta));
+    }
+
+    /**
+     * Set threshold value
+     */
+
+    public void setThreshold() {
+        int threshold = (int) showNumberInputDialog("Threshold Input...", "Enter threshold:");
+
+        if (threshold == 0) {
+            return;
+        }
+
+        this.threshold = threshold;
+        thresholdValue.setText(String.valueOf(threshold));
+    }
+
+    /**
      * Show edge error dialog
      */
 
@@ -868,18 +997,18 @@ public class App {
      * Show number input dialog
      */
 
-    public double showNumberInputDialog() {
+    public double showNumberInputDialog(String header, String text) {
         TextInputDialog alert = new TextInputDialog("");
         alert.getDialogPane().getStylesheets().add(
                 getClass().getResource("main.css").toExternalForm());
         alert.getDialogPane().getStyleClass().add("custom-dialog");
         alert.setTitle("");
-        alert.setHeaderText("Edge Weight Input...");
+        alert.setHeaderText(header);
         FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.WARNING);
         icon.setGlyphSize(40);
         icon.setFill(Color.valueOf("#29a2b0"));
         alert.setGraphic(icon);
-        alert.setContentText("Enter weight:");
+        alert.setContentText(text);
         Optional<String> input = alert.showAndWait();
 
         if (!input.isPresent()) {
@@ -948,6 +1077,83 @@ public class App {
 
         // return if user has accepted dialog
         return userAccepted;
+    }
+
+    /**
+     * Press enter
+     */
+
+    public void pressEnter() {
+        /*
+         * Return if application is in running state
+         */
+        if (getCurrentState() != State.IDLE) {
+            return;
+        }
+
+        /*
+         * Set mode to select mode
+         */
+        changeMode(Mode.SELECT);
+
+        /*
+         * Set current state to running algorithm
+         */
+        setCurrentState(State.RUNNING_ALGORITHM);
+
+        /*
+         * Start processing
+         */
+        startProcessing();
+    }
+
+    /**
+     * Start processing
+     */
+
+    private void startProcessing() {
+        switch (getCurrentProblem()) {
+            case SHORTEST_PATH:
+
+                break;
+            case DYNAMIC_PROGRAMMING:
+
+                break;
+            case ANT_COLONY:
+            default:
+
+                break;
+        }
+    }
+
+    /**
+     * Show loading
+     */
+    public void showLoading() {
+
+    }
+
+    /**
+     * Hide loading
+     */
+    public void hideLoading() {
+
+    }
+
+    /**
+     * Show algorithm success
+     */
+
+    public void showAlgorithmSuccess() {
+
+    }
+
+    /**
+     * Hide algorithm success
+     */
+
+    public void hideAlgorithmSuccess() {
+
     }
 
     /**
@@ -1324,6 +1530,11 @@ public class App {
      */
     public void shortestPathProblem() {
         setCurrentProblem(Problem.SHORTEST_PATH);
+
+        /*
+         * Hide ant colony menu
+         */
+        hideAntColonyMenu();
     }
 
     /**
@@ -1336,6 +1547,11 @@ public class App {
          * Reset target node
          */
         resetTargetNode();
+
+        /*
+         * Hide ant colony menu
+         */
+        hideAntColonyMenu();
     }
 
     /**
@@ -1348,6 +1564,11 @@ public class App {
          * Reset target node
          */
         resetTargetNode();
+
+        /*
+         * Show ant colony menu
+         */
+        showAntColonyMenu();
     }
 
     /**
@@ -1358,36 +1579,6 @@ public class App {
 
     public Problem getCurrentProblem() {
         return this.currentProblem;
-    }
-
-    /**
-     * Sets necessary objects on top
-     */
-
-    public void setOnTop() {
-        ArrayList<Node> onTop = new ArrayList<>();
-        setMenuOnTop();
-
-        switch (currentMode) {
-            case NODE:
-//                onTop.addAll(mainGraph.getNodes());
-
-                break;
-            case NON_DIRECTIONAL_EDGE:
-//                onTop.addAll(mainGraph.getNodes());
-
-                break;
-            case DIRECTIONAL_EDGE:
-//                onTop.addAll(mainGraph.getNodes());
-
-                break;
-            default:
-//                onTop.addAll(mainGraph.getNodes());
-
-                break;
-        }
-
-        menuManager.finalizeOnTop(onTop);
     }
 
     /**
@@ -1500,7 +1691,7 @@ public class App {
      * Sets weight for the selected edge or edges
      */
     public void setWeight() {
-        double newWeight = showNumberInputDialog();
+        double newWeight = showNumberInputDialog("Edge Weight Input...", "Enter weight:");
 
         if (newWeight == 0) {
             return;
@@ -1808,6 +1999,29 @@ public class App {
      */
 
     public void showMenu() {
+        showMainMenu();
+
+        if (this.currentProblem == Problem.ANT_COLONY) {
+            showAntColonyMenu();
+        }
+    }
+
+    /**
+     * Hide menu
+     */
+
+    public void hideMenu() {
+        hideMainMenu();
+
+        if (this.currentProblem == Problem.ANT_COLONY) {
+            hideAntColonyMenu();
+        }
+    }
+
+    /**
+     * Show main menu
+     */
+    public void showMainMenu() {
         if (menuVisible) {
             return;
         }
@@ -1817,10 +2031,9 @@ public class App {
     }
 
     /**
-     * Hide menu
+     * Hide main menu
      */
-
-    public void hideMenu() {
+    public void hideMainMenu() {
         if (!menuVisible) {
             return;
         }
@@ -1853,6 +2066,32 @@ public class App {
 
         menuManager.hideRuntimeMenu();
         runtimeMenuVisible = false;
+    }
+
+    /**
+     * Show ant colony menu
+     */
+
+    public void showAntColonyMenu() {
+        if (antColonyMenuVisible) {
+            return;
+        }
+
+        menuManager.showAntColonyMenu();
+        antColonyMenuVisible = true;
+    }
+
+    /**
+     * Hide ant colony menu
+     */
+
+    public void hideAntColonyMenu() {
+        if (!antColonyMenuVisible) {
+            return;
+        }
+
+        menuManager.hideAntColonyMenu();
+        antColonyMenuVisible = false;
     }
 
     /**
