@@ -258,10 +258,16 @@ Button, JFXButton {
     -fx-text-fill: #fff;
 }
 
+.menuTitleTooSmall {
+    -fx-font-size: 14;
+    -fx-font-family: "Arial";
+    -fx-text-fill: #fff;
+}
+
 .textSmallDark {
     -fx-font-size: 24;
     -fx-font-family: "Arial";
-    -fx-text-fill: #626262;
+    -fx-text-fill: #666;
 }
 
 .textSmallBlue {
@@ -286,7 +292,7 @@ Button, JFXButton {
 }
 
 .menuTitlePaneDark {
-    -fx-background-color: #878787;
+    -fx-background-color: #666;
     -fx-background-radius: 10 10 0 0;
 }
 
@@ -405,7 +411,10 @@ Button, JFXButton {
 
 .dark-overlay {
     -fx-background-color: rgba(0, 0, 0, .2);
-    /*-fx-background-color: rgba(98, 158, 255, 0.21);*/
+}
+
+.dark-overlay-2 {
+    -fx-background-color: rgba(0, 0, 0, .4);
 }
 
 .menu {
@@ -711,10 +720,6 @@ Button, JFXButton {
 
 .top-user-status-icon-box {
     -fx-pref-width: 14;
-}
-
-.loading {
-    visibility: hidden;
 }
 
 .jfx-list-cell:selected {

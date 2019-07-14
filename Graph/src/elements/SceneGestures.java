@@ -18,6 +18,8 @@ public class SceneGestures {
     private PannableGridPane background;
     private App app;
 
+    private boolean isPanning = false;
+
     public SceneGestures(PannableCanvas canvas, App app, PannableGridPane background) {
         this.canvas = canvas;
         this.app = app;
@@ -96,6 +98,11 @@ public class SceneGestures {
                 }
                 return;
             }
+
+            /*
+             * Set is panning boolean to true
+             */
+            isPanning = true;
 
             /*
              * Hide menu
@@ -267,27 +274,24 @@ public class SceneGestures {
                     break;
             }
 
-            /*
-             * Return if the left click is not released
-             */
-//            if (!event.isPrimaryButtonDown()) {
-//                return;
-//            }
-//
-            /*
-             * Hide pan icon
-             */
-            app.hidePanIcon();
+            if (isPanning) {
+                /*
+                 * Hide pan icon
+                 */
+                app.hidePanIcon();
+
+                /*
+                 * Show menu again
+                 */
+                app.showMenu();
+
+                isPanning = false;
+            }
 
             /*
              * Release left mouse click
              */
             app.releaseLeftClick();
-
-            /*
-             * Show menu again
-             */
-            app.showMenu();
         }
     };
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import elements.PannableCanvas?>
 <?import elements.PannableGridPane?>
@@ -18,9 +19,9 @@
 
 <GridPane fx:id="window" alignment="CENTER" stylesheets="@main.css, @jfoenix-main.css"
           xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="graph.App">
-    <Pane fx:id="dummyPane" prefHeight="800" prefWidth="1200" visible="false" GridPane.hgrow="ALWAYS"
-          GridPane.vgrow="ALWAYS"/>
-    <PannableGridPane fx:id="background" alignment="center" styleClass="background">
+    <Pane fx:id="dummyPane" prefHeight="800" prefWidth="1200" visible="false" GridPane.columnSpan="2"
+          GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+    <PannableGridPane fx:id="background" alignment="center" styleClass="background" GridPane.columnSpan="2">
         <rowConstraints>
             <RowConstraints vgrow="ALWAYS"/>
             <RowConstraints vgrow="ALWAYS"/>
@@ -235,12 +236,13 @@
             <Pane styleClass="blue-cells-background" GridPane.columnIndex="16" GridPane.rowIndex="18"/>
         </children>
     </PannableGridPane>
-    <Pane fx:id="overlay" prefHeight="800" prefWidth="1200" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+    <Pane fx:id="overlay" prefHeight="800" prefWidth="1200" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS"
+          GridPane.vgrow="ALWAYS">
         <StackPane fx:id="panIconPane" prefHeight="80" prefWidth="80" visible="false">
             <FontAwesomeIconView fx:id="panIcon" glyphName="ARROWS" glyphSize="60" styleClass="hand"/>
         </StackPane>
     </Pane>
-    <PannableCanvas fx:id="canvas" prefHeight="800" prefWidth="1200"/>
+    <PannableCanvas fx:id="canvas" prefHeight="800" prefWidth="1200" GridPane.columnSpan="2"/>
     <GridPane fx:id="mainMenu" maxWidth="220.0" visible="true">
         <columnConstraints>
             <ColumnConstraints minWidth="10.0" prefWidth="20.0"/>
@@ -533,8 +535,8 @@
                     <String fx:value="noMargin"/>
                 </styleClass>
             </GridPane>
-            <HBox fx:id="expandingProblemsMenu" alignment="CENTER" spacing="20" styleClass="expanding-menu"
-                  translateX="45.0" translateY="-5" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2"  opacity="0">
+            <HBox fx:id="expandingProblemsMenu" alignment="CENTER" opacity="0" spacing="20" styleClass="expanding-menu"
+                  translateX="45.0" translateY="-5" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
                 <children>
                     <JFXButton fx:id="dynamicProgrammingButton">
                         <tooltip>
@@ -570,8 +572,7 @@
         </children>
     </GridPane>
     <GridPane fx:id="runtimeMenu" maxHeight="160.0" maxWidth="470.0" onMouseEntered="#hoverMenu"
-              onMouseExited="#leaveMenu" prefHeight="160.0" prefWidth="380.0" translateX="410.0" translateY="15.0"
-              visible="false">
+              onMouseExited="#leaveMenu" prefHeight="160.0" prefWidth="380.0" translateX="365.0" translateY="-160.0">
         <columnConstraints>
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
         </columnConstraints>
@@ -580,7 +581,7 @@
             <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER"/>
         </rowConstraints>
         <children>
-            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneGreen"/>
+            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneBlue"/>
             <Label styleClass="menuTitle" text="Runtime Tools"/>
             <VBox alignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                 <children>
@@ -591,20 +592,20 @@
                         <children>
                             <JFXButton fx:id="playButton">
                                 <tooltip>
-                                    <Tooltip text="Shortest Path"/>
+                                    <Tooltip text="Play"/>
                                 </tooltip>
                                 <graphic>
                                     <FontAwesomeIconView glyphName="PLAY" glyphSize="32" textAlignment="CENTER"/>
                                 </graphic>
                                 <styleClass>
                                     <String fx:value="menu-button-general"/>
-                                    <String fx:value="menu-button-green-outline"/>
-                                    <String fx:value="menu-button-hover-green"/>
+                                    <String fx:value="menu-button-blue-outline"/>
+                                    <String fx:value="menu-button-hover-blue"/>
                                 </styleClass>
                             </JFXButton>
                             <JFXButton fx:id="stopButton">
                                 <tooltip>
-                                    <Tooltip text="Travelling Salesman"/>
+                                    <Tooltip text="Stop"/>
                                 </tooltip>
                                 <graphic>
                                     <FontAwesomeIconView glyphName="STOP" glyphSize="28"/>
@@ -639,7 +640,7 @@
                             </GridPane>
                             <JFXButton fx:id="speedUpButton" layoutX="120.0" layoutY="30.0">
                                 <tooltip>
-                                    <Tooltip text="Shortest Path"/>
+                                    <Tooltip text="Increase speed"/>
                                 </tooltip>
                                 <graphic>
                                     <FontAwesomeIconView glyphName="PLUS" glyphSize="32" textAlignment="CENTER"/>
@@ -652,7 +653,7 @@
                             </JFXButton>
                             <JFXButton fx:id="speedDownButton" layoutX="255.0" layoutY="30.0">
                                 <tooltip>
-                                    <Tooltip text="Shortest Path"/>
+                                    <Tooltip text="Decrease speed"/>
                                 </tooltip>
                                 <graphic>
                                     <FontAwesomeIconView glyphName="MINUS" glyphSize="32" textAlignment="CENTER"/>
@@ -677,9 +678,224 @@
             <String fx:value="noMargin"/>
         </styleClass>
     </GridPane>
-
+    <GridPane fx:id="antColonyMenu" layoutX="10.0" layoutY="10.0" maxWidth="220.0" translateX="220" translateY="170"
+              GridPane.columnIndex="1">
+        <columnConstraints>
+            <ColumnConstraints minWidth="10.0" prefWidth="200.0"/>
+            <ColumnConstraints prefWidth="20.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="430.0" minHeight="10.0"/>
+        </rowConstraints>
+        <children>
+            <GridPane onMouseEntered="#hoverMenu" onMouseExited="#leaveMenu" GridPane.halignment="CENTER"
+                      GridPane.valignment="CENTER" GridPane.vgrow="SOMETIMES">
+                <columnConstraints>
+                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" valignment="CENTER"/>
+                    <RowConstraints minHeight="10.0" valignment="TOP" vgrow="NEVER"/>
+                </rowConstraints>
+                <children>
+                    <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneDark"/>
+                    <Label styleClass="menuTitle" text="Ant Colony"/>
+                    <VBox alignment="CENTER" spacing="20.0" GridPane.halignment="CENTER" GridPane.rowIndex="1"
+                          GridPane.valignment="TOP">
+                        <children>
+                            <HBox alignment="CENTER" spacing="20">
+                                <padding>
+                                    <Insets top="20"/>
+                                </padding>
+                                <children>
+                                    <GridPane maxHeight="160.0" maxWidth="70.0">
+                                        <columnConstraints>
+                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
+                                                               prefWidth="100.0"/>
+                                        </columnConstraints>
+                                        <rowConstraints>
+                                            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0"
+                                                            valignment="CENTER"/>
+                                            <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="ALWAYS"/>
+                                        </rowConstraints>
+                                        <children>
+                                            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneDark"/>
+                                            <Label styleClass="menuTitleSmall" text="Ants"/>
+                                            <Label fx:id="antsCountValue" layoutX="19.0" layoutY="8.0"
+                                                   styleClass="textSmallDark" text="50" GridPane.rowIndex="1"/>
+                                        </children>
+                                        <styleClass>
+                                            <String fx:value="menu"/>
+                                            <String fx:value="noPadding"/>
+                                            <String fx:value="noMargin"/>
+                                        </styleClass>
+                                    </GridPane>
+                                    <JFXButton fx:id="antsCountButton">
+                                        <tooltip>
+                                            <Tooltip text="Change ants count"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="PENCIL" glyphSize="32"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-dark"/>
+                                        </styleClass>
+                                    </JFXButton>
+                                </children>
+                            </HBox>
+                            <HBox alignment="CENTER" spacing="20">
+                                <children>
+                                    <GridPane maxHeight="160.0" maxWidth="70.0">
+                                        <columnConstraints>
+                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
+                                                               prefWidth="100.0"/>
+                                        </columnConstraints>
+                                        <rowConstraints>
+                                            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0"
+                                                            valignment="CENTER"/>
+                                            <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="ALWAYS"/>
+                                        </rowConstraints>
+                                        <children>
+                                            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneDark"/>
+                                            <Label styleClass="menuTitleSmall" text="Alpha"/>
+                                            <Label fx:id="alphaValue" layoutX="19.0" layoutY="8.0"
+                                                   styleClass="textSmallDark" text="1.0" GridPane.rowIndex="1"/>
+                                        </children>
+                                        <styleClass>
+                                            <String fx:value="menu"/>
+                                            <String fx:value="noPadding"/>
+                                            <String fx:value="noMargin"/>
+                                        </styleClass>
+                                    </GridPane>
+                                    <JFXButton fx:id="alphaButton">
+                                        <tooltip>
+                                            <Tooltip text="Change α value"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="PENCIL" glyphSize="32"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-dark"/>
+                                        </styleClass>
+                                    </JFXButton>
+                                </children>
+                            </HBox>
+                            <HBox alignment="CENTER" spacing="20">
+                                <children>
+                                    <GridPane maxHeight="160.0" maxWidth="70.0">
+                                        <columnConstraints>
+                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
+                                                               prefWidth="100.0"/>
+                                        </columnConstraints>
+                                        <rowConstraints>
+                                            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0"
+                                                            valignment="CENTER"/>
+                                            <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="ALWAYS"/>
+                                        </rowConstraints>
+                                        <children>
+                                            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneDark"/>
+                                            <Label styleClass="menuTitleSmall" text="Beta"/>
+                                            <Label fx:id="betaValue" layoutX="19.0" layoutY="8.0"
+                                                   styleClass="textSmallDark" text="1.0" GridPane.rowIndex="1"/>
+                                        </children>
+                                        <styleClass>
+                                            <String fx:value="menu"/>
+                                            <String fx:value="noPadding"/>
+                                            <String fx:value="noMargin"/>
+                                        </styleClass>
+                                    </GridPane>
+                                    <JFXButton fx:id="betaButton">
+                                        <tooltip>
+                                            <Tooltip text="Change β value"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="PENCIL" glyphSize="32"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-dark"/>
+                                        </styleClass>
+                                    </JFXButton>
+                                </children>
+                            </HBox>
+                            <HBox alignment="CENTER" spacing="20">
+                                <children>
+                                    <GridPane maxHeight="160.0" maxWidth="70.0">
+                                        <columnConstraints>
+                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
+                                                               prefWidth="100.0"/>
+                                        </columnConstraints>
+                                        <rowConstraints>
+                                            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0"
+                                                            valignment="CENTER"/>
+                                            <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="ALWAYS"/>
+                                        </rowConstraints>
+                                        <children>
+                                            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneDark"/>
+                                            <Label styleClass="menuTitleTooSmall" text="Threshold"/>
+                                            <Label fx:id="thresholdValue" layoutX="19.0" layoutY="8.0"
+                                                   styleClass="textSmallDark" text="40" GridPane.rowIndex="1"/>
+                                        </children>
+                                        <styleClass>
+                                            <String fx:value="menu"/>
+                                            <String fx:value="noPadding"/>
+                                            <String fx:value="noMargin"/>
+                                        </styleClass>
+                                    </GridPane>
+                                    <JFXButton fx:id="thresholdButton">
+                                        <tooltip>
+                                            <Tooltip text="Change iterations threshold"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="PENCIL" glyphSize="32"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-dark"/>
+                                        </styleClass>
+                                    </JFXButton>
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
+                </children>
+                <styleClass>
+                    <String fx:value="menu"/>
+                    <String fx:value="noPadding"/>
+                    <String fx:value="noMargin"/>
+                </styleClass>
+            </GridPane>
+        </children>
+    </GridPane>
+    <GridPane fx:id="loading" visible="true" GridPane.columnSpan="2" opacity="1">
+        <Pane styleClass="dark-overlay-2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+        <StackPane fx:id="loadingStack">
+            <JFXSpinner startingAngle="-40" styleClass="materialDesign-purple, first-spinner"/>
+            <JFXSpinner startingAngle="-90" styleClass="materialDesign-blue, second-spinner"/>
+            <JFXSpinner startingAngle="-120" styleClass="materialDesign-cyan, third-spinner"/>
+            <JFXSpinner startingAngle="-150" styleClass="materialDesign-green, fourth-spinner"/>
+            <JFXSpinner startingAngle="-180" styleClass="materialDesign-yellow, fifth-spinner"/>
+            <JFXSpinner startingAngle="-210" styleClass="materialDesign-orange, sixth-spinner"/>
+            <JFXSpinner startingAngle="-240" styleClass="materialDesign-red, seventh-spinner"/>
+        </StackPane>
+        <FontAwesomeIconView fx:id="algorithmFinishedIcon" fill="#35e188" glyphName="TIMES_CIRCLE_ALT" visible="false"
+                             GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS"/>
+        </rowConstraints>
+    </GridPane>
     <columnConstraints>
-        <ColumnConstraints halignment="LEFT"/>
+        <ColumnConstraints halignment="LEFT" percentWidth="50.0"/>
+        <ColumnConstraints halignment="RIGHT" percentWidth="50.0"/>
     </columnConstraints>
     <rowConstraints>
         <RowConstraints valignment="TOP"/>

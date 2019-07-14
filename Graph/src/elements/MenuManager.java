@@ -1,11 +1,13 @@
 package elements;
 
 import com.jfoenix.controls.JFXButton;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import graph.App;
 import javafx.animation.*;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
 import java.util.*;
@@ -25,7 +27,16 @@ public class MenuManager {
     private GridPane toolsMenu;
     private GridPane modeMenu;
     private GridPane runtimeMenu;
+    private GridPane antColonyMenu;
     private HBox expandingProblemsMenu;
+
+    /**
+     * Loading elements
+     */
+
+    public FontAwesomeIconView algorithmFinishedIcon;
+    public StackPane loadingStack;
+    public GridPane loading;
 
     /**
      * Problems menu buttons
@@ -57,20 +68,44 @@ public class MenuManager {
     private JFXButton selectButton;
 
     /**
+     * Ant colony menu elements
+     */
+
+    private JFXButton antsCountButton;
+    private JFXButton alphaButton;
+    private JFXButton betaButton;
+    private JFXButton thresholdButton;
+
+    /**
+     * Ant colony menu elements
+     */
+
+    private JFXButton playButton;
+    private JFXButton stopButton;
+    private JFXButton speedUpButton;
+    private JFXButton speedDownButton;
+
+    /**
      * Menu hide and show animations
      */
 
     private TranslateTransition hideMenu;
     private TranslateTransition showMenu;
+    private FadeTransition fadeInLoading;
+    private FadeTransition fadeOutLoading;
+    private ParallelTransition showSuccessIcon;
+    private ParallelTransition hideSuccessIcon;
     private TranslateTransition hideRuntimeMenu;
     private TranslateTransition showRuntimeMenu;
+    private TranslateTransition hideAntColonyMenu;
+    private TranslateTransition showAntColonyMenu;
     private ParallelTransition hideExpandingProblemsMenu;
     private ParallelTransition showExpandingProblemsMenu;
     private boolean expandingProblemsMenuTransitionRunning = false;
 
     public enum State {
         SELECTED_BOTH_NODES_AND_EDGES, SELECTED_SINGLE_DIRECTIONAL_EDGE, SELECTED_SINGLE_NON_DIRECTIONAL_EDGE,
-        SELECTED_MULTIPLE_EDGES, SELECTED_SINGLE_NODE, SELECTED_MULTIPLE_NODES, RUNNING_ALGORITHM, NOTHING_SELECTED
+        SELECTED_MULTIPLE_EDGES, SELECTED_SINGLE_NODE, SELECTED_MULTIPLE_NODES, RUNNING_ALGORITHM, PLAYING, NOTHING_SELECTED
     }
 
     /**
@@ -94,6 +129,7 @@ public class MenuManager {
         toolsMenu = menus.get(2);
         modeMenu = menus.get(3);
         runtimeMenu = menus.get(4);
+        antColonyMenu = menus.get(5);
         this.expandingProblemsMenu = expandingProblemsMenu;
 
         /*
@@ -127,6 +163,22 @@ public class MenuManager {
         antColonyButton = buttons.get(13);
 
         /*
+         * Ant colony buttons
+         */
+        antsCountButton = buttons.get(14);
+        alphaButton = buttons.get(15);
+        betaButton = buttons.get(16);
+        thresholdButton = buttons.get(17);
+
+        /*
+         * Runtime menu buttons
+         */
+        playButton = buttons.get(18);
+        stopButton = buttons.get(19);
+        speedUpButton = buttons.get(20);
+        speedDownButton = buttons.get(21);
+
+        /*
          * Set menu animations
          */
         setMenuAnimations();
@@ -135,6 +187,80 @@ public class MenuManager {
          * Set mode buttons action listener
          */
         setMenuButtons();
+    }
+
+    /**
+     * Sets loading
+     */
+
+    public void setLoading(GridPane loading, StackPane loadingStack, FontAwesomeIconView algorithmFinishedIcon) {
+        this.loading = loading;
+        this.loadingStack = loadingStack;
+        this.algorithmFinishedIcon = algorithmFinishedIcon;
+
+        /*
+         * Set loading animations
+         */
+        setLoadingAnimations();
+    }
+
+    /**
+     * Sets loading animations
+     */
+
+    public void setLoadingAnimations() {
+        /*
+         * Fade in loading animation
+         */
+        fadeInLoading = new FadeTransition(Duration.millis(500), loading);
+        fadeInLoading.setToValue(1);
+
+        /*
+         * Fade out loading animation
+         */
+        fadeOutLoading = new FadeTransition(Duration.millis(500), loading);
+        fadeOutLoading.setToValue(0);
+
+        /*
+         * Scale in success icon animation
+         */
+        ScaleTransition scaleInSuccessIcon = new ScaleTransition(Duration.millis(500), loading);
+        scaleInSuccessIcon.setToX(1);
+        scaleInSuccessIcon.setToY(1);
+
+        /*
+         * Scale out success icon animation
+         */
+        ScaleTransition scaleOutSuccessIcon = new ScaleTransition(Duration.millis(500), loading);
+        scaleInSuccessIcon.setToX(0);
+        scaleInSuccessIcon.setToY(0);
+
+        /*
+         * Rotate in success icon animation
+         */
+        RotateTransition rotateInSuccessIcon = new RotateTransition(Duration.millis(500), algorithmFinishedIcon);
+        rotateInSuccessIcon.setToAngle(720);
+
+        /*
+         * Rotate out success icon animation
+         */
+        RotateTransition rotateOutSuccessIcon = new RotateTransition(Duration.millis(500), algorithmFinishedIcon);
+        rotateOutSuccessIcon.setToAngle(0);
+
+        /*
+         * Mix success icon show transitions
+         */
+        showSuccessIcon = new ParallelTransition(rotateInSuccessIcon, scaleInSuccessIcon);
+        showSuccessIcon.setOnFinished(event -> {
+            PauseTransition wait = new PauseTransition(Duration.millis(500));
+            wait.setOnFinished(event1 -> hideSuccessIcon());
+            wait.play();
+        });
+
+        /*
+         * Mix success icon hide transitions
+         */
+        hideSuccessIcon = new ParallelTransition(rotateOutSuccessIcon, scaleOutSuccessIcon);
     }
 
     /**
@@ -165,6 +291,18 @@ public class MenuManager {
          */
         showRuntimeMenu = new TranslateTransition(Duration.millis(500), runtimeMenu);
         showRuntimeMenu.setToY(15);
+
+        /*
+         * Hide ant colony menu animation
+         */
+        hideAntColonyMenu = new TranslateTransition(Duration.millis(500), antColonyMenu);
+        hideAntColonyMenu.setToX(220);
+
+        /*
+         * Show ant colony menu animation
+         */
+        showAntColonyMenu = new TranslateTransition(Duration.millis(500), antColonyMenu);
+        showAntColonyMenu.setToX(0);
 
         /*
          * Hide menu expanding problems animation
@@ -238,6 +376,62 @@ public class MenuManager {
     }
 
     /**
+     * Show menu
+     */
+
+    public void showAntColonyMenu() {
+        hideAntColonyMenu.stop();
+        showAntColonyMenu.play();
+    }
+
+    /**
+     * Hide menu
+     */
+
+    public void hideAntColonyMenu() {
+        showAntColonyMenu.stop();
+        hideAntColonyMenu.play();
+    }
+
+    /**
+     * Show loading
+     */
+
+    public void showLoading() {
+        loadingStack.setVisible(true);
+        fadeOutLoading.stop();
+        fadeInLoading.play();
+    }
+
+    /**
+     * Hide loading
+     */
+
+    public void hideLoading() {
+        fadeInLoading.stop();
+        fadeOutLoading.stop();
+    }
+
+    /**
+     * Show success icon
+     */
+
+    public void showSuccessIcon() {
+        loadingStack.setVisible(false);
+        hideSuccessIcon.stop();
+        showSuccessIcon.play();
+    }
+
+    /**
+     * Hide success icon
+     */
+
+    public void hideSuccessIcon() {
+        showSuccessIcon.stop();
+        hideSuccessIcon.play();
+    }
+
+    /**
      * Enable necessary buttons
      *
      * @param buttonsList the list of the buttons to disable or enable
@@ -281,6 +475,29 @@ public class MenuManager {
                 map.put(directionalEdgeButton, false);
                 map.put(nonDirectionalEdgeButton, false);
                 map.put(selectButton, false);
+                map.put(playButton, true);
+                map.put(stopButton, true);
+                map.put(speedUpButton, false);
+                map.put(speedDownButton, false);
+
+                break;
+            case PLAYING:
+                map.put(shortestPathButton, false);
+                map.put(travellingSalesmanButton, false);
+                map.put(setSourceNodeButton, false);
+                map.put(setTargetNodeButton, false);
+                map.put(setWeightButton, false);
+                map.put(setLabelButton, false);
+                map.put(changeDirectionButton, false);
+                map.put(removeButton, false);
+                map.put(nodeButton, false);
+                map.put(directionalEdgeButton, false);
+                map.put(nonDirectionalEdgeButton, false);
+                map.put(selectButton, false);
+                map.put(playButton, true);
+                map.put(stopButton, true);
+                map.put(speedUpButton, true);
+                map.put(speedDownButton, true);
 
                 break;
             case SELECTED_SINGLE_DIRECTIONAL_EDGE:
@@ -495,7 +712,6 @@ public class MenuManager {
 
     public void setMenuButtons() {
         shortestPathButton.setOnAction(event -> app.changeProblem(App.Problem.SHORTEST_PATH));
-//        travellingSalesmanButton.setOnAction(event -> app.changeProblem(App.Problem.DYNAMIC_PROGRAMMING));
         travellingSalesmanButton.setOnAction(event -> app.showExpandingProblemsMenu());
         dynamicProgrammingButton.setOnAction(event -> app.changeProblem(App.Problem.DYNAMIC_PROGRAMMING));
         antColonyButton.setOnAction(event -> app.changeProblem(App.Problem.ANT_COLONY));
@@ -509,6 +725,10 @@ public class MenuManager {
         nodeButton.setOnAction(event -> app.changeMode(App.Mode.NODE));
         directionalEdgeButton.setOnAction(event -> app.changeMode(App.Mode.DIRECTIONAL_EDGE));
         nonDirectionalEdgeButton.setOnAction(event -> app.changeMode(App.Mode.NON_DIRECTIONAL_EDGE));
+        antsCountButton.setOnAction(event -> app.setAntsCount());
+        alphaButton.setOnAction(event -> app.setAlpha());
+        betaButton.setOnAction(event -> app.setBeta());
+        thresholdButton.setOnAction(event -> app.setThreshold());
     }
 
     /**
@@ -548,6 +768,7 @@ public class MenuManager {
     public void menuOnTop() {
         mainMenu.toFront();
         runtimeMenu.toFront();
+        antColonyMenu.toFront();
     }
 
     /**
