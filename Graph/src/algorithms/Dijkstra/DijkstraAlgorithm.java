@@ -16,21 +16,21 @@ public class DijkstraAlgorithm {
     /**
      * @return
      */
-    public static PathData FindShortestPath(Graph graph, String sourceNodeIdentifier, String targetNodeIdentifier) throws ArrayStoreException {
-        return FindShortestPath(graph, graph.getNode(sourceNodeIdentifier), graph.getNode(targetNodeIdentifier));
+    public static PathData findShortestPath(Graph graph, String sourceNodeIdentifier, String targetNodeIdentifier) throws ArrayStoreException {
+        return findShortestPath(graph, graph.getNode(sourceNodeIdentifier), graph.getNode(targetNodeIdentifier));
     }
 
     /**
      * @return
      */
-    public static PathDataObject FindShortestPath(GraphObject graph, String sourceNodeIdentifier, String targetNodeIdentifier) throws ArrayStoreException {
-        return FindShortestPath(graph, graph.getNode(sourceNodeIdentifier), graph.getNode(targetNodeIdentifier));
+    public static PathDataObject findShortestPath(GraphObject graph, String sourceNodeIdentifier, String targetNodeIdentifier) throws ArrayStoreException {
+        return findShortestPath(graph, graph.getNode(sourceNodeIdentifier), graph.getNode(targetNodeIdentifier));
     }
 
     /**
      * @return
      */
-    public static PathData FindShortestPath(Graph graph, GraphNode sourceNode, GraphNode targetNode) throws ArrayStoreException {
+    public static PathData findShortestPath(Graph graph, GraphNode sourceNode, GraphNode targetNode) throws ArrayStoreException {
         if (graph.getNodes().size() == 0) throw new ArrayStoreException();
         ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
         ArrayList<GraphNode> navigatedNodes = new ArrayList<>();
@@ -55,7 +55,7 @@ public class DijkstraAlgorithm {
     /**
      * @return
      */
-    public static PathDataObject FindShortestPath(GraphObject graph, NodeGraphObject sourceNode, NodeGraphObject targetNode) throws ArrayStoreException {
+    public static PathDataObject findShortestPath(GraphObject graph, NodeGraphObject sourceNode, NodeGraphObject targetNode) throws ArrayStoreException {
         if (graph.getNodes().size() == 0) throw new ArrayStoreException();
         ArrayList<NodeGraphObject> nodes = new ArrayList<>(graph.getNodes());
         ArrayList<NodeGraphObject> navigatedNodes = new ArrayList<>();

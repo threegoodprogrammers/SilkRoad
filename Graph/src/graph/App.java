@@ -1,6 +1,9 @@
 package graph;
 
+import algorithms.Dijkstra.DijkstraAlgorithm;
 import algorithms.Dijkstra.PathData;
+import algorithms.TravellingSalesMan.AntColony.AntColonyAlgorithm;
+import algorithms.TravellingSalesMan.DynamicProgramming.TravellingSalesManAlgorithm;
 import algorithms.TravellingSalesMan.TravellingSalesManData;
 import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -87,6 +90,7 @@ public class App {
     private double alpha = 1.0;
     private double beta = 1.0;
     private int threshold = 40;
+    private double vap = .5;
 
     /**
      * Problems menu buttons
@@ -132,14 +136,15 @@ public class App {
     private Thread shortestPathThread;
     private Thread dynamicProgrammingThread;
     private Thread antColonyThread;
+    private boolean countTimer = false;
 
     /**
      * Problems results
      */
 
-    private PathData shortestPathResult;
-    private TravellingSalesManData dynamicProgrammingResult;
-    private TravellingSalesManData antColonyResult;
+    private PathData shortestPathResult = null;
+    private TravellingSalesManData dynamicProgrammingResult = null;
+    private TravellingSalesManData antColonyResult = null;
 
     /**
      * New temp node
@@ -461,9 +466,11 @@ public class App {
 
     public void setShortestPathThread() {
         shortestPathThread = new Thread(() -> {
-            boolean test;
+            this.shortestPathResult = DijkstraAlgorithm.findShortestPath(mainGraph, this.sourceNode, this.targetNode);
 
-            test = isNumber("3");
+            /**
+             * @todo call finish function
+             */
         });
     }
 
@@ -472,7 +479,13 @@ public class App {
      */
 
     public void setDynamicProgrammingThread() {
+        dynamicProgrammingThread = new Thread(() -> {
+            this.dynamicProgrammingResult = TravellingSalesManAlgorithm.findShortestCycle(mainGraph, this.sourceNode);
 
+            /**
+             * @todo call finish function
+             */
+        });
     }
 
     /**
@@ -480,7 +493,14 @@ public class App {
      */
 
     public void setAntColonyThread() {
+        antColonyThread = new Thread(() -> {
+            this.antColonyResult = AntColonyAlgorithm.findShortestCycle(mainGraph, this.sourceNode,
+                    this.threshold, this.alpha, this.beta, this.vap, this.antsCount);
 
+            /**
+             * @todo call finish function
+             */
+        });
     }
 
     /**

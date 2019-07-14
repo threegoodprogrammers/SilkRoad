@@ -22,8 +22,8 @@ public class AntColonyAlgorithm {
             final Graph graph,
             GraphNode baseNode,
             int iterationThreshold,
-            int alpha,
-            int betha,
+            double alpha,
+            double beta,
             double VAP,
             int antCount
     ) {
@@ -53,7 +53,7 @@ public class AntColonyAlgorithm {
                     double loopLength = 0;
 
                     cityCounter++;
-                    if(cityCounter >= nodesCount){
+                    if (cityCounter >= nodesCount) {
                         cityCounter = 0;
                     }
                     List<Integer> visitedCities = new ArrayList<>();
@@ -120,7 +120,7 @@ public class AntColonyAlgorithm {
                 // Filling  the probability Matrix
                 for (int i = 0; i < nodesCount; i++) {
                     for (int j = 0; j < nodesCount; j++) {
-                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow(1d / distanceMatrix[i][j], betha)) / sigma;
+                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow(1d / distanceMatrix[i][j], beta)) / sigma;
                     }
                 }
             }
@@ -199,7 +199,7 @@ public class AntColonyAlgorithm {
                     double loopLength = 0;
 
                     cityCounter++;
-                    if(cityCounter >= nodesCount){
+                    if (cityCounter >= nodesCount) {
                         cityCounter = 0;
                     }
                     List<Integer> visitedCities = new ArrayList<>();

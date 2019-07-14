@@ -25,14 +25,14 @@ class DijkstraAlgorithmTest {
     void GraphWith0Nodes_ThrowsArgumentException() {
         graph = GraphBuilder.Build().WithNodes(0).getGraph();
 
-        Assertions.assertThrows(ArrayStoreException.class, () -> DijkstraAlgorithm.FindShortestPath(graph, "0", "0"));
+        Assertions.assertThrows(ArrayStoreException.class, () -> DijkstraAlgorithm.findShortestPath(graph, "0", "0"));
     }
 
     @Test
     void GraphWith1Node_StartIs0() {
         graph = GraphBuilder.Build().WithNodes(1).getGraph();
 
-        PathDataObject pathData = DijkstraAlgorithm.FindShortestPath(graph, "0", "0");
+        PathDataObject pathData = DijkstraAlgorithm.findShortestPath(graph, "0", "0");
 
         Assertions.assertEquals(1, pathData.distances.size());
         Assertions.assertEquals(0, pathData.GetDistanceToNode(graph.getNode("0")));
@@ -42,7 +42,7 @@ class DijkstraAlgorithmTest {
     void GraphWith2Nodes_StartIs0_DistanceIs3_All() {
         graph = GraphBuilder.Build().WithNodes(2).AllConnected(3).getGraph();
 
-        PathDataObject pathData = DijkstraAlgorithm.FindShortestPath(graph, "0", "1");
+        PathDataObject pathData = DijkstraAlgorithm.findShortestPath(graph, "0", "1");
 
         Assertions.assertEquals(2, pathData.distances.size());
         Assertions.assertEquals(0, pathData.GetDistanceToNode(graph.getNode("0")));
@@ -54,7 +54,7 @@ class DijkstraAlgorithmTest {
     void GraphWith2Nodes_StartIs1_DistanceIs3_All() {
         graph = GraphBuilder.Build().WithNodes(2).AllConnected(3).getGraph();
 
-        PathDataObject pathData = DijkstraAlgorithm.FindShortestPath(graph, "1", "0");
+        PathDataObject pathData = DijkstraAlgorithm.findShortestPath(graph, "1", "0");
 
         Assertions.assertEquals(2, pathData.distances.size());
         Assertions.assertEquals(3, pathData.GetDistanceToNode(graph.getNode("0")));
@@ -66,7 +66,7 @@ class DijkstraAlgorithmTest {
     @Test
     void GraphWith3Nodes_StartIs0_DistanceIs2_All() {
         graph = GraphBuilder.Build().WithNodes(3).AllConnected(2).getGraph();
-        PathDataObject pathData = DijkstraAlgorithm.FindShortestPath(graph, "0", "1");
+        PathDataObject pathData = DijkstraAlgorithm.findShortestPath(graph, "0", "1");
 
         Assertions.assertEquals(3, pathData.distances.size());
         Assertions.assertEquals(0, pathData.GetDistanceToNode(graph.getNode("0")));
@@ -81,7 +81,7 @@ class DijkstraAlgorithmTest {
         String[] targetIDs = {"0", "3", "4", "0", "0", "4", "5", "3", "5"};
         double[] weights = {4, 1, 2, 3, 5, 2, 1, 3, 4};
         graph = GraphBuilder.Build().WithNodes(6).SomeConnected(sourceIDs, targetIDs, weights).getGraph();
-        PathDataObject pathData = DijkstraAlgorithm.FindShortestPath(graph, "1", "5");
+        PathDataObject pathData = DijkstraAlgorithm.findShortestPath(graph, "1", "5");
 
         Assertions.assertEquals(6, pathData.distances.size());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, pathData.GetDistanceToNode(graph.getNode("2")));
