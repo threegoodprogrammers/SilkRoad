@@ -2,7 +2,6 @@ package algorithms.TravellingSalesMan.DynamicProgramming;
 
 import algorithms.GraphObject;
 import algorithms.NodeGraphObject;
-import algorithms.TravellingSalesMan.HamiltonianCycle;
 import algorithms.TravellingSalesMan.TravellingSalesManData;
 import algorithms.TravellingSalesMan.Validation;
 import elements.Graph;
@@ -21,7 +20,7 @@ public class TravellingSalesManAlgorithm {
     public static TravellingSalesManData findShortestCycle(GraphObject graph, NodeGraphObject baseNode) {
         if (graph == null) return null;
         double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), graph.getNodes().size());
-        if (Validation.isComplete(distanceMatrix, distanceMatrix.length) && HasHamiltonianCycle(graph.getNodes())) {
+        if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
             int nodesCount = graph.getNodes().size();
 
             ArrayList<NodeGraphObject> path = new ArrayList<>();
@@ -39,7 +38,7 @@ public class TravellingSalesManAlgorithm {
     public static TravellingSalesManData findShortestCycle(Graph graph, GraphNode baseNode) {
         if (graph == null) return null;
         double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), graph.getNodes().size());
-        if (Validation.isComplete(distanceMatrix, distanceMatrix.length) && HasHamiltonianCycle(graph.getNodes())) {
+        if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
             int nodesCount = graph.getNodes().size();
 
             ArrayList<GraphNode> path = new ArrayList<>();
@@ -54,45 +53,6 @@ public class TravellingSalesManAlgorithm {
         return null;
     }
 
-    private static boolean HasHamiltonianCycle(ArrayList<NodeGraphObject> nodes) {
-
-        int nodesCount = nodes.size();
-        int[][] adjacencyMatrix = new int[nodesCount][nodesCount];
-
-        for (int i = 0; i < nodesCount; i++) {
-            for (int j = 0; j < nodesCount; j++) {
-
-                NodeGraphObject source = nodes.get(i);
-                NodeGraphObject target = nodes.get(j);
-                if (source.getAttachedNodes().get(target) != null) {
-                    adjacencyMatrix[i][j] = 1;
-                } else {
-                    adjacencyMatrix[i][j] = 0;
-                }
-            }
-        }
-        return HamiltonianCycle.HamiltonianCycle(adjacencyMatrix);
-    }
-
-    private static boolean HasHamiltonianCycle(List<GraphNode> nodes) {
-
-        int nodesCount = nodes.size();
-        int[][] adjacencyMatrix = new int[nodesCount][nodesCount];
-
-        for (int i = 0; i < nodesCount; i++) {
-            for (int j = 0; j < nodesCount; j++) {
-
-                GraphNode source = nodes.get(i);
-                GraphNode target = nodes.get(j);
-                if (source.getOutgoingNodes().get(target) != null) {
-                    adjacencyMatrix[i][j] = 1;
-                } else {
-                    adjacencyMatrix[i][j] = 0;
-                }
-            }
-        }
-        return HamiltonianCycle.HamiltonianCycle(adjacencyMatrix);
-    }
 
     private static double[][] getDistanceMatrixFromObjects(ArrayList<NodeGraphObject> nodes, int nodesCount) {
         if (nodes == null) return null;
