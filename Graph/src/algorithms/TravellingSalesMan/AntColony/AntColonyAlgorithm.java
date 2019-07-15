@@ -22,8 +22,8 @@ public class AntColonyAlgorithm {
             GraphNode baseNode,
             int iterationThreshold,
             double alpha,
-            double betha,
-            double VAP,
+            double beta,
+            double vapor,
             int antCount
     ) {
         if (graph == null || baseNode == null || antCount < 1) return null;
@@ -32,7 +32,6 @@ public class AntColonyAlgorithm {
         initMatrices(nodesCount);
         distanceMatrix = getDistanceMatrixFromObjects(new ArrayList<>(nodes));
         if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
-            long start = System.currentTimeMillis();
             //---------------------------------------------------
             if (nodesCount == 0)
                 return null;
@@ -53,7 +52,8 @@ public class AntColonyAlgorithm {
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {
                 int cityCounter = -1;
                 for (int antNo = 0; antNo < antCount; antNo++) {
-                    int startCity = (cityCounter + 1) % nodesCount;
+                    int startCity = (++cityCounter) % nodesCount;
+
                     double loopLength = 0;
 
                     List<Integer> visitedCities = new ArrayList<>();
@@ -75,7 +75,7 @@ public class AntColonyAlgorithm {
                             sumProb = 0.0;
 
                             for (int city = 0; city < nodesCount; city++) {
-                                if (city != startCity && !citiesState[city]) {
+                                if (currentCity != city && city != startCity && !citiesState[city]) {
                                     sumProb += probabilityMatrix[currentCity][city];
                                     if (randNumber <= sumProb) {
                                         loopLength += distanceMatrix[currentCity][city];
@@ -93,7 +93,7 @@ public class AntColonyAlgorithm {
                             visitedCities.add(startCity);
                         }
                     }
-                    for (int node = 0; node < visitedCities.size() - 1; node++) {
+                    for (int node = 0; node < nodesCount - 1; node++) {
                         deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
                         deltaPheromoneMatrix[visitedCities.get(node + 1)][visitedCities.get(node)] += (1d / loopLength);
                     }
@@ -102,7 +102,7 @@ public class AntColonyAlgorithm {
                 for (int i = 0; i < nodesCount; i++) {
                     for (int j = 0; j < nodesCount; j++) {
 
-                        pheromoneMatrix[i][j] = ((1 - VAP) * pheromoneMatrix[i][j]) + deltaPheromoneMatrix[i][j];
+                        pheromoneMatrix[i][j] = ((1 - vapor) * pheromoneMatrix[i][j]) + deltaPheromoneMatrix[i][j];
                         deltaPheromoneMatrix[i][j] = 0;
                     }
                 }
@@ -116,23 +116,27 @@ public class AntColonyAlgorithm {
                 // Filling  the probability Matrix
                 for (int i = 0; i < nodesCount; i++) {
                     for (int j = 0; j < nodesCount; j++) {
-                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow(1d / distanceMatrix[i][j], betha)) / sigma;
+                        probabilityMatrix[i][j] =
+                                (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow(1d / distanceMatrix[i][j], beta))
+                                        / sigma;
                     }
                 }
             }
 
-            for (int i = 0; i < nodesCount; i++) {
-                for (int j = 0; j < nodesCount; j++) {
-                    System.out.println("[" + i + "][" + j + "]=" + probabilityMatrix[i][j]);
-                }
-
-            }
+//            for (int i = 0; i < nodesCount; i++) {
+//                for (int j = 0; j < nodesCount; j++) {
+//                    System.out.println("[" + i + "][" + j + "]=" + probabilityMatrix[i][j]);
+//                }
+//
+//            }
 
 
             int currentCityIndex = nodes.indexOf(baseNode);
+            boolean[] isVisited = new boolean[nodesCount];
+            isVisited[currentCityIndex] = true;
 
             ArrayList<GraphNode> path = new ArrayList<>();
-            path.add(graph.getNodes().get(currentCityIndex));
+            path.add(baseNode);
 
             float distance = 0;
             for (int i = 0; i < nodesCount - 1; i++) {
@@ -141,24 +145,21 @@ public class AntColonyAlgorithm {
                 int nextCity = -1;
                 for (int j = 0; j < nodesCount; j++) {
 
-                    if (currentCityIndex != j) {
-                        if (probabilityMatrix[currentCityIndex][j] > max) {
+                    if (currentCityIndex != j && !isVisited[j]) {
+                        if (probabilityMatrix[currentCityIndex][j] >= max) {
                             max = probabilityMatrix[currentCityIndex][j];
                             nextCity = j;
                         }
 
                     }
                 }
+                isVisited[nextCity] = true;
                 distance += distanceMatrix[currentCityIndex][nextCity];
                 currentCityIndex = nextCity;
                 path.add(nodes.get(currentCityIndex));
             }
             path.add(baseNode);
             distance += distanceMatrix[currentCityIndex][nodes.indexOf(baseNode)];
-
-            long end = System.currentTimeMillis();
-            float sec = (end - start) / 1000F;
-            System.out.println(sec);
             return new TravellingSalesManData(path, distance);
         } else {
             //TODO: Show error that the the salesMan
@@ -192,6 +193,9 @@ public class AntColonyAlgorithm {
         pheromoneMatrix = new double[nodesCount][nodesCount];
         deltaPheromoneMatrix = new double[nodesCount][nodesCount];
         probabilityMatrix = new double[nodesCount][nodesCount];
+        for (int i = 0; i < nodesCount; i++) {
+            probabilityMatrix[i][i] = Double.MIN_VALUE;
+        }
     }
 
 
