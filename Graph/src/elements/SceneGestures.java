@@ -316,6 +316,13 @@ public class SceneGestures {
                     }
 
                     break;
+                case ENTER:
+                    /*
+                     * Press enter key
+                     */
+                    app.pressEnter();
+
+                    break;
                 default:
                     break;
             }

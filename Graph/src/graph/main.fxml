@@ -629,7 +629,8 @@
                                 <children>
                                     <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneDark"/>
                                     <Label styleClass="menuTitleSmall" text="Time"/>
-                                    <Label layoutX="19.0" layoutY="8.0" styleClass="textSmallDark" text="0:00"
+                                    <Label fx:id="timerValue" layoutX="19.0" layoutY="8.0" styleClass="textSmallDark"
+                                           text="0:00"
                                            GridPane.rowIndex="1"/>
                                 </children>
                                 <styleClass>
@@ -678,14 +679,14 @@
             <String fx:value="noMargin"/>
         </styleClass>
     </GridPane>
-    <GridPane fx:id="antColonyMenu" layoutX="10.0" layoutY="10.0" maxWidth="220.0" translateX="220" translateY="170"
+    <GridPane fx:id="antColonyMenu" layoutX="10.0" layoutY="10.0" maxWidth="220.0" translateX="220" translateY="125"
               GridPane.columnIndex="1">
         <columnConstraints>
             <ColumnConstraints minWidth="10.0" prefWidth="200.0"/>
             <ColumnConstraints prefWidth="20.0"/>
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints maxHeight="430.0" minHeight="10.0"/>
+            <RowConstraints maxHeight="520.0" minHeight="10.0"/>
         </rowConstraints>
         <children>
             <GridPane onMouseEntered="#hoverMenu" onMouseExited="#leaveMenu" GridPane.halignment="CENTER"
@@ -876,9 +877,9 @@
                                         </rowConstraints>
                                         <children>
                                             <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneDark"/>
-                                            <Label styleClass="menuTitleTooSmall" text="Threshold"/>
-                                            <Label fx:id="thresholdValue" layoutX="19.0" layoutY="8.0"
-                                                   styleClass="textSmallDark" text="40" GridPane.rowIndex="1"/>
+                                            <Label styleClass="menuTitleSmall" text="Vapor"/>
+                                            <Label fx:id="vaporValue" layoutX="19.0" layoutY="8.0"
+                                                   styleClass="textSmallDark" text="0.5" GridPane.rowIndex="1"/>
                                         </children>
                                         <styleClass>
                                             <String fx:value="menu"/>
@@ -886,9 +887,9 @@
                                             <String fx:value="noMargin"/>
                                         </styleClass>
                                     </GridPane>
-                                    <JFXButton fx:id="thresholdButton">
+                                    <JFXButton fx:id="vaporButton">
                                         <tooltip>
-                                            <Tooltip text="Change iterations threshold"/>
+                                            <Tooltip text="Change evaporation constant"/>
                                         </tooltip>
                                         <graphic>
                                             <FontAwesomeIconView glyphName="PENCIL" glyphSize="32"/>
@@ -912,9 +913,9 @@
             </GridPane>
         </children>
     </GridPane>
-    <GridPane fx:id="loading" visible="true" GridPane.columnSpan="2" opacity="1">
+    <GridPane fx:id="loading" visible="false" GridPane.columnSpan="2" opacity="0">
         <Pane styleClass="dark-overlay-2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
-        <StackPane fx:id="loadingStack">
+        <StackPane fx:id="loadingStack" visible="true">
             <JFXSpinner startingAngle="-40" styleClass="materialDesign-purple, first-spinner"/>
             <JFXSpinner startingAngle="-90" styleClass="materialDesign-blue, second-spinner"/>
             <JFXSpinner startingAngle="-120" styleClass="materialDesign-cyan, third-spinner"/>
@@ -923,8 +924,14 @@
             <JFXSpinner startingAngle="-210" styleClass="materialDesign-orange, sixth-spinner"/>
             <JFXSpinner startingAngle="-240" styleClass="materialDesign-red, seventh-spinner"/>
         </StackPane>
-        <FontAwesomeIconView fx:id="algorithmFinishedIcon" fill="#35e188" glyphName="TIMES_CIRCLE_ALT" visible="false"
-                             GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
+        <FontAwesomeIconView fx:id="algorithmSuccessIcon" fill="#35e188" glyphName="CHECK_CIRCLE_ALT" glyphSize="200"
+                             visible="false"
+                             GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+                             scaleX="0" scaleY="0"/>
+        <FontAwesomeIconView fx:id="algorithmFailIcon" fill="#eb594e" glyphName="TIMES_CIRCLE_ALT" glyphSize="200"
+                             visible="false"
+                             GridPane.halignment="CENTER" GridPane.valignment="CENTER"
+                             scaleX="0" scaleY="0"/>
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>

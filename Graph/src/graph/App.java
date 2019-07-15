@@ -9,6 +9,8 @@ import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -27,11 +29,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static graph.Main.app;
 
@@ -66,6 +66,7 @@ public class App {
     public JFXButton stopButton;
     public JFXButton speedUpButton;
     public JFXButton speedDownButton;
+    public Label timerValue;
     private boolean runtimeMenuVisible = false;
 
     /**
@@ -76,10 +77,12 @@ public class App {
     public JFXButton alphaButton;
     public JFXButton betaButton;
     public JFXButton thresholdButton;
+    public JFXButton vaporButton;
     public Label antsCountValue;
     public Label alphaValue;
     public Label betaValue;
     public Label thresholdValue;
+    public Label vaporValue;
     private boolean antColonyMenuVisible = false;
 
     /**
@@ -90,7 +93,7 @@ public class App {
     private double alpha = 1.0;
     private double beta = 1.0;
     private int threshold = 40;
-    private double vap = .5;
+    private double vapor = .5;
 
     /**
      * Problems menu buttons
@@ -125,7 +128,8 @@ public class App {
      * Loading elements
      */
 
-    public FontAwesomeIconView algorithmFinishedIcon;
+    public FontAwesomeIconView algorithmSuccessIcon;
+    public FontAwesomeIconView algorithmFailIcon;
     public StackPane loadingStack;
     public GridPane loading;
 
@@ -136,7 +140,8 @@ public class App {
     private Thread shortestPathThread;
     private Thread dynamicProgrammingThread;
     private Thread antColonyThread;
-    private boolean countTimer = false;
+    private Thread timerThread;
+    private volatile boolean countTimer = false;
 
     /**
      * Problems results
@@ -188,6 +193,14 @@ public class App {
 
     public enum State {
         IDLE, DRAWING_EDGE, MOVING_NODE, RUNNING_ALGORITHM, PLAYING
+    }
+
+    /**
+     * Different errors of running algorithm
+     */
+
+    public enum AlgorithmError {
+        NONE, GRAPH_NOT_COMPLETE, NO_PATH_AVAILABLE
     }
 
     /**
@@ -249,9 +262,6 @@ public class App {
     private boolean menuVisible = true;
 
     public void set(Scene scene, Stage primaryStage) {
-//        EventHandler<MouseEvent> handler = MouseEvent::consume;
-//        newNode.addEventFilter(MouseEvent.ANY, handler);
-
         /*
          * Set scene elements and listeners
          */
@@ -288,16 +298,17 @@ public class App {
         setExpandingMenuListeners();
 
         /*
+         * Set timer thread
+         */
+        setTimerThread();
+
+        /*
          * Set current mode to node mode
          */
         changeMode(Mode.SELECT);
         menuManager.updateButtons(MenuManager.State.NOTHING_SELECTED);
 
         setMenuOnTop();
-
-        hideMenu();
-        showRuntimeMenu();
-
     }
 
     /**
@@ -440,6 +451,7 @@ public class App {
         buttons.put(19, stopButton);
         buttons.put(20, speedUpButton);
         buttons.put(21, speedDownButton);
+        buttons.put(22, vaporButton);
 
         /*
          * Instantiate menu manager object
@@ -449,7 +461,7 @@ public class App {
         /*
          * Set loading elements
          */
-        menuManager.setLoading(loading, loadingStack, algorithmFinishedIcon);
+        menuManager.setLoading(loading, loadingStack, algorithmSuccessIcon, algorithmFailIcon);
     }
 
     /**
@@ -464,43 +476,157 @@ public class App {
      * Sets shortest path thread.
      */
 
-    public void setShortestPathThread() {
+    public void startShortestPathThread() {
         shortestPathThread = new Thread(() -> {
             this.shortestPathResult = DijkstraAlgorithm.findShortestPath(mainGraph, this.sourceNode, this.targetNode);
 
-            /**
-             * @todo call finish function
-             */
+            if (shortestPathResult == null) {
+                finishProcessing(AlgorithmError.NO_PATH_AVAILABLE);
+            } else {
+                finishProcessing(AlgorithmError.NONE);
+            }
         });
+
+        /*
+         * Start the thread
+         */
+        this.shortestPathThread.start();
     }
 
     /**
-     * Sets dynamic programming thread.
+     * Stop shortest path thread
      */
 
-    public void setDynamicProgrammingThread() {
+    public void stopShortestPathThread() {
+        this.shortestPathThread.stop();
+    }
+
+    /**
+     * Start dynamic programming thread
+     */
+
+    private void startDynamicProgrammingThread() {
         dynamicProgrammingThread = new Thread(() -> {
             this.dynamicProgrammingResult = TravellingSalesManAlgorithm.findShortestCycle(mainGraph, this.sourceNode);
 
-            /**
-             * @todo call finish function
-             */
+            if (dynamicProgrammingResult == null) {
+                finishProcessing(AlgorithmError.GRAPH_NOT_COMPLETE);
+            } else {
+                finishProcessing(AlgorithmError.NONE);
+            }
         });
+
+        /*
+         * Start the thread
+         */
+        this.dynamicProgrammingThread.start();
     }
 
     /**
-     * Sets shortest path thread.
+     * Stop dynamic programming thread
      */
 
-    public void setAntColonyThread() {
+    private void stopDynamicProgrammingThread() {
+        this.dynamicProgrammingThread.stop();
+    }
+
+    /**
+     * Start ant colony thread
+     */
+
+    private void startAntColonyThread() {
         antColonyThread = new Thread(() -> {
             this.antColonyResult = AntColonyAlgorithm.findShortestCycle(mainGraph, this.sourceNode,
-                    this.threshold, this.alpha, this.beta, this.vap, this.antsCount);
+                    this.threshold, this.alpha, this.beta, this.vapor, this.antsCount);
 
-            /**
-             * @todo call finish function
-             */
+            if (antColonyResult == null) {
+                finishProcessing(AlgorithmError.GRAPH_NOT_COMPLETE);
+            } else {
+                finishProcessing(AlgorithmError.NONE);
+            }
         });
+
+        /*
+         * Start the thread
+         */
+        this.antColonyThread.start();
+    }
+
+    /**
+     * Stop ant colony thread
+     */
+
+    private void stopAntColonyThread() {
+        antColonyThread.stop();
+    }
+
+    /**
+     * Reset results
+     */
+
+    private void resetResults() {
+        this.dynamicProgrammingResult = null;
+        this.shortestPathResult = null;
+        this.antColonyResult = null;
+    }
+
+    /**
+     * Sets timer thread.
+     */
+
+    public void setTimerThread() {
+        this.timerThread = new Thread(() -> {
+            while (true) {
+                double start = System.nanoTime();
+                double current;
+                int rounded = 0;
+                boolean reset = true;
+
+                while (countTimer) {
+                    if (reset) {
+                        Platform.runLater(() -> printTime(0));
+                        reset = false;
+                    }
+
+                    current = System.nanoTime();
+                    double elapsed = (current - start) / 1000000000;
+
+                    if ((int) elapsed > rounded) {
+                        rounded = (int) elapsed;
+
+                        int finalRounded = rounded;
+                        Platform.runLater(() -> printTime(finalRounded));
+                    }
+                }
+
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        /*
+         * Start timer thread
+         */
+        this.timerThread.start();
+    }
+
+    /**
+     * Start timer
+     */
+
+    public void startTimer() {
+        this.countTimer = true;
+    }
+
+    /**
+     * Stop timer
+     */
+
+    public void stopTimer() {
+        this.countTimer = false;
     }
 
     /**
@@ -537,6 +663,17 @@ public class App {
 
     private void hideCursor() {
         scene.setCursor(Cursor.NONE);
+    }
+
+    /**
+     * Print time on runtime menu
+     */
+
+    public void printTime(int seconds) {
+        int min = seconds / 60;
+        int sec = seconds % 60;
+        String time = min + ":" + (sec >= 10 ? sec : "0" + sec);
+        this.timerValue.setText(time);
     }
 
     /**
@@ -836,7 +973,7 @@ public class App {
          */
         double weight = showNumberInputDialog("Edge Weight Input...", "Enter weight:");
 
-        if (weight == 0) {
+        if (weight == -1) {
             return;
         }
 
@@ -906,7 +1043,7 @@ public class App {
     public void setAntsCount() {
         int count = (int) showNumberInputDialog("Ants Count Input...", "Enter ants count:");
 
-        if (count == 0) {
+        if (count == -1) {
             return;
         }
 
@@ -921,7 +1058,7 @@ public class App {
     public void setAlpha() {
         double alpha = showNumberInputDialog("Alpha Input...", "Enter value of alpha:");
 
-        if (alpha == 0) {
+        if (alpha == -1) {
             return;
         }
 
@@ -936,7 +1073,7 @@ public class App {
     public void setBeta() {
         double beta = showNumberInputDialog("Beta Input...", "Enter value of beta:");
 
-        if (beta == 0) {
+        if (beta == -1) {
             return;
         }
 
@@ -951,12 +1088,27 @@ public class App {
     public void setThreshold() {
         int threshold = (int) showNumberInputDialog("Threshold Input...", "Enter threshold:");
 
-        if (threshold == 0) {
+        if (threshold == -1) {
             return;
         }
 
         this.threshold = threshold;
         thresholdValue.setText(String.valueOf(threshold));
+    }
+
+    /**
+     * Set vapor value
+     */
+
+    public void setVapor() {
+        double vapor = showSmallNumberInputDialog("Evaporation Constant Input...", "Enter evaporation constant (between 0 and 1):");
+
+        if (vapor == -1) {
+            return;
+        }
+
+        this.vapor = vapor;
+        vaporValue.setText(String.valueOf(vapor));
     }
 
     /**
@@ -1032,7 +1184,7 @@ public class App {
         Optional<String> input = alert.showAndWait();
 
         if (!input.isPresent()) {
-            return 0;
+            return -1;
         }
 
         while (!isNumber(input.get()) || Double.parseDouble(input.get()) <= 0) {
@@ -1040,7 +1192,41 @@ public class App {
             input = alert.showAndWait();
 
             if (!input.isPresent()) {
-                return 0;
+                return -1;
+            }
+        }
+
+        return Double.parseDouble(input.get());
+    }
+
+    /**
+     * Show 0-1 number input dialog
+     */
+
+    public double showSmallNumberInputDialog(String header, String text) {
+        TextInputDialog alert = new TextInputDialog("");
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("main.css").toExternalForm());
+        alert.getDialogPane().getStyleClass().add("custom-dialog");
+        alert.setTitle("");
+        alert.setHeaderText(header);
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.WARNING);
+        icon.setGlyphSize(40);
+        icon.setFill(Color.valueOf("#29a2b0"));
+        alert.setGraphic(icon);
+        alert.setContentText(text);
+        Optional<String> input = alert.showAndWait();
+
+        if (!input.isPresent()) {
+            return -1;
+        }
+
+        while (!isNumber(input.get()) || Double.parseDouble(input.get()) < 0 || Double.parseDouble(input.get()) > 1) {
+            showInputErrorDialog();
+            input = alert.showAndWait();
+
+            if (!input.isPresent()) {
+                return -1;
             }
         }
 
@@ -1064,6 +1250,70 @@ public class App {
         alert.setGraphic(icon);
         alert.setContentText("You have entered an invalid value! Please try again.");
         alert.showAndWait();
+    }
+
+    /**
+     * Show input error dialog
+     */
+
+    public void showErrorDialog(String header, String text) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("main.css").toExternalForm());
+        alert.getDialogPane().getStyleClass().add("error-dialog");
+        alert.setTitle("");
+        alert.setHeaderText(header);
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.WARNING);
+        icon.setGlyphSize(40);
+        icon.setFill(Color.valueOf("#b41c1c"));
+        alert.setGraphic(icon);
+        alert.setContentText(text);
+        alert.showAndWait();
+    }
+
+    /**
+     * Show source node error dialog
+     */
+
+    public void showSourceNodeErrorDialog() {
+        showErrorDialog("Source Node Error...",
+                "You must set a node as source. Please choose source node and try again.");
+    }
+
+    /**
+     * Show target node error dialog
+     */
+
+    public void showTargetNodeErrorDialog() {
+        showErrorDialog("Target Node Error...",
+                "You must set a node as destination target. Please choose target node and try again.");
+    }
+
+    /**
+     * Show graph not complete error dialog
+     */
+
+    public void showGraphNotCompleteErrorDialog() {
+        showErrorDialog("Graph Not Complete Error...",
+                "The graph must be complete to be processed. Draw every possible edge and try again.");
+    }
+
+    /**
+     * Show no path available error dialog
+     */
+
+    public void showNoPathAvailableErrorDialog() {
+        showErrorDialog("No Path Available Error...",
+                "There is no path available from source to the target node. Please draw some more edges and try again.");
+    }
+
+    /**
+     * Show no path available error dialog
+     */
+
+    public void showNotEnoughNodesErrorDialog() {
+        showErrorDialog("Not Enough Nodes Error...",
+                "There is not enough nodes. Please add more nodes and try again.");
     }
 
     /**
@@ -1117,63 +1367,399 @@ public class App {
         changeMode(Mode.SELECT);
 
         /*
-         * Set current state to running algorithm
+         * Reset results at first
          */
-        setCurrentState(State.RUNNING_ALGORITHM);
+        resetResults();
 
         /*
          * Start processing
          */
-        startProcessing();
-    }
 
-    /**
-     * Start processing
-     */
-
-    private void startProcessing() {
         switch (getCurrentProblem()) {
             case SHORTEST_PATH:
+                processShortestPath();
 
                 break;
             case DYNAMIC_PROGRAMMING:
+                processDynamicProgramming();
 
                 break;
             case ANT_COLONY:
             default:
+                processAntColony();
 
                 break;
         }
     }
 
     /**
+     * Process shortest path
+     */
+
+    private void processShortestPath() {
+        /*
+         * Check if there is not enough nodes
+         */
+        if (mainGraph.getNodes().size() < 2) {
+            showNotEnoughNodesErrorDialog();
+            return;
+        }
+
+        /*
+         * Check for source node
+         */
+        if (sourceNode == null) {
+            showSourceNodeErrorDialog();
+            return;
+        }
+
+        /*
+         * Check for target node
+         */
+        if (targetNode == null) {
+            showTargetNodeErrorDialog();
+            return;
+        }
+
+        /*
+         * Enter processing mode
+         */
+        enterProcessingMode();
+
+        /*
+         * Start processing as soon as loading screen appears
+         */
+        PauseTransition wait = new PauseTransition(Duration.millis(500));
+        wait.setOnFinished(event -> {
+            /*
+             * Start timer
+             */
+            startTimer();
+
+            /*
+             * Start a new thread to process the shortest path
+             */
+            startShortestPathThread();
+
+            /*
+             * Set current state to running algorithm
+             */
+            setCurrentState(State.RUNNING_ALGORITHM);
+        });
+        wait.play();
+    }
+
+    /**
+     * Process dynamic programming
+     */
+
+    private void processDynamicProgramming() {
+        /*
+         * Check if there is not enough nodes
+         */
+        if (mainGraph.getNodes().size() <= 2) {
+            showNotEnoughNodesErrorDialog();
+            return;
+        }
+
+        /*
+         * Check for source node
+         */
+        if (sourceNode == null) {
+            showSourceNodeErrorDialog();
+            return;
+        }
+
+        /*
+         * Enter processing mode
+         */
+        enterProcessingMode();
+
+        /*
+         * Start processing as soon as loading screen appears
+         */
+        PauseTransition wait = new PauseTransition(Duration.millis(500));
+        wait.setOnFinished(event -> {
+            /*
+             * Start timer
+             */
+            startTimer();
+
+            /*
+             * Start a new thread to process dynamic programming
+             */
+            startDynamicProgrammingThread();
+
+            /*
+             * Set current state to running algorithm
+             */
+            setCurrentState(State.RUNNING_ALGORITHM);
+        });
+        wait.play();
+    }
+
+    /**
+     * Process ant colony
+     */
+
+    private void processAntColony() {
+        /*
+         * Check if there is not enough nodes
+         */
+        if (mainGraph.getNodes().size() <= 2) {
+            showNotEnoughNodesErrorDialog();
+            return;
+        }
+
+        /*
+         * Check for source node
+         */
+        if (sourceNode == null) {
+            showSourceNodeErrorDialog();
+            return;
+        }
+
+        /*
+         * Enter processing mode
+         */
+        enterProcessingMode();
+
+        /*
+         * Start processing as soon as loading screen appears
+         */
+        PauseTransition wait = new PauseTransition(Duration.millis(500));
+        wait.setOnFinished(event -> {
+            /*
+             * Start timer
+             */
+            startTimer();
+
+            /*
+             * Start a new thread to process ant colony
+             */
+            startAntColonyThread();
+
+            /*
+             * Set current state to running algorithm
+             */
+            setCurrentState(State.RUNNING_ALGORITHM);
+        });
+        wait.play();
+    }
+
+    /**
+     * Enter processing mode
+     */
+
+    private void enterProcessingMode() {
+        hideMenu();
+        showRuntimeMenu();
+        showLoading();
+    }
+
+    /**
+     * Finish processing
+     */
+
+    private void finishProcessing(AlgorithmError error) {
+        /*
+         * Stop timer
+         */
+        stopTimer();
+
+        PauseTransition wait = new PauseTransition(Duration.millis(1000));
+
+        switch (error) {
+            case GRAPH_NOT_COMPLETE:
+                /*
+                 * Set current state to idle
+                 */
+                setCurrentState(State.IDLE);
+
+                /*
+                 * First show fail icon then hide the loading screen
+                 */
+                hideLoadingWithFail();
+
+                /*
+                 * Wait for the fail icon to fade out then show error dialog
+                 */
+                wait.setOnFinished(event -> showGraphNotCompleteErrorDialog());
+                wait.play();
+
+                break;
+            case NO_PATH_AVAILABLE:
+                /*
+                 * Set current state to idle
+                 */
+                setCurrentState(State.IDLE);
+
+                /*
+                 * First show fail icon then hide the loading screen
+                 */
+                hideLoadingWithFail();
+
+                /*
+                 * Wait for the fail icon to fade out then show error dialog
+                 */
+                wait.setOnFinished(event -> showNoPathAvailableErrorDialog());
+                wait.play();
+
+                break;
+            case NONE:
+                /*
+                 * First show success icon then hide the loading screen
+                 */
+                hideLoadingWithSuccess();
+
+                /*
+                 * Wait for the fail icon to fade out then play the results
+                 */
+                wait.setOnFinished(event -> playResults());
+                wait.play();
+
+                break;
+        }
+    }
+
+    /**
+     * Stop running
+     */
+
+    public void stopRunning() {
+        switch (getCurrentState()) {
+            case RUNNING_ALGORITHM:
+                /*
+                 * Stop timer
+                 */
+                stopTimer();
+
+                /*
+                 * Stop the corresponding algorithm thread
+                 */
+                switch (getCurrentProblem()) {
+                    case SHORTEST_PATH:
+                        stopShortestPathThread();
+                        break;
+                    case DYNAMIC_PROGRAMMING:
+                        stopDynamicProgrammingThread();
+                        break;
+                    case ANT_COLONY:
+                        stopAntColonyThread();
+                        break;
+                }
+
+                /*
+                 * Hide loading and show menu
+                 */
+                hideLoading();
+                showMenu();
+
+                break;
+            case PLAYING:
+                /*
+                 * Stop the corresponding playing thread
+                 */
+
+                /**
+                 * @todo stop playing
+                 */
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Play results
+     */
+
+    private void playResults() {
+        setCurrentState(State.PLAYING);
+
+        switch (getCurrentProblem()) {
+            case SHORTEST_PATH:
+                playShortestPath(this.shortestPathResult);
+
+                break;
+            case DYNAMIC_PROGRAMMING:
+                playTravellingSalesman(this.dynamicProgrammingResult);
+
+                break;
+            case ANT_COLONY:
+            default:
+                playTravellingSalesman(this.antColonyResult);
+
+                break;
+        }
+
+        setCurrentState(State.IDLE);
+        hideRuntimeMenu();
+        showMenu();
+    }
+
+    /**
+     * Play shortest path
+     */
+
+    private void playShortestPath(PathData pathData) {
+//        System.out.println("Distance: " + pathData.);
+    }
+
+    /**
+     * Play travelling salesman
+     */
+
+    private void playTravellingSalesman(TravellingSalesManData data) {
+        System.out.println("Distance: " + data.getShortestDistance());
+
+        ArrayList<GraphNode> nodes = data.getpathSecond();
+
+        for (GraphNode node : nodes) {
+            System.out.println(nodes.indexOf(node) + ": " + node.getIdentifier());
+        }
+    }
+
+    /**
      * Show loading
      */
-    public void showLoading() {
 
+    public void showLoading() {
+        menuManager.showLoading();
     }
 
     /**
      * Hide loading
      */
+
     public void hideLoading() {
-
+        menuManager.hideLoading();
     }
 
     /**
-     * Show algorithm success
+     * Show success icon and then hide loading screen
      */
 
-    public void showAlgorithmSuccess() {
-
+    public void hideLoadingWithSuccess() {
+        menuManager.showSuccessIcon();
+        PauseTransition wait = new PauseTransition(Duration.millis(1000));
+        wait.setOnFinished(event -> hideLoading());
+        wait.play();
     }
 
     /**
-     * Hide algorithm success
+     * Show fail icon and then hide loading screen
      */
 
-    public void hideAlgorithmSuccess() {
-
+    public void hideLoadingWithFail() {
+        menuManager.showFailIcon();
+        PauseTransition wait = new PauseTransition(Duration.millis(1000));
+        wait.setOnFinished(event -> {
+            hideLoading();
+            hideRuntimeMenu();
+        });
+        wait.play();
     }
 
     /**
@@ -1713,7 +2299,7 @@ public class App {
     public void setWeight() {
         double newWeight = showNumberInputDialog("Edge Weight Input...", "Enter weight:");
 
-        if (newWeight == 0) {
+        if (newWeight == -1) {
             return;
         }
 
@@ -2019,6 +2605,10 @@ public class App {
      */
 
     public void showMenu() {
+        if (getCurrentState() == State.RUNNING_ALGORITHM || getCurrentState() == State.PLAYING) {
+            return;
+        }
+
         showMainMenu();
 
         if (this.currentProblem == Problem.ANT_COLONY) {

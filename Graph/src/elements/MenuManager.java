@@ -34,7 +34,8 @@ public class MenuManager {
      * Loading elements
      */
 
-    public FontAwesomeIconView algorithmFinishedIcon;
+    public FontAwesomeIconView algorithmSuccessIcon;
+    public FontAwesomeIconView algorithmFailIcon;
     public StackPane loadingStack;
     public GridPane loading;
 
@@ -75,6 +76,7 @@ public class MenuManager {
     private JFXButton alphaButton;
     private JFXButton betaButton;
     private JFXButton thresholdButton;
+    private JFXButton vaporButton;
 
     /**
      * Ant colony menu elements
@@ -95,6 +97,8 @@ public class MenuManager {
     private FadeTransition fadeOutLoading;
     private ParallelTransition showSuccessIcon;
     private ParallelTransition hideSuccessIcon;
+    private ParallelTransition showFailIcon;
+    private ParallelTransition hideFailIcon;
     private TranslateTransition hideRuntimeMenu;
     private TranslateTransition showRuntimeMenu;
     private TranslateTransition hideAntColonyMenu;
@@ -169,6 +173,7 @@ public class MenuManager {
         alphaButton = buttons.get(15);
         betaButton = buttons.get(16);
         thresholdButton = buttons.get(17);
+        vaporButton = buttons.get(22);
 
         /*
          * Runtime menu buttons
@@ -193,10 +198,11 @@ public class MenuManager {
      * Sets loading
      */
 
-    public void setLoading(GridPane loading, StackPane loadingStack, FontAwesomeIconView algorithmFinishedIcon) {
+    public void setLoading(GridPane loading, StackPane loadingStack, FontAwesomeIconView algorithmSuccessIcon, FontAwesomeIconView algorithmFailIcon) {
         this.loading = loading;
         this.loadingStack = loadingStack;
-        this.algorithmFinishedIcon = algorithmFinishedIcon;
+        this.algorithmSuccessIcon = algorithmSuccessIcon;
+        this.algorithmFailIcon = algorithmFailIcon;
 
         /*
          * Set loading animations
@@ -220,37 +226,38 @@ public class MenuManager {
          */
         fadeOutLoading = new FadeTransition(Duration.millis(500), loading);
         fadeOutLoading.setToValue(0);
+        fadeOutLoading.setOnFinished(event -> loading.setVisible(false));
 
         /*
          * Scale in success icon animation
          */
-        ScaleTransition scaleInSuccessIcon = new ScaleTransition(Duration.millis(500), loading);
+        ScaleTransition scaleInSuccessIcon = new ScaleTransition(Duration.millis(500), algorithmSuccessIcon);
         scaleInSuccessIcon.setToX(1);
         scaleInSuccessIcon.setToY(1);
 
         /*
          * Scale out success icon animation
          */
-        ScaleTransition scaleOutSuccessIcon = new ScaleTransition(Duration.millis(500), loading);
-        scaleInSuccessIcon.setToX(0);
-        scaleInSuccessIcon.setToY(0);
+        ScaleTransition scaleOutSuccessIcon = new ScaleTransition(Duration.millis(500), algorithmSuccessIcon);
+        scaleOutSuccessIcon.setToX(0);
+        scaleOutSuccessIcon.setToY(0);
 
         /*
          * Rotate in success icon animation
          */
-        RotateTransition rotateInSuccessIcon = new RotateTransition(Duration.millis(500), algorithmFinishedIcon);
-        rotateInSuccessIcon.setToAngle(720);
+        RotateTransition rotateInSuccessIcon = new RotateTransition(Duration.millis(500), algorithmSuccessIcon);
+        rotateInSuccessIcon.setToAngle(360);
 
         /*
          * Rotate out success icon animation
          */
-        RotateTransition rotateOutSuccessIcon = new RotateTransition(Duration.millis(500), algorithmFinishedIcon);
+        RotateTransition rotateOutSuccessIcon = new RotateTransition(Duration.millis(500), algorithmSuccessIcon);
         rotateOutSuccessIcon.setToAngle(0);
 
         /*
          * Mix success icon show transitions
          */
-        showSuccessIcon = new ParallelTransition(rotateInSuccessIcon, scaleInSuccessIcon);
+        showSuccessIcon = new ParallelTransition(scaleInSuccessIcon, rotateInSuccessIcon);
         showSuccessIcon.setOnFinished(event -> {
             PauseTransition wait = new PauseTransition(Duration.millis(500));
             wait.setOnFinished(event1 -> hideSuccessIcon());
@@ -261,6 +268,49 @@ public class MenuManager {
          * Mix success icon hide transitions
          */
         hideSuccessIcon = new ParallelTransition(rotateOutSuccessIcon, scaleOutSuccessIcon);
+        hideSuccessIcon.setOnFinished(event -> algorithmSuccessIcon.setVisible(false));
+
+        /*
+         * Scale in fail icon animation
+         */
+        ScaleTransition scaleInFailIcon = new ScaleTransition(Duration.millis(500), algorithmFailIcon);
+        scaleInFailIcon.setToX(1);
+        scaleInFailIcon.setToY(1);
+
+        /*
+         * Scale out fail icon animation
+         */
+        ScaleTransition scaleOutFailIcon = new ScaleTransition(Duration.millis(500), algorithmFailIcon);
+        scaleOutFailIcon.setToX(0);
+        scaleOutFailIcon.setToY(0);
+
+        /*
+         * Rotate in fail icon animation
+         */
+        RotateTransition rotateInFailIcon = new RotateTransition(Duration.millis(500), algorithmFailIcon);
+        rotateInFailIcon.setToAngle(360);
+
+        /*
+         * Rotate out fail icon animation
+         */
+        RotateTransition rotateOutFailIcon = new RotateTransition(Duration.millis(500), algorithmFailIcon);
+        rotateOutFailIcon.setToAngle(0);
+
+        /*
+         * Mix fail icon show transitions
+         */
+        showFailIcon = new ParallelTransition(rotateInFailIcon, scaleInFailIcon);
+        showFailIcon.setOnFinished(event -> {
+            PauseTransition wait = new PauseTransition(Duration.millis(500));
+            wait.setOnFinished(event1 -> hideFailIcon());
+            wait.play();
+        });
+
+        /*
+         * Mix fail icon hide transitions
+         */
+        hideFailIcon = new ParallelTransition(rotateOutFailIcon, scaleOutFailIcon);
+        hideFailIcon.setOnFinished(event -> algorithmFailIcon.setVisible(false));
     }
 
     /**
@@ -399,6 +449,9 @@ public class MenuManager {
 
     public void showLoading() {
         loadingStack.setVisible(true);
+        loading.setVisible(true);
+        loading.toFront();
+        runtimeMenu.toFront();
         fadeOutLoading.stop();
         fadeInLoading.play();
     }
@@ -408,8 +461,10 @@ public class MenuManager {
      */
 
     public void hideLoading() {
+        loadingStack.setVisible(false);
+        loading.toBack();
         fadeInLoading.stop();
-        fadeOutLoading.stop();
+        fadeOutLoading.play();
     }
 
     /**
@@ -418,6 +473,7 @@ public class MenuManager {
 
     public void showSuccessIcon() {
         loadingStack.setVisible(false);
+        algorithmSuccessIcon.setVisible(true);
         hideSuccessIcon.stop();
         showSuccessIcon.play();
     }
@@ -429,6 +485,26 @@ public class MenuManager {
     public void hideSuccessIcon() {
         showSuccessIcon.stop();
         hideSuccessIcon.play();
+    }
+
+    /**
+     * Show fail icon
+     */
+
+    public void showFailIcon() {
+        loadingStack.setVisible(false);
+        algorithmFailIcon.setVisible(true);
+        hideFailIcon.stop();
+        showFailIcon.play();
+    }
+
+    /**
+     * Hide success icon
+     */
+
+    public void hideFailIcon() {
+        showFailIcon.stop();
+        hideFailIcon.play();
     }
 
     /**
@@ -729,6 +805,7 @@ public class MenuManager {
         alphaButton.setOnAction(event -> app.setAlpha());
         betaButton.setOnAction(event -> app.setBeta());
         thresholdButton.setOnAction(event -> app.setThreshold());
+        vaporButton.setOnAction(event -> app.setVapor());
     }
 
     /**
