@@ -324,7 +324,7 @@ public class AntColonyAlgorithm {
         for (int i = 0; i < nodesCount; i++) {
             for (int j = 0; j < nodesCount; j++) {
                 if (i == j) {
-                    distanceMatrix[i][j] = 0;
+                    distanceMatrix[i][j] = Double.MAX_VALUE;
                 } else {
                     NodeGraphObject source = nodes.get(i);
                     NodeGraphObject target = nodes.get(j);
