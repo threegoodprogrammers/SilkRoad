@@ -323,6 +323,13 @@ public class SceneGestures {
                     app.pressEnter();
 
                     break;
+                case DELETE:
+                    /*
+                     * Press enter key
+                     */
+                    app.deleteItems();
+
+                    break;
                 default:
                     break;
             }

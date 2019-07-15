@@ -595,7 +595,7 @@
                                     <Tooltip text="Play"/>
                                 </tooltip>
                                 <graphic>
-                                    <FontAwesomeIconView glyphName="PLAY" glyphSize="32" textAlignment="CENTER"/>
+                                    <FontAwesomeIconView glyphName="PAUSE" glyphSize="32" textAlignment="CENTER"/>
                                 </graphic>
                                 <styleClass>
                                     <String fx:value="menu-button-general"/>

@@ -140,8 +140,8 @@ public class App {
     private Thread shortestPathThread;
     private Thread dynamicProgrammingThread;
     private Thread antColonyThread;
-    private Thread timerThread;
     private volatile boolean countTimer = false;
+    private volatile boolean paused = false;
 
     /**
      * Problems results
@@ -575,7 +575,7 @@ public class App {
      */
 
     public void setTimerThread() {
-        this.timerThread = new Thread(() -> {
+        Thread timerThread = new Thread(() -> {
             while (true) {
                 double start = System.nanoTime();
                 double current;
@@ -610,7 +610,7 @@ public class App {
         /*
          * Start timer thread
          */
-        this.timerThread.start();
+        timerThread.start();
     }
 
     /**
@@ -746,6 +746,10 @@ public class App {
     public void setSceneOnTop() {
         overlay.getStyleClass().remove("dark-overlay");
         canvas.toFront();
+
+        if (loading.isVisible()) {
+            loading.toFront();
+        }
         setMenuOnTop();
     }
 
@@ -1645,55 +1649,6 @@ public class App {
     }
 
     /**
-     * Stop running
-     */
-
-    public void stopRunning() {
-        switch (getCurrentState()) {
-            case RUNNING_ALGORITHM:
-                /*
-                 * Stop timer
-                 */
-                stopTimer();
-
-                /*
-                 * Stop the corresponding algorithm thread
-                 */
-                switch (getCurrentProblem()) {
-                    case SHORTEST_PATH:
-                        stopShortestPathThread();
-                        break;
-                    case DYNAMIC_PROGRAMMING:
-                        stopDynamicProgrammingThread();
-                        break;
-                    case ANT_COLONY:
-                        stopAntColonyThread();
-                        break;
-                }
-
-                /*
-                 * Hide loading and show menu
-                 */
-                hideLoading();
-                showMenu();
-
-                break;
-            case PLAYING:
-                /*
-                 * Stop the corresponding playing thread
-                 */
-
-                /**
-                 * @todo stop playing
-                 */
-
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**
      * Play results
      */
 
@@ -1742,6 +1697,98 @@ public class App {
         for (GraphNode node : nodes) {
             System.out.println(nodes.indexOf(node) + ": " + node.getIdentifier());
         }
+    }
+
+    /**
+     * Press stop button
+     */
+
+    public void pressStop() {
+        switch (getCurrentState()) {
+            case RUNNING_ALGORITHM:
+                /*
+                 * Stop timer
+                 */
+                stopTimer();
+
+                /*
+                 * Stop the corresponding algorithm thread
+                 */
+                switch (getCurrentProblem()) {
+                    case SHORTEST_PATH:
+                        stopShortestPathThread();
+                        break;
+                    case DYNAMIC_PROGRAMMING:
+                        stopDynamicProgrammingThread();
+                        break;
+                    case ANT_COLONY:
+                        stopAntColonyThread();
+                        break;
+                }
+
+                /*
+                 * Hide loading and show menu
+                 */
+                hideLoading();
+                showMenu();
+
+                break;
+            case PLAYING:
+                /*
+                 * Stop the corresponding playing thread
+                 */
+
+                /**
+                 * @todo stop playing
+                 */
+
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    /**
+     * Press play
+     */
+
+    public void pressPlay() {
+//        if (getCurrentState() != State.PLAYING) {
+//            return;
+//        }
+
+        if (this.paused) {
+            resume();
+        } else {
+            pause();
+        }
+    }
+
+    /**
+     * Pause
+     */
+
+    public void pause() {
+        this.paused = true;
+        menuManager.pause();
+    }
+
+    /**
+     * Resume
+     */
+
+    public void resume() {
+        this.paused = false;
+        menuManager.play();
+    }
+
+    /**
+     * Is playing
+     */
+
+    public boolean isPlaying() {
+        return getCurrentState() == State.PLAYING && !paused;
     }
 
     /**
@@ -2135,11 +2182,6 @@ public class App {
          */
         menuManager.changeProblem(problem);
 
-        /*
-         * Update the menu based of selections
-         */
-        selectionManager.deselectAll();
-
         switch (problem) {
             case SHORTEST_PATH:
                 shortestPathProblem();
@@ -2152,6 +2194,11 @@ public class App {
                 antColonyProblem();
                 break;
         }
+
+        /*
+         * Update the menu based of selections
+         */
+        selectionManager.deselectAll();
     }
 
     /**
@@ -2181,6 +2228,10 @@ public class App {
          * Hide ant colony menu
          */
         hideAntColonyMenu();
+
+        if (getCurrentMode() == Mode.DIRECTIONAL_EDGE) {
+            changeMode(Mode.SELECT);
+        }
     }
 
     /**
@@ -2198,6 +2249,10 @@ public class App {
          * Show ant colony menu
          */
         showAntColonyMenu();
+
+        if (getCurrentMode() == Mode.DIRECTIONAL_EDGE) {
+            changeMode(Mode.SELECT);
+        }
     }
 
     /**
@@ -2379,6 +2434,10 @@ public class App {
      */
 
     public void deleteItems() {
+        if (getCurrentState() != State.IDLE) {
+            return;
+        }
+
         if (selectionManager.nothing()) {
             boolean confirm = showConfirmDeleteDialog();
 

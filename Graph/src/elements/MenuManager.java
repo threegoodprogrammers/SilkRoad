@@ -539,6 +539,9 @@ public class MenuManager {
     public void updateButtons(State currentState) {
         HashMap<JFXButton, Boolean> map = new HashMap<>();
 
+        boolean directionEdgeEnabled = app.getCurrentProblem() == App.Problem.SHORTEST_PATH;
+        boolean antColonyButtonsEnabled = app.getCurrentProblem() == App.Problem.ANT_COLONY;
+
         switch (currentState) {
             case RUNNING_ALGORITHM:
                 map.put(shortestPathButton, false);
@@ -557,6 +560,12 @@ public class MenuManager {
                 map.put(stopButton, true);
                 map.put(speedUpButton, false);
                 map.put(speedDownButton, false);
+                map.put(antsCountButton, false);
+                map.put(alphaButton, false);
+                map.put(betaButton, false);
+                map.put(thresholdButton, false);
+                map.put(vaporButton, false);
+
 
                 break;
             case PLAYING:
@@ -576,6 +585,11 @@ public class MenuManager {
                 map.put(stopButton, true);
                 map.put(speedUpButton, true);
                 map.put(speedDownButton, true);
+                map.put(antsCountButton, false);
+                map.put(alphaButton, false);
+                map.put(betaButton, false);
+                map.put(thresholdButton, false);
+                map.put(vaporButton, false);
 
                 break;
             case SELECTED_SINGLE_DIRECTIONAL_EDGE:
@@ -588,9 +602,14 @@ public class MenuManager {
                 map.put(changeDirectionButton, true);
                 map.put(removeButton, true);
                 map.put(nodeButton, true);
-                map.put(directionalEdgeButton, true);
+                map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(antsCountButton, antColonyButtonsEnabled);
+                map.put(alphaButton, antColonyButtonsEnabled);
+                map.put(betaButton, antColonyButtonsEnabled);
+                map.put(thresholdButton, antColonyButtonsEnabled);
+                map.put(vaporButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_SINGLE_NON_DIRECTIONAL_EDGE:
@@ -603,9 +622,14 @@ public class MenuManager {
                 map.put(changeDirectionButton, false);
                 map.put(removeButton, true);
                 map.put(nodeButton, true);
-                map.put(directionalEdgeButton, true);
+                map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(antsCountButton, antColonyButtonsEnabled);
+                map.put(alphaButton, antColonyButtonsEnabled);
+                map.put(betaButton, antColonyButtonsEnabled);
+                map.put(thresholdButton, antColonyButtonsEnabled);
+                map.put(vaporButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_SINGLE_NODE:
@@ -618,9 +642,14 @@ public class MenuManager {
                 map.put(changeDirectionButton, false);
                 map.put(removeButton, true);
                 map.put(nodeButton, true);
-                map.put(directionalEdgeButton, true);
+                map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(antsCountButton, antColonyButtonsEnabled);
+                map.put(alphaButton, antColonyButtonsEnabled);
+                map.put(betaButton, antColonyButtonsEnabled);
+                map.put(thresholdButton, antColonyButtonsEnabled);
+                map.put(vaporButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_MULTIPLE_EDGES:
@@ -633,9 +662,14 @@ public class MenuManager {
                 map.put(changeDirectionButton, false);
                 map.put(removeButton, true);
                 map.put(nodeButton, true);
-                map.put(directionalEdgeButton, true);
+                map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(antsCountButton, antColonyButtonsEnabled);
+                map.put(alphaButton, antColonyButtonsEnabled);
+                map.put(betaButton, antColonyButtonsEnabled);
+                map.put(thresholdButton, antColonyButtonsEnabled);
+                map.put(vaporButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_BOTH_NODES_AND_EDGES:
@@ -648,9 +682,14 @@ public class MenuManager {
                 map.put(changeDirectionButton, false);
                 map.put(removeButton, true);
                 map.put(nodeButton, true);
-                map.put(directionalEdgeButton, true);
+                map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(antsCountButton, antColonyButtonsEnabled);
+                map.put(alphaButton, antColonyButtonsEnabled);
+                map.put(betaButton, antColonyButtonsEnabled);
+                map.put(thresholdButton, antColonyButtonsEnabled);
+                map.put(vaporButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_MULTIPLE_NODES:
@@ -663,9 +702,14 @@ public class MenuManager {
                 map.put(changeDirectionButton, false);
                 map.put(removeButton, true);
                 map.put(nodeButton, true);
-                map.put(directionalEdgeButton, true);
+                map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(antsCountButton, antColonyButtonsEnabled);
+                map.put(alphaButton, antColonyButtonsEnabled);
+                map.put(betaButton, antColonyButtonsEnabled);
+                map.put(thresholdButton, antColonyButtonsEnabled);
+                map.put(vaporButton, antColonyButtonsEnabled);
 
                 break;
             default:
@@ -678,9 +722,15 @@ public class MenuManager {
                 map.put(changeDirectionButton, false);
                 map.put(removeButton, true);
                 map.put(nodeButton, true);
-                map.put(directionalEdgeButton, true);
+                map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(antsCountButton, antColonyButtonsEnabled);
+                map.put(alphaButton, antColonyButtonsEnabled);
+                map.put(betaButton, antColonyButtonsEnabled);
+                map.put(thresholdButton, antColonyButtonsEnabled);
+                map.put(vaporButton, antColonyButtonsEnabled);
+
                 break;
         }
 
@@ -808,6 +858,26 @@ public class MenuManager {
         betaButton.setOnAction(event -> app.setBeta());
         thresholdButton.setOnAction(event -> app.setThreshold());
         vaporButton.setOnAction(event -> app.setVapor());
+        playButton.setOnAction(event -> app.pressPlay());
+        stopButton.setOnAction(event -> app.pressStop());
+    }
+
+    /**
+     * Pause
+     */
+
+    public void pause() {
+        FontAwesomeIconView icon = (FontAwesomeIconView) this.playButton.getGraphic();
+        icon.setGlyphName("PLAY");
+    }
+
+    /**
+     * Play
+     */
+
+    public void play() {
+        FontAwesomeIconView icon = (FontAwesomeIconView) this.playButton.getGraphic();
+        icon.setGlyphName("PAUSE");
     }
 
     /**
