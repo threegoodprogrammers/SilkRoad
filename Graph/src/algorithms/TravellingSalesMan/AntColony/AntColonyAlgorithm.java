@@ -1,7 +1,5 @@
 package algorithms.TravellingSalesMan.AntColony;
 
-import algorithms.GraphObject;
-import algorithms.NodeGraphObject;
 import algorithms.TravellingSalesMan.TravellingSalesManData;
 import algorithms.TravellingSalesMan.Validation;
 import elements.Graph;
@@ -18,25 +16,24 @@ public class AntColonyAlgorithm {
 
     private static int nodesCount = -1;
 
+
     public static TravellingSalesManData findShortestCycle(
             final Graph graph,
             GraphNode baseNode,
             int iterationThreshold,
             double alpha,
-            double beta,
+            double betha,
             double VAP,
             int antCount
     ) {
-        long start = System.currentTimeMillis();
-        if (graph == null) return null;
-        distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
+        if (graph == null || baseNode == null || antCount < 1) return null;
+        ArrayList<GraphNode> nodes = graph.getNodes();
+        nodesCount = nodes.size();
+        initMatrices(nodesCount);
+        distanceMatrix = getDistanceMatrixFromObjects(new ArrayList<>(nodes));
         if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
-            ArrayList<GraphNode> nodes = new ArrayList<>(graph.getNodes());
-            nodesCount = nodes.size();
-            //Initialize
-
-            if (distanceMatrix == null) return null;
-
+            long start = System.currentTimeMillis();
+            //---------------------------------------------------
             if (nodesCount == 0)
                 return null;
             if (nodesCount == 1)
@@ -45,61 +42,63 @@ public class AntColonyAlgorithm {
                 GraphNode source = nodes.get(0);
                 GraphNode target = nodes.get(1);
                 return new TravellingSalesManData(nodes, (float) (2 * source.getOutgoingNodes().get(target).getWeight()));
+            } else if (nodesCount == 3) {
+                GraphNode s1 = nodes.get(0);
+                GraphNode s2 = nodes.get(1);
+                GraphNode s3 = nodes.get(2);
+                return new TravellingSalesManData(nodes, (float) (s1.getOutgoingNodes().get(s2).getWeight() + s2.getOutgoingNodes().get(s3).getWeight() + s3.getOutgoingNodes().get(s1).getWeight()));
             }
-            initializeMatrices();
-            for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {//for each iterate
+            //---------------------------------------------------
+
+            for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {
                 int cityCounter = -1;
-                for (int antNo = 0; antNo < antCount; antNo++) {//Placing each ant in different city
+                for (int antNo = 0; antNo < antCount; antNo++) {
+                    int startCity = (cityCounter + 1) % nodesCount;
                     double loopLength = 0;
 
-                    cityCounter++;
-                    if (cityCounter >= nodesCount) {
-                        cityCounter = 0;
-                    }
                     List<Integer> visitedCities = new ArrayList<>();
-                    visitedCities.add(cityCounter);
-                    List<Integer> notVisitedCities = new ArrayList<>();
-                    initForAnt(notVisitedCities);
-                    int currentCity = cityCounter;
+                    visitedCities.add(startCity);
+                    boolean[] citiesState = new boolean[nodesCount];
 
+                    int currentCity = startCity;
 
-                    for (int e = 0; e < nodesCount - 1; e++) {
-                        int nextCity = -1;
-                        double sumProb = 0;
-                        for (int i = 0; i < nodesCount; i++) {
-                            if (i == currentCity) continue;
-                            sumProb += probabilityMatrix[currentCity][i];
-                        }
+                    for (int e = 0; e < nodesCount; e++) {
+                        if (e != nodesCount - 1) {
 
-                        double randNumber = Math.random() * sumProb;
-                        sumProb = 0.0;
+                            double sumProb = 0;
+                            for (int i = 0; i < nodesCount; i++) {
+                                if (i == startCity || i == currentCity || citiesState[i])
+                                    continue;
+                                sumProb += probabilityMatrix[currentCity][i];
+                            }
+                            double randNumber = Math.random() * sumProb;
+                            sumProb = 0.0;
 
-                        for (int i = 0; i < notVisitedCities.size(); i++) {
-                            int city = notVisitedCities.get(i);
-                            if (city != antNo) {
-                                sumProb += probabilityMatrix[currentCity][city];
-                                if (randNumber <= sumProb) {
-                                    nextCity = city;
+                            for (int city = 0; city < nodesCount; city++) {
+                                if (city != startCity && !citiesState[city]) {
+                                    sumProb += probabilityMatrix[currentCity][city];
+                                    if (randNumber <= sumProb) {
+                                        loopLength += distanceMatrix[currentCity][city];
+                                        visitedCities.add(city);
+                                        currentCity = city;
+                                        citiesState[city] = true;
+                                        break;
+                                    }
                                 }
                             }
+                        } else {
+                            loopLength += distanceMatrix[currentCity][startCity];
+                            citiesState[startCity] = true;
+                            currentCity = startCity;
+                            visitedCities.add(startCity);
                         }
-
-
-                        loopLength += distanceMatrix[currentCity][nextCity];
-
-                        notVisitedCities.remove(nextCity);
-                        visitedCities.add(nextCity);
-                        currentCity = nextCity;
-
                     }
-                    loopLength += distanceMatrix[currentCity][antNo];
-                    visitedCities.add(antNo);
-
                     for (int node = 0; node < visitedCities.size() - 1; node++) {
                         deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
                         deltaPheromoneMatrix[visitedCities.get(node + 1)][visitedCities.get(node)] += (1d / loopLength);
                     }
                 }
+
                 for (int i = 0; i < nodesCount; i++) {
                     for (int j = 0; j < nodesCount; j++) {
 
@@ -107,7 +106,6 @@ public class AntColonyAlgorithm {
                         deltaPheromoneMatrix[i][j] = 0;
                     }
                 }
-
                 double sigma = 0;
 
                 for (int i = 0; i < nodesCount; i++) {
@@ -115,15 +113,21 @@ public class AntColonyAlgorithm {
                         sigma += pheromoneMatrix[i][j] * (1d / distanceMatrix[i][j]);
                     }
                 }
-
-
                 // Filling  the probability Matrix
                 for (int i = 0; i < nodesCount; i++) {
                     for (int j = 0; j < nodesCount; j++) {
-                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow(1d / distanceMatrix[i][j], beta)) / sigma;
+                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow(1d / distanceMatrix[i][j], betha)) / sigma;
                     }
                 }
             }
+
+            for (int i = 0; i < nodesCount; i++) {
+                for (int j = 0; j < nodesCount; j++) {
+                    System.out.println("[" + i + "][" + j + "]=" + probabilityMatrix[i][j]);
+                }
+
+            }
+
 
             int currentCityIndex = nodes.indexOf(baseNode);
 
@@ -164,188 +168,14 @@ public class AntColonyAlgorithm {
 
     }
 
-    public static TravellingSalesManData findShortestCycle(
-            GraphObject graph,
-            NodeGraphObject baseNode,
-            int iterationThreshold,
-            int alpha,
-            int betha,
-            double VAP,
-            int antCount
-    ) {
-        long start = System.currentTimeMillis();
-        if (graph == null) return null;
-        distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes());
-        if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
-            ArrayList<NodeGraphObject> nodes = new ArrayList<>(graph.getNodes());
-            nodesCount = nodes.size();
-            //Initialize
 
-            if (distanceMatrix == null) return null;
-
-            if (nodesCount == 0)
-                return null;
-            if (nodesCount == 1)
-                return new TravellingSalesManData(nodes, 0);
-            else if (nodesCount == 2) {
-                NodeGraphObject source = nodes.get(0);
-                NodeGraphObject target = nodes.get(1);
-                return new TravellingSalesManData(nodes, (float) (2 * source.getAttachedNodes().get(target).getWeight()));
-            }
-            initializeMatrices();
-            for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {//for each iterate
-                int cityCounter = -1;
-                for (int antNo = 0; antNo < antCount; antNo++) {//Placing each ant in different city
-                    double loopLength = 0;
-
-                    cityCounter++;
-                    if (cityCounter >= nodesCount) {
-                        cityCounter = 0;
-                    }
-                    List<Integer> visitedCities = new ArrayList<>();
-                    visitedCities.add(cityCounter);
-                    List<Integer> notVisitedCities = new ArrayList<>();
-                    initForAnt(notVisitedCities);
-                    int currentCity = cityCounter;
-
-
-                    for (int e = 0; e < nodesCount - 1; e++) {
-                        int nextCity = -1;
-                        double sumProb = 0;
-                        for (int i = 0; i < nodesCount; i++) {
-                            if (i == currentCity) continue;
-                            sumProb += probabilityMatrix[currentCity][i];
-                        }
-
-                        double randNumber = Math.random() * sumProb;
-                        sumProb = 0.0;
-
-                        for (int i = 0; i < notVisitedCities.size(); i++) {
-                            int city = notVisitedCities.get(i);
-                            if (city != antNo) {
-                                sumProb += probabilityMatrix[currentCity][city];
-                                if (randNumber <= sumProb) {
-                                    nextCity = city;
-                                }
-                            }
-                        }
-
-
-                        loopLength += distanceMatrix[currentCity][nextCity];
-
-                        notVisitedCities.remove(nextCity);
-                        visitedCities.add(nextCity);
-                        currentCity = nextCity;
-
-                    }
-                    loopLength += distanceMatrix[currentCity][antNo];
-                    visitedCities.add(antNo);
-
-                    for (int node = 0; node < visitedCities.size() - 1; node++) {
-                        deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
-                        deltaPheromoneMatrix[visitedCities.get(node + 1)][visitedCities.get(node)] += (1d / loopLength);
-                    }
-                }
-                for (int i = 0; i < nodesCount; i++) {
-                    for (int j = 0; j < nodesCount; j++) {
-
-                        pheromoneMatrix[i][j] = ((1 - VAP) * pheromoneMatrix[i][j]) + deltaPheromoneMatrix[i][j];
-                        deltaPheromoneMatrix[i][j] = 0;
-                    }
-                }
-
-                double sigma = 0;
-
-                for (int i = 0; i < nodesCount; i++) {
-                    for (int j = 0; j < nodesCount; j++) {
-                        sigma += pheromoneMatrix[i][j] * (1d / distanceMatrix[i][j]);
-                    }
-                }
-
-
-                // Filling  the probability Matrix
-                for (int i = 0; i < nodesCount; i++) {
-                    for (int j = 0; j < nodesCount; j++) {
-                        probabilityMatrix[i][j] = (Math.pow(pheromoneMatrix[i][j], alpha) * Math.pow(1d / distanceMatrix[i][j], betha)) / sigma;
-                    }
-                }
-            }
-
-            int currentCityIndex = nodes.indexOf(baseNode);
-
-            ArrayList<NodeGraphObject> path = new ArrayList<>();
-            path.add(graph.getNodes().get(currentCityIndex));
-
-            float distance = 0;
-            for (int i = 0; i < nodesCount - 1; i++) {
-
-                double max = -1;
-                int nextCity = -1;
-                for (int j = 0; j < nodesCount; j++) {
-
-                    if (currentCityIndex != j) {
-                        if (probabilityMatrix[currentCityIndex][j] > max) {
-                            max = probabilityMatrix[currentCityIndex][j];
-                            nextCity = j;
-                        }
-
-                    }
-                }
-                distance += distanceMatrix[currentCityIndex][nextCity];
-                currentCityIndex = nextCity;
-                path.add(nodes.get(currentCityIndex));
-            }
-            path.add(baseNode);
-            distance += distanceMatrix[currentCityIndex][nodes.indexOf(baseNode)];
-
-            long end = System.currentTimeMillis();
-            float sec = (end - start) / 1000F;
-            System.out.println(sec);
-            return new TravellingSalesManData(path, distance);
-        } else {
-            //TODO: Show error that the the salesMan
-            //TODO: cannot travel and get back home visiting the other cities just one time
-            return null;
-        }
-
-    }
-
-    private static void initForAnt(List<Integer> notVisitedCities) {
-        for (int i = 0; i < nodesCount; i++) {
-            notVisitedCities.add(i);
-        }
-    }
-
-    private static double[][] getDistanceMatrixFromObjects(ArrayList<NodeGraphObject> nodes) {
-        if (nodes == null) return null;
-        if (nodesCount < 0) return null;
+    private static double[][] getDistanceMatrixFromObjects(ArrayList<GraphNode> nodes) {
         double[][] distanceMatrix = new double[nodesCount][nodesCount];
 
         for (int i = 0; i < nodesCount; i++) {
             for (int j = 0; j < nodesCount; j++) {
                 if (i == j) {
                     distanceMatrix[i][j] = Double.MAX_VALUE;
-                } else {
-                    NodeGraphObject source = nodes.get(i);
-                    NodeGraphObject target = nodes.get(j);
-                    if (source.getAttachedNodes().get(target) != null) {
-                        distanceMatrix[i][j] = source.getAttachedNodes().get(target).getWeight();
-                    }
-                }
-            }
-        }
-        return distanceMatrix;
-    }
-
-    private static double[][] getDistanceMatrixFromObjects(List<GraphNode> nodes) {
-        if (nodes == null) return null;
-        if (nodesCount < 0) return null;
-        double[][] distanceMatrix = new double[nodesCount][nodesCount];
-
-        for (int i = 0; i < nodesCount; i++) {
-            for (int j = 0; j < nodesCount; j++) {
-                if (i == j) {
-                    distanceMatrix[i][j] = 0;
                 } else {
                     GraphNode source = nodes.get(i);
                     GraphNode target = nodes.get(j);
@@ -358,10 +188,11 @@ public class AntColonyAlgorithm {
         return distanceMatrix;
     }
 
-    private static void initializeMatrices() {
-        if (nodesCount < 0) return;
+    private static void initMatrices(int nodesCount) {
         pheromoneMatrix = new double[nodesCount][nodesCount];
         deltaPheromoneMatrix = new double[nodesCount][nodesCount];
         probabilityMatrix = new double[nodesCount][nodesCount];
     }
+
+
 }
