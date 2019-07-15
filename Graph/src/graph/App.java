@@ -735,6 +735,7 @@ public class App {
     public void setPanOnTop() {
         overlay.getStyleClass().add("dark-overlay");
         overlay.setDisable(false);
+        overlay.toFront();
         panIconPane.toFront();
     }
 
@@ -1268,7 +1269,7 @@ public class App {
         icon.setFill(Color.valueOf("#b41c1c"));
         alert.setGraphic(icon);
         alert.setContentText(text);
-        alert.showAndWait();
+        alert.show();
     }
 
     /**
@@ -1354,6 +1355,11 @@ public class App {
      */
 
     public void pressEnter() {
+        /*
+         * Check for open expanding problems menu
+         */
+        checkExpandingMenuStatusAfterClick();
+
         /*
          * Return if application is in running state
          */
@@ -1558,6 +1564,16 @@ public class App {
     }
 
     /**
+     * Exit processing mode
+     */
+
+    private void exitProcessingMode() {
+        setCurrentState(State.IDLE);
+        hideRuntimeMenu();
+        showMenu();
+    }
+
+    /**
      * Finish processing
      */
 
@@ -1584,7 +1600,10 @@ public class App {
                 /*
                  * Wait for the fail icon to fade out then show error dialog
                  */
-                wait.setOnFinished(event -> showGraphNotCompleteErrorDialog());
+                wait.setOnFinished(event -> {
+                    exitProcessingMode();
+                    showGraphNotCompleteErrorDialog();
+                });
                 wait.play();
 
                 break;
@@ -1602,7 +1621,10 @@ public class App {
                 /*
                  * Wait for the fail icon to fade out then show error dialog
                  */
-                wait.setOnFinished(event -> showNoPathAvailableErrorDialog());
+                wait.setOnFinished(event -> {
+                    exitProcessingMode();
+                    showNoPathAvailableErrorDialog();
+                });
                 wait.play();
 
                 break;
@@ -1694,9 +1716,10 @@ public class App {
                 break;
         }
 
-        setCurrentState(State.IDLE);
-        hideRuntimeMenu();
-        showMenu();
+        /*
+         * Exit processing mode
+         */
+        exitProcessingMode();
     }
 
     /**

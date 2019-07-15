@@ -226,7 +226,10 @@ public class MenuManager {
          */
         fadeOutLoading = new FadeTransition(Duration.millis(500), loading);
         fadeOutLoading.setToValue(0);
-        fadeOutLoading.setOnFinished(event -> loading.setVisible(false));
+        fadeOutLoading.setOnFinished(event -> {
+            loading.setVisible(false);
+            loading.toBack();
+        });
 
         /*
          * Scale in success icon animation
@@ -462,7 +465,6 @@ public class MenuManager {
 
     public void hideLoading() {
         loadingStack.setVisible(false);
-        loading.toBack();
         fadeInLoading.stop();
         fadeOutLoading.play();
     }
