@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -556,7 +557,7 @@ public class MenuManager {
                 map.put(directionalEdgeButton, false);
                 map.put(nonDirectionalEdgeButton, false);
                 map.put(selectButton, false);
-                map.put(playButton, true);
+                map.put(playButton, false);
                 map.put(stopButton, true);
                 map.put(speedUpButton, false);
                 map.put(speedDownButton, false);
@@ -605,6 +606,10 @@ public class MenuManager {
                 map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(playButton, false);
+                map.put(stopButton, false);
+                map.put(speedUpButton, false);
+                map.put(speedDownButton, false);
                 map.put(antsCountButton, antColonyButtonsEnabled);
                 map.put(alphaButton, antColonyButtonsEnabled);
                 map.put(betaButton, antColonyButtonsEnabled);
@@ -625,6 +630,10 @@ public class MenuManager {
                 map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(playButton, false);
+                map.put(stopButton, false);
+                map.put(speedUpButton, false);
+                map.put(speedDownButton, false);
                 map.put(antsCountButton, antColonyButtonsEnabled);
                 map.put(alphaButton, antColonyButtonsEnabled);
                 map.put(betaButton, antColonyButtonsEnabled);
@@ -645,6 +654,10 @@ public class MenuManager {
                 map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(playButton, false);
+                map.put(stopButton, false);
+                map.put(speedUpButton, false);
+                map.put(speedDownButton, false);
                 map.put(antsCountButton, antColonyButtonsEnabled);
                 map.put(alphaButton, antColonyButtonsEnabled);
                 map.put(betaButton, antColonyButtonsEnabled);
@@ -665,6 +678,10 @@ public class MenuManager {
                 map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(playButton, false);
+                map.put(stopButton, false);
+                map.put(speedUpButton, false);
+                map.put(speedDownButton, false);
                 map.put(antsCountButton, antColonyButtonsEnabled);
                 map.put(alphaButton, antColonyButtonsEnabled);
                 map.put(betaButton, antColonyButtonsEnabled);
@@ -685,6 +702,10 @@ public class MenuManager {
                 map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(playButton, false);
+                map.put(stopButton, false);
+                map.put(speedUpButton, false);
+                map.put(speedDownButton, false);
                 map.put(antsCountButton, antColonyButtonsEnabled);
                 map.put(alphaButton, antColonyButtonsEnabled);
                 map.put(betaButton, antColonyButtonsEnabled);
@@ -705,6 +726,10 @@ public class MenuManager {
                 map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(playButton, false);
+                map.put(stopButton, false);
+                map.put(speedUpButton, false);
+                map.put(speedDownButton, false);
                 map.put(antsCountButton, antColonyButtonsEnabled);
                 map.put(alphaButton, antColonyButtonsEnabled);
                 map.put(betaButton, antColonyButtonsEnabled);
@@ -725,6 +750,10 @@ public class MenuManager {
                 map.put(directionalEdgeButton, directionEdgeEnabled);
                 map.put(nonDirectionalEdgeButton, true);
                 map.put(selectButton, true);
+                map.put(playButton, false);
+                map.put(stopButton, false);
+                map.put(speedUpButton, false);
+                map.put(speedDownButton, false);
                 map.put(antsCountButton, antColonyButtonsEnabled);
                 map.put(alphaButton, antColonyButtonsEnabled);
                 map.put(betaButton, antColonyButtonsEnabled);

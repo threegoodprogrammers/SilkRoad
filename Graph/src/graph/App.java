@@ -11,14 +11,13 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
@@ -30,6 +29,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -341,6 +341,15 @@ public class App {
         this.primaryStage = primaryStage;
 
         this.primaryStage.iconifiedProperty().addListener((ov, t, t1) -> {
+            checkExpandingMenuStatusAfterClick();
+            leaveMenu();
+            releaseLeftClick();
+            releaseCtrl();
+            releaseShift();
+        });
+
+        this.primaryStage.focusedProperty().addListener((ov, onHidden, onShown) -> {
+            checkExpandingMenuStatusAfterClick();
             leaveMenu();
             releaseLeftClick();
             releaseCtrl();
@@ -630,6 +639,14 @@ public class App {
     }
 
     /**
+     * Reset timer
+     */
+
+    public void resetTimer() {
+        printTime(0);
+    }
+
+    /**
      * Select item
      *
      * @param item the item
@@ -647,6 +664,7 @@ public class App {
         node.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
         node.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
         node.addEventFilter(MouseEvent.MOUSE_RELEASED, nodeGestures.getOnMouseReleasedEventHandler());
+        node.addEventFilter(MouseEvent.MOUSE_CLICKED, nodeGestures.getOnMouseClickedEventHandler());
     }
 
     /**
@@ -990,6 +1008,39 @@ public class App {
     }
 
     /**
+     * Batch add edges
+     *
+     * @param sourceNode     the source node
+     * @param nonDirectional the non directional
+     */
+
+    public void batchAddEdges(GraphNode sourceNode, boolean nonDirectional) {
+        /*
+         * Prompt for min and max weight
+         */
+        Pair<Double, Double> pair = app.showMinMaxInputDialog("weight for the edges");
+
+        if (pair == null) {
+            return;
+        }
+
+        double min = pair.getKey();
+        double max = pair.getValue();
+
+        for (GraphNode node : mainGraph.getNodes()) {
+            if (node != sourceNode && possibleToDrawEdge(sourceNode, node, nonDirectional)) {
+                double weight = min == max ? min : Math.random() * (max - min) + min;
+
+                if (nonDirectional) {
+                    placeNewNonDirectionalEdge(Math.round(weight * 4) / 4f, sourceNode, node);
+                } else {
+                    placeNewEdge(Math.round(weight * 4) / 4f, sourceNode, node);
+                }
+            }
+        }
+    }
+
+    /**
      * Place new edge
      *
      * @param weight     the weight
@@ -1039,6 +1090,39 @@ public class App {
          */
 
         newEdge.addToCanvas(this.canvas);
+    }
+
+    /**
+     * Remove directional edges
+     */
+
+    public void filterEdges() {
+        ArrayList<GraphEdge> edges = (ArrayList<GraphEdge>) mainGraph.getEdges().clone();
+
+        for (GraphEdge edge : edges) {
+            GraphNode source = edge.getSourceNode();
+            GraphNode target = edge.getTargetNode();
+
+            if (mainGraph.getTwoWayEdge(source, target) == null) {
+                if (source.getIncomingNodes().get(target) == null) {
+                    /*
+                     * Get the weight value and the delete the edge
+                     */
+                    double weight = edge.getWeight();
+                    deleteEdge(edge);
+
+                    /*
+                     * Create a new non-directional edge instead
+                     */
+                    placeNewNonDirectionalEdge(weight, source, target);
+                } else {
+                    /*
+                     * Delete the edge
+                     */
+                    deleteEdge(edge);
+                }
+            }
+        }
     }
 
     /**
@@ -1202,6 +1286,94 @@ public class App {
         }
 
         return Double.parseDouble(input.get());
+    }
+
+    /**
+     * Show min and max number input dialog
+     */
+
+    public Pair<Double, Double> showMinMaxInputDialog(String postfix) {
+        Dialog<Pair<String, String>> alert = new Dialog<>();
+        alert.getDialogPane().getStylesheets().add(
+                getClass().getResource("main.css").toExternalForm());
+        alert.getDialogPane().getStyleClass().add("custom-dialog");
+        alert.setHeaderText("Min And Max Input...");
+        FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.WARNING);
+        icon.setGlyphSize(40);
+        icon.setFill(Color.valueOf("#29a2b0"));
+        alert.setGraphic(icon);
+
+        // Set the button types
+        ButtonType okayButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        alert.getDialogPane().getButtonTypes().addAll(okayButton, ButtonType.CANCEL);
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(20, 10, 10, 10));
+
+        TextField from = new TextField();
+        from.setPromptText("Enter min...");
+        HBox first = new HBox();
+        first.setSpacing(50);
+        first.getChildren().addAll(new Label("Min:"), from);
+
+        TextField to = new TextField();
+        to.setPromptText("Enter max...");
+        HBox second = new HBox();
+        second.setSpacing(50);
+        second.getChildren().addAll(new Label("Max:"), to);
+
+//        gridPane.add(new Label("Min:"), 0, 1);
+//        gridPane.add(from, 1, 1);
+//        gridPane.add(new Label("Max:"), 0, 2);
+//        gridPane.add(to, 1, 2);
+
+        gridPane.add(new Label("Please enter min and max " + postfix + ":"), 0, 0);
+        gridPane.add(first, 0, 1);
+        gridPane.add(second, 0, 2);
+
+        alert.getDialogPane().setContent(gridPane);
+
+        // Request focus on the minimum field by default.
+        Platform.runLater(() -> from.requestFocus());
+
+        // Convert the result to a min-max pair when the okay button is clicked.
+        alert.setResultConverter(dialogButton -> {
+            if (dialogButton == okayButton) {
+                return new Pair<>(from.getText(), to.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = alert.showAndWait();
+
+        if (!result.isPresent()) {
+            return null;
+        }
+
+        boolean condition = !isNumber(result.get().getKey())
+                || !isNumber(result.get().getValue())
+                || Double.parseDouble(result.get().getKey()) <= 0
+                || Double.parseDouble(result.get().getValue()) <= 0
+                || Double.parseDouble(result.get().getKey()) > Double.parseDouble(result.get().getValue());
+
+        while (condition) {
+            showInputErrorDialog();
+            result = alert.showAndWait();
+
+            if (!result.isPresent()) {
+                return null;
+            }
+
+            condition = !isNumber(result.get().getKey())
+                    || !isNumber(result.get().getValue())
+                    || Double.parseDouble(result.get().getKey()) <= 0
+                    || Double.parseDouble(result.get().getValue()) <= 0
+                    || Double.parseDouble(result.get().getKey()) > Double.parseDouble(result.get().getValue());
+        }
+
+        return new Pair<>(Double.parseDouble(result.get().getKey()), Double.parseDouble(result.get().getValue()));
     }
 
     /**
@@ -1564,17 +1736,23 @@ public class App {
     private void enterProcessingMode() {
         hideMenu();
         showRuntimeMenu();
+        resetTimer();
         showLoading();
+        menuManager.updateButtons(MenuManager.State.RUNNING_ALGORITHM);
     }
 
     /**
      * Exit processing mode
      */
 
-    private void exitProcessingMode() {
+    private void exitProcessingMode(boolean finished) {
         setCurrentState(State.IDLE);
         hideRuntimeMenu();
         showMenu();
+
+        if (finished) {
+            selectionManager.clear();
+        }
     }
 
     /**
@@ -1605,7 +1783,7 @@ public class App {
                  * Wait for the fail icon to fade out then show error dialog
                  */
                 wait.setOnFinished(event -> {
-                    exitProcessingMode();
+                    exitProcessingMode(true);
                     showGraphNotCompleteErrorDialog();
                 });
                 wait.play();
@@ -1626,7 +1804,7 @@ public class App {
                  * Wait for the fail icon to fade out then show error dialog
                  */
                 wait.setOnFinished(event -> {
-                    exitProcessingMode();
+                    exitProcessingMode(true);
                     showNoPathAvailableErrorDialog();
                 });
                 wait.play();
@@ -1654,6 +1832,7 @@ public class App {
 
     private void playResults() {
         setCurrentState(State.PLAYING);
+        menuManager.updateButtons(MenuManager.State.PLAYING);
 
         switch (getCurrentProblem()) {
             case SHORTEST_PATH:
@@ -1674,7 +1853,7 @@ public class App {
         /*
          * Exit processing mode
          */
-        exitProcessingMode();
+        exitProcessingMode(false);
     }
 
     /**
@@ -1727,10 +1906,10 @@ public class App {
                 }
 
                 /*
-                 * Hide loading and show menu
+                 * Exit processing mode and hide loading
                  */
                 hideLoading();
-                showMenu();
+                exitProcessingMode(true);
 
                 break;
             case PLAYING:
@@ -1909,23 +2088,17 @@ public class App {
      */
 
     public boolean possibleToDrawEdge(GraphNode source, GraphNode target, boolean nonDirectional) {
-        for (GraphNode node : source.getTwoWayNodes().keySet()) {
-            if (node == target) {
-                return false;
-            }
+        if (source.getTwoWayNodes().get(target) != null) {
+            return false;
         }
 
-        for (GraphNode node : source.getOutgoingNodes().keySet()) {
-            if (node == target) {
-                return false;
-            }
+        if (source.getOutgoingNodes().get(target) != null) {
+            return false;
         }
 
         if (nonDirectional) {
-            for (GraphNode node : source.getIncomingNodes().keySet()) {
-                if (node == target) {
-                    return false;
-                }
+            if (source.getIncomingNodes().get(target) != null) {
+                return false;
             }
         }
 
@@ -2229,6 +2402,11 @@ public class App {
          */
         hideAntColonyMenu();
 
+        /*
+         * Filter the edges and convert the directional ones to non-directional
+         */
+        filterEdges();
+
         if (getCurrentMode() == Mode.DIRECTIONAL_EDGE) {
             changeMode(Mode.SELECT);
         }
@@ -2249,6 +2427,11 @@ public class App {
          * Show ant colony menu
          */
         showAntColonyMenu();
+
+        /*
+         * Filter the edges and convert the directional ones to non-directional
+         */
+        filterEdges();
 
         if (getCurrentMode() == Mode.DIRECTIONAL_EDGE) {
             changeMode(Mode.SELECT);
@@ -2480,7 +2663,8 @@ public class App {
         /*
          * Deselect everything
          */
-        selectionManager.deselectAll();
+//        selectionManager.deselectAll();
+        selectionManager.clear();
     }
 
     /**
@@ -2524,6 +2708,11 @@ public class App {
         }
 
         /*
+         * Set node as deleted
+         */
+        node.delete();
+
+        /*
          * Remove from canvas
          */
         removeNodeFromCanvas(node);
@@ -2542,6 +2731,11 @@ public class App {
 
     public void deleteEdge(GraphEdge edge) {
         /*
+         * Set edge as deleted
+         */
+        edge.delete();
+
+        /*
          * Remove from canvas
          */
         edge.removeFromCanvas(this.canvas);
@@ -2559,6 +2753,11 @@ public class App {
      */
 
     public void deleteNonDirectionalEdge(NonDirectionalEdge edge) {
+        /*
+         * Set edge as deleted
+         */
+        edge.delete();
+
         /*
          * Remove from canvas
          */

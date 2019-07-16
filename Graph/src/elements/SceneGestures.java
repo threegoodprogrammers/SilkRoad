@@ -93,7 +93,10 @@ public class SceneGestures {
              * Return if Control key is not pressed
              */
             if (!app.isCtrlPressed()) {
-                if (!app.isAnythingHovered() && !app.isMenuHovered()) {
+                boolean deselectCondition = !app.isAnythingHovered() && !app.isMenuHovered()
+                        && app.getCurrentState() != App.State.RUNNING_ALGORITHM
+                        && app.getCurrentState() != App.State.PLAYING;
+                if (deselectCondition) {
                     app.selectionManager.deselectAll();
                 }
                 return;
@@ -316,20 +319,6 @@ public class SceneGestures {
                     }
 
                     break;
-                case ENTER:
-                    /*
-                     * Press enter key
-                     */
-                    app.pressEnter();
-
-                    break;
-                case DELETE:
-                    /*
-                     * Press enter key
-                     */
-                    app.deleteItems();
-
-                    break;
                 default:
                     break;
             }
@@ -354,6 +343,23 @@ public class SceneGestures {
                      * Release shift key
                      */
                     app.releaseShift();
+
+                    break;
+                case ENTER:
+                    /*
+                     * Press enter key
+                     */
+                    if (app.isCtrlPressed()) {
+                        app.pressEnter();
+                    }
+
+                    break;
+
+                case DELETE:
+                    /*
+                     * Press enter key
+                     */
+                    app.deleteItems();
 
                     break;
                 default:

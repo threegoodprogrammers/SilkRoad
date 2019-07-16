@@ -22,6 +22,7 @@ public class GraphNode extends Button {
     private boolean isSelected = false;
     private boolean isSource = false;
     private boolean isTarget = false;
+    private boolean isDeleted = false;
 
     /**
      * Instantiates a new Graph node.
@@ -84,6 +85,14 @@ public class GraphNode extends Button {
     public void deselectNode() {
         this.isSelected = false;
         idle();
+    }
+
+    /**
+     * Delete
+     */
+
+    public void delete() {
+        this.isDeleted = true;
     }
 
     /**
@@ -446,7 +455,9 @@ public class GraphNode extends Button {
 
     private void addHoverListeners() {
         EventHandler<MouseEvent> mouseHover = event -> {
-            hoverNode(true);
+            if (!isDeleted) {
+                hoverNode(true);
+            }
             Main.app.hoverItem();
         };
 
@@ -458,7 +469,9 @@ public class GraphNode extends Button {
      */
     private void addLeaveListeners() {
         EventHandler<MouseEvent> mouseLeave = event -> {
-            leaveNode(true);
+            if (!isDeleted) {
+                leaveNode(true);
+            }
             Main.app.leaveItem();
         };
 

@@ -10,18 +10,6 @@
     <orderEntry type="module-library">
       <library name="JUnit5.0">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/junit-jupiter-api-5.0.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/apiguardian-api-1.0.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/opentest4j-1.0.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/junit-platform-commons-1.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="JUnit5.0">
-        <CLASSES>
           <root url="jar://$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/5.0.0/junit-jupiter-api-5.0.0.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar!/" />
           <root url="jar://$MAVEN_REPOSITORY$/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar!/" />
@@ -32,5 +20,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="fontawesomefx-8.9" level="project" />
+    <orderEntry type="library" name="jfoenix-8.0.7" level="project" />
   </component>
 </module>

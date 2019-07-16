@@ -4,6 +4,7 @@ import javafx.animation.FadeTransition;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.shape.CubicCurve;
 import javafx.util.Duration;
 
@@ -13,6 +14,7 @@ import javafx.util.Duration;
 public class EdgeWeight extends Label implements Cloneable {
     private double posX;
     private double posY;
+    private Tooltip tooltip = new Tooltip();
 
     /**
      * Fade in and fade out transitions
@@ -25,6 +27,7 @@ public class EdgeWeight extends Label implements Cloneable {
      */
 
     public EdgeWeight(double weight) {
+        this.tooltipProperty().set(this.tooltip);
         setWeight(weight);
         setStyle();
 //        initializeFadeTransitions();
@@ -179,8 +182,11 @@ public class EdgeWeight extends Label implements Cloneable {
     public void setWeight(double weight) {
         if (weight % 1 == 0) {
             this.setText(String.valueOf((int) weight));
+            this.tooltip.setText(String.valueOf((int) weight));
+
         } else {
             this.setText(String.valueOf(weight));
+            this.tooltip.setText(String.valueOf(weight));
         }
     }
 

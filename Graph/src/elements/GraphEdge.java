@@ -47,6 +47,7 @@ public class GraphEdge extends CubicCurve implements Cloneable {
      */
 
     private boolean isSelected = false;
+    private boolean isDeleted = false;
 
     /**
      * Instantiates a new Graph edge.
@@ -347,6 +348,14 @@ public class GraphEdge extends CubicCurve implements Cloneable {
     }
 
     /**
+     * Delete
+     */
+
+    public void delete() {
+        this.isDeleted = true;
+    }
+
+    /**
      * Hide edge.
      */
 
@@ -611,9 +620,10 @@ public class GraphEdge extends CubicCurve implements Cloneable {
 
     private void addHoverListeners() {
         EventHandler<MouseEvent> mouseHover = event -> {
-            hoverEdge();
-            Main.app.hoverItem();
-            event.consume();
+            if (!isDeleted) {
+                hoverEdge();
+                Main.app.hoverItem();
+            }
         };
 
         this.addEventFilter(MouseEvent.MOUSE_ENTERED, mouseHover);
@@ -627,9 +637,10 @@ public class GraphEdge extends CubicCurve implements Cloneable {
 
     private void addLeaveListeners() {
         EventHandler<MouseEvent> mouseLeave = event -> {
-            leaveEdge();
-            Main.app.leaveItem();
-            event.consume();
+            if (!isDeleted) {
+                leaveEdge();
+                Main.app.leaveItem();
+            }
         };
 
         this.addEventFilter(MouseEvent.MOUSE_EXITED, mouseLeave);

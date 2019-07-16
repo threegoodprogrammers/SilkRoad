@@ -268,6 +268,24 @@ public class SelectionManager {
     }
 
     /**
+     * Clear selections
+     */
+
+    public void clear() {
+        /*
+         * Clear selections
+         */
+        this.selectedNodes.clear();
+        this.selectedEdges.clear();
+        this.selectedNonDirectionalEdges.clear();
+
+        /*
+         * Update menu
+         */
+        updateMenu();
+    }
+
+    /**
      * Update menu
      */
     private void updateMenu() {

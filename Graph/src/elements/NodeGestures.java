@@ -32,6 +32,10 @@ public class NodeGestures {
         return onMouseReleasedEventHandler;
     }
 
+    public EventHandler<MouseEvent> getOnMouseClickedEventHandler() {
+        return onMouseClickedEventHandler;
+    }
+
     private EventHandler<MouseEvent> onMousePressedEventHandler = event -> {
         // left mouse button => dragging
         if (!event.isPrimaryButtonDown() || app.isCtrlPressed())
@@ -196,6 +200,29 @@ public class NodeGestures {
             app.setCurrentState(App.State.IDLE);
 
             event.consume();
+        }
+    };
+
+    private EventHandler<MouseEvent> onMouseClickedEventHandler = new EventHandler<MouseEvent>() {
+        public void handle(MouseEvent event) {
+            GraphNode node = (GraphNode) event.getSource();
+
+            switch (app.getCurrentMode()) {
+                case DIRECTIONAL_EDGE:
+                    if (app.isShiftPressed()) {
+                        app.batchAddEdges(node, false);
+                    }
+
+                    break;
+                case NON_DIRECTIONAL_EDGE:
+                    if (app.isShiftPressed()) {
+                        app.batchAddEdges(node, true);
+                    }
+
+                    break;
+                default:
+                    break;
+            }
         }
     };
 
