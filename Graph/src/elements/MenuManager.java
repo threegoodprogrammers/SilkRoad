@@ -542,6 +542,8 @@ public class MenuManager {
 
         boolean directionEdgeEnabled = app.getCurrentProblem() == App.Problem.SHORTEST_PATH;
         boolean antColonyButtonsEnabled = app.getCurrentProblem() == App.Problem.ANT_COLONY;
+        boolean speedUpEnabled = app.getSpeed() < 4;
+        boolean speedDownEnabled = app.getSpeed() > 0.25;
 
         switch (currentState) {
             case RUNNING_ALGORITHM:
@@ -567,7 +569,6 @@ public class MenuManager {
                 map.put(thresholdButton, false);
                 map.put(vaporButton, false);
 
-
                 break;
             case PLAYING:
                 map.put(shortestPathButton, false);
@@ -584,8 +585,8 @@ public class MenuManager {
                 map.put(selectButton, false);
                 map.put(playButton, true);
                 map.put(stopButton, true);
-                map.put(speedUpButton, true);
-                map.put(speedDownButton, true);
+                map.put(speedUpButton, speedUpEnabled);
+                map.put(speedDownButton, speedDownEnabled);
                 map.put(antsCountButton, false);
                 map.put(alphaButton, false);
                 map.put(betaButton, false);
@@ -889,6 +890,8 @@ public class MenuManager {
         vaporButton.setOnAction(event -> app.setVapor());
         playButton.setOnAction(event -> app.pressPlay());
         stopButton.setOnAction(event -> app.pressStop());
+        speedUpButton.setOnAction(event -> app.increaseSpeed());
+        speedDownButton.setOnAction(event -> app.decreaseSpeed());
     }
 
     /**
@@ -947,17 +950,5 @@ public class MenuManager {
         mainMenu.toFront();
         runtimeMenu.toFront();
         antColonyMenu.toFront();
-    }
-
-    /**
-     * Finalize on top.
-     *
-     * @param onTop the on top
-     */
-
-    public void finalizeOnTop(ArrayList<Node> onTop) {
-        for (Node node : onTop) {
-            node.toFront();
-        }
     }
 }

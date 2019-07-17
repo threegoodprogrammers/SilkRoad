@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
 
 /**
@@ -47,6 +48,7 @@ public class GraphEdge extends CubicCurve implements Cloneable {
      */
 
     private boolean isSelected = false;
+    private boolean isHighlighted = false;
     private boolean isDeleted = false;
 
     /**
@@ -300,21 +302,54 @@ public class GraphEdge extends CubicCurve implements Cloneable {
             /*
              * If edge is not SELECTED
              */
-            style().remove("edge-selected");
-            style().remove("edge-hover");
-            arrowHead.style().remove("edge-arrow-selected");
-            arrowHead.style().remove("edge-arrow-hover");
-            weightLabel.style().remove("edge-weight-selected");
-            weightLabel.style().remove("edge-weight-hover");
+            if (!isHighlighted) {
+                //////////////////////////
+                /////     NORMAL     /////
+                //////////////////////////
 
-            if (!style().contains("edge-idle")) {
-                style().add("edge-idle");
-            }
-            if (!arrowHead.style().contains("edge-arrow-idle")) {
-                arrowHead.style().add("edge-arrow-idle");
-            }
-            if (!weightLabel.style().contains("edge-weight-idle")) {
-                weightLabel.style().add("edge-weight-idle");
+                style().remove("edge-selected");
+                style().remove("edge-hover");
+                style().remove("edge-highlighted");
+                arrowHead.style().remove("edge-arrow-selected");
+                arrowHead.style().remove("edge-arrow-hover");
+                arrowHead.style().remove("edge-arrow-highlighted");
+                weightLabel.style().remove("edge-weight-selected");
+                weightLabel.style().remove("edge-weight-hover");
+                weightLabel.style().remove("edge-weight-highlighted");
+
+                if (!style().contains("edge-idle")) {
+                    style().add("edge-idle");
+                }
+                if (!arrowHead.style().contains("edge-arrow-idle")) {
+                    arrowHead.style().add("edge-arrow-idle");
+                }
+                if (!weightLabel.style().contains("edge-weight-idle")) {
+                    weightLabel.style().add("edge-weight-idle");
+                }
+            } else {
+                /////////////////////////////
+                /////     HIGHLIGHT     /////
+                /////////////////////////////
+
+                style().remove("edge-selected");
+                style().remove("edge-hover");
+                style().remove("edge-idle");
+                arrowHead.style().remove("edge-arrow-selected");
+                arrowHead.style().remove("edge-arrow-hover");
+                arrowHead.style().remove("edge-arrow-idle");
+                weightLabel.style().remove("edge-weight-selected");
+                weightLabel.style().remove("edge-weight-hover");
+                weightLabel.style().remove("edge-weight-idle");
+
+                if (!style().contains("edge-highlighted")) {
+                    style().add("edge-highlighted");
+                }
+                if (!arrowHead.style().contains("edge-arrow-highlighted")) {
+                    arrowHead.style().add("edge-arrow-highlighted");
+                }
+                if (!weightLabel.style().contains("edge-weight-highlighted")) {
+                    weightLabel.style().add("edge-weight-highlighted");
+                }
             }
         }
     }
@@ -353,6 +388,26 @@ public class GraphEdge extends CubicCurve implements Cloneable {
 
     public void delete() {
         this.isDeleted = true;
+    }
+
+    /**
+     * Highlight
+     */
+
+    public void highlight() {
+        this.isHighlighted = true;
+
+        idle();
+    }
+
+    /**
+     * Revert highlight
+     */
+
+    public void revertHighlight() {
+        this.isHighlighted = false;
+
+        idle();
     }
 
     /**
@@ -481,8 +536,18 @@ public class GraphEdge extends CubicCurve implements Cloneable {
      * @return the weight label
      */
 
-    public Label getWeightLabel() {
+    public EdgeWeight getWeightLabel() {
         return this.weightLabel;
+    }
+
+    /**
+     * Gets arrow head.
+     *
+     * @return the arrow head
+     */
+
+    public Arrow getArrowHead() {
+        return this.arrowHead;
     }
 
     /**
@@ -581,20 +646,23 @@ public class GraphEdge extends CubicCurve implements Cloneable {
         idle();
     }
 
-//    /**
-//     * Highlight edge
-//     */
-//
-//    public void highlightEdge() {
-//        hover();
-//        this.weightLabel.hover();
-//        this.arrowHead.hover();
-//
-//        /*
-//         * Send edge elements to front
-//         */
-//        sendToFront();
-//    }
+    /**
+     * Set fill
+     */
+
+    public void setStroke() {
+        this.setStroke(Color.valueOf("#66bde1"));
+        this.arrowHead.setStroke(Color.valueOf("#66bde1"));
+    }
+
+    /**
+     * Reset fill
+     */
+
+    public void resetStroke() {
+        this.setStroke(null);
+        this.arrowHead.setStroke(null);
+    }
 
     /**
      * Leave edge

@@ -22,6 +22,7 @@ public class GraphNode extends Button {
     private boolean isSelected = false;
     private boolean isSource = false;
     private boolean isTarget = false;
+    private boolean isHighlighted = false;
     private boolean isDeleted = false;
 
     /**
@@ -96,6 +97,26 @@ public class GraphNode extends Button {
     }
 
     /**
+     * Highlight
+     */
+
+    public void highlight() {
+        this.isHighlighted = true;
+
+        idle();
+    }
+
+    /**
+     * Revert highlight
+     */
+
+    public void revertHighlight() {
+        this.isHighlighted = false;
+
+        idle();
+    }
+
+    /**
      * Leave node
      */
 
@@ -133,7 +154,7 @@ public class GraphNode extends Button {
             /*
              * If node is not SELECTED
              */
-            if (!isSource && !isTarget) {
+            if (!isSource && !isTarget && !isHighlighted) {
                 //////////////////////////
                 /////     NORMAL     /////
                 //////////////////////////
@@ -149,13 +170,15 @@ public class GraphNode extends Button {
                 if (!style().contains("node-idle")) {
                     style().add("node-idle");
                 }
-            } else if (!isSource) {
+            } else if (isTarget) {
                 //////////////////////////
                 /////     TARGET     /////
                 //////////////////////////
 
                 style().remove("node-idle");
                 style().remove("node-hover");
+                style().remove("node-highlighted");
+                style().remove("node-highlighted-hover");
                 style().remove("node-source");
                 style().remove("node-source-hover");
                 style().remove("node-target-hover");
@@ -165,13 +188,15 @@ public class GraphNode extends Button {
                 if (!style().contains("node-target")) {
                     style().add("node-target");
                 }
-            } else if (!isTarget) {
+            } else if (isSource) {
                 //////////////////////////
                 /////     SOURCE     /////
                 //////////////////////////
 
                 style().remove("node-idle");
                 style().remove("node-hover");
+                style().remove("node-highlighted");
+                style().remove("node-highlighted-hover");
                 style().remove("node-source-hover");
                 style().remove("node-target");
                 style().remove("node-target-hover");
@@ -180,6 +205,24 @@ public class GraphNode extends Button {
 
                 if (!style().contains("node-source")) {
                     style().add("node-source");
+                }
+            } else {
+                /////////////////////////////
+                /////     HIGHLIGHT     /////
+                /////////////////////////////
+
+                style().remove("node-idle");
+                style().remove("node-hover");
+                style().remove("node-highlighted-hover");
+                style().remove("node-source");
+                style().remove("node-source-hover");
+                style().remove("node-target");
+                style().remove("node-target-hover");
+                style().remove("node-selected");
+                style().remove("node-selected-hover");
+
+                if (!style().contains("node-highlighted")) {
+                    style().add("node-highlighted");
                 }
             }
         }
@@ -208,12 +251,14 @@ public class GraphNode extends Button {
             /*
              * If node is not SELECTED
              */
-            if (!isSource && !isTarget) {
+            if (!isSource && !isTarget && !isHighlighted) {
                 //////////////////////////
                 /////     NORMAL     /////
                 //////////////////////////
 
                 style().remove("node-idle");
+                style().remove("node-highlighted");
+                style().remove("node-highlighted-hover");
                 style().remove("node-source");
                 style().remove("node-source-hover");
                 style().remove("node-target");
@@ -224,13 +269,15 @@ public class GraphNode extends Button {
                 if (!style().contains("node-hover")) {
                     style().add("node-hover");
                 }
-            } else if (!isSource) {
+            } else if (isTarget) {
                 //////////////////////////
                 /////     TARGET     /////
                 //////////////////////////
 
                 style().remove("node-idle");
                 style().remove("node-hover");
+                style().remove("node-highlighted");
+                style().remove("node-highlighted-hover");
                 style().remove("node-source");
                 style().remove("node-source-hover");
                 style().remove("node-target");
@@ -240,13 +287,15 @@ public class GraphNode extends Button {
                 if (!style().contains("node-target-hover")) {
                     style().add("node-target-hover");
                 }
-            } else if (!isTarget) {
+            } else if (isSource) {
                 //////////////////////////
                 /////     SOURCE     /////
                 //////////////////////////
 
                 style().remove("node-idle");
                 style().remove("node-hover");
+                style().remove("node-highlighted");
+                style().remove("node-highlighted-hover");
                 style().remove("node-source");
                 style().remove("node-target");
                 style().remove("node-target-hover");
@@ -256,23 +305,27 @@ public class GraphNode extends Button {
                 if (!style().contains("node-source-hover")) {
                     style().add("node-source-hover");
                 }
+            } else {
+                /////////////////////////////
+                /////     HIGHLIGHT     /////
+                /////////////////////////////
+
+                style().remove("node-idle");
+                style().remove("node-hover");
+                style().remove("node-highlighted");
+                style().remove("node-source");
+                style().remove("node-source-hover");
+                style().remove("node-target");
+                style().remove("node-target-hover");
+                style().remove("node-selected");
+                style().remove("node-selected-hover");
+
+                if (!style().contains("node-highlighted-hover")) {
+                    style().add("node-highlighted-hover");
+                }
             }
         }
     }
-
-//    /**
-//     * Set source style on node
-//     */
-//    public void source() {
-//
-//    }
-//
-//    /**
-//     * Set target style on node
-//     */
-//    public void target() {
-//
-//    }
 
     /**
      * Send edge elements to front

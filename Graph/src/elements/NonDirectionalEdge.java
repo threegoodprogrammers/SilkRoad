@@ -1,11 +1,13 @@
 package elements;
 
+import com.sun.javafx.geom.Edge;
 import graph.App;
 import graph.Main;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
 
 /**
@@ -39,6 +41,7 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
      */
 
     private boolean isSelected = false;
+    private boolean isHighlighted = false;
     private boolean isDeleted = false;
 
     /**
@@ -175,17 +178,7 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
     }
 
     /**
-     * Delete edge elements from canvas
-     *
-     * @param canvas the canvas
-     */
-
-    public void deleteFromCanvas(PannableCanvas canvas) {
-        canvas.getChildren().removeAll(this, this.weightLabel);
-    }
-
-    /**
-     * Set edge styless
+     * Set edge styles
      */
 
     private void setStyle() {
@@ -217,16 +210,42 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
             /*
              * If edge is not SELECTED
              */
-            style().remove("edge-selected");
-            style().remove("edge-hover");
-            weightLabel.style().remove("edge-weight-selected");
-            weightLabel.style().remove("edge-weight-hover");
+            if (!isHighlighted) {
+                //////////////////////////
+                /////     NORMAL     /////
+                //////////////////////////
 
-            if (!style().contains("edge-idle")) {
-                style().add("edge-idle");
-            }
-            if (!weightLabel.style().contains("edge-weight-idle")) {
-                weightLabel.style().add("edge-weight-idle");
+                style().remove("edge-selected");
+                style().remove("edge-hover");
+                style().remove("edge-highlighted");
+                weightLabel.style().remove("edge-weight-selected");
+                weightLabel.style().remove("edge-weight-hover");
+                weightLabel.style().remove("edge-weight-highlighted");
+
+                if (!style().contains("edge-idle")) {
+                    style().add("edge-idle");
+                }
+                if (!weightLabel.style().contains("edge-weight-idle")) {
+                    weightLabel.style().add("edge-weight-idle");
+                }
+            } else {
+                /////////////////////////////
+                /////     HIGHLIGHT     /////
+                /////////////////////////////
+
+                style().remove("edge-selected");
+                style().remove("edge-hover");
+                style().remove("edge-idle");
+                weightLabel.style().remove("edge-weight-selected");
+                weightLabel.style().remove("edge-weight-hover");
+                weightLabel.style().remove("edge-weight-idle");
+
+                if (!style().contains("edge-highlighted")) {
+                    style().add("edge-highlighted");
+                }
+                if (!weightLabel.style().contains("edge-weight-highlighted")) {
+                    weightLabel.style().add("edge-weight-highlighted");
+                }
             }
         }
     }
@@ -252,14 +271,6 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
                 weightLabel.style().add("edge-weight-hover");
             }
         }
-    }
-
-    /**
-     * Delete
-     */
-
-    public void delete() {
-        this.isDeleted = true;
     }
 
     /**
@@ -326,8 +337,36 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
      * @return the weight label
      */
 
-    public Label getWeightLabel() {
+    public EdgeWeight getWeightLabel() {
         return this.weightLabel;
+    }
+
+    /**
+     * Delete
+     */
+
+    public void delete() {
+        this.isDeleted = true;
+    }
+
+    /**
+     * Highlight
+     */
+
+    public void highlight() {
+        this.isHighlighted = true;
+
+        idle();
+    }
+
+    /**
+     * Revert highlight
+     */
+
+    public void revertHighlight() {
+        this.isHighlighted = false;
+
+        idle();
     }
 
     /**
@@ -366,6 +405,22 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
     public void deselectEdge() {
         this.isSelected = false;
         idle();
+    }
+
+    /**
+     * Set fill
+     */
+
+    public void setStroke() {
+        this.setStroke(Color.valueOf("#66bde1"));
+    }
+
+    /**
+     * Reset fill
+     */
+
+    public void resetStroke() {
+        this.setStroke(null);
     }
 
     /**

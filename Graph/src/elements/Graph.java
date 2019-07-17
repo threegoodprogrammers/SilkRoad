@@ -407,4 +407,12 @@ public class Graph {
     public String generateID() {
         return String.valueOf(++lastID);
     }
+
+    /**
+     * Reset ID generator
+     */
+
+    public void resetID() {
+        this.lastID = 0;
+    }
 }

@@ -9,9 +9,9 @@ import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
+import javafx.animation.FillTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -27,6 +27,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.CubicCurve;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
@@ -140,8 +141,10 @@ public class App {
     private Thread shortestPathThread;
     private Thread dynamicProgrammingThread;
     private Thread antColonyThread;
+    private Thread playingThread;
     private volatile boolean countTimer = false;
     private volatile boolean paused = false;
+    private float speed = 1;
 
     /**
      * Problems results
@@ -186,6 +189,12 @@ public class App {
      */
 
     public SelectionManager selectionManager;
+
+    /**
+     * Transition manager object
+     */
+
+    public TransitionManager transitionManager;
 
     /**
      * Different states of app
@@ -567,6 +576,103 @@ public class App {
 
     private void stopAntColonyThread() {
         antColonyThread.stop();
+    }
+
+    /**
+     * Start ant colony thread
+     */
+
+    private void startPlayingThread() {
+        playingThread = new Thread(() -> {
+            this.transitionManager = new TransitionManager(this);
+
+            switch (getCurrentProblem()) {
+                case SHORTEST_PATH:
+
+                    break;
+                case DYNAMIC_PROGRAMMING:
+                    playTravellingSalesman();
+
+                    break;
+                case ANT_COLONY:
+                    playTravellingSalesman();
+
+                    break;
+            }
+        });
+
+        /*
+         * Start the thread
+         */
+        this.playingThread.start();
+    }
+
+    /**
+     * Stop ant colony thread
+     */
+
+    private void stopPlayingThread() {
+        antColonyThread.stop();
+    }
+
+    /**
+     * Increase speed
+     */
+
+    public void increaseSpeed() {
+        if (this.speed < 4) {
+            this.speed *= 2;
+
+            /*
+             * Update menu buttons
+             */
+            menuManager.updateButtons(MenuManager.State.PLAYING);
+
+            /*
+             * Update duration for animations
+             */
+            transitionManager.updateSpeed();
+        }
+    }
+
+    /**
+     * Decrease speed
+     */
+
+    public void decreaseSpeed() {
+        if (this.speed > 0.25) {
+            this.speed /= 2;
+
+            /*
+             * Update menu buttons
+             */
+            menuManager.updateButtons(MenuManager.State.PLAYING);
+
+
+            /*
+             * Update duration for animations
+             */
+            transitionManager.updateSpeed();
+        }
+    }
+
+    /**
+     * Reset speed
+     */
+
+    public void resetSpeed() {
+        this.speed = 1;
+        menuManager.updateButtons(MenuManager.State.PLAYING);
+    }
+
+    /**
+     * Gets playing speed
+     *
+     * @return the speed
+     */
+
+    public float getSpeed() {
+        return this.speed;
     }
 
     /**
@@ -1490,7 +1596,7 @@ public class App {
 
     public void showNotEnoughNodesErrorDialog() {
         showErrorDialog("Not Enough Nodes Error...",
-                "There is not enough nodes. Please add more nodes and try again.");
+                "There are not enough nodes. Please add more nodes and try again.");
     }
 
     /**
@@ -1745,14 +1851,11 @@ public class App {
      * Exit processing mode
      */
 
-    private void exitProcessingMode(boolean finished) {
-        setCurrentState(State.IDLE);
+    private void exitProcessingMode() {
         hideRuntimeMenu();
         showMenu();
-
-        if (finished) {
-            selectionManager.clear();
-        }
+        setCurrentState(State.IDLE);
+        selectionManager.clear();
     }
 
     /**
@@ -1783,7 +1886,7 @@ public class App {
                  * Wait for the fail icon to fade out then show error dialog
                  */
                 wait.setOnFinished(event -> {
-                    exitProcessingMode(true);
+                    exitProcessingMode();
                     showGraphNotCompleteErrorDialog();
                 });
                 wait.play();
@@ -1804,7 +1907,7 @@ public class App {
                  * Wait for the fail icon to fade out then show error dialog
                  */
                 wait.setOnFinished(event -> {
-                    exitProcessingMode(true);
+                    exitProcessingMode();
                     showNoPathAvailableErrorDialog();
                 });
                 wait.play();
@@ -1831,29 +1934,17 @@ public class App {
      */
 
     private void playResults() {
+        /*
+         * Set current state to playing, reset playing
+         * speed and update the menu accordingly
+         */
         setCurrentState(State.PLAYING);
-        menuManager.updateButtons(MenuManager.State.PLAYING);
-
-        switch (getCurrentProblem()) {
-            case SHORTEST_PATH:
-                playShortestPath(this.shortestPathResult);
-
-                break;
-            case DYNAMIC_PROGRAMMING:
-                playTravellingSalesman(this.dynamicProgrammingResult);
-
-                break;
-            case ANT_COLONY:
-            default:
-                playTravellingSalesman(this.antColonyResult);
-
-                break;
-        }
+        resetSpeed();
 
         /*
-         * Exit processing mode
+         * Start the playing thread
          */
-        exitProcessingMode(false);
+        startPlayingThread();
     }
 
     /**
@@ -1868,13 +1959,35 @@ public class App {
      * Play travelling salesman
      */
 
-    private void playTravellingSalesman(TravellingSalesManData data) {
-        System.out.println("Distance: " + data.getShortestDistance());
+    private void playTravellingSalesman() {
+        GraphNode source, target;
+        LinkedHashMap<GraphNode, CubicCurve> dataMap = new LinkedHashMap<>();
 
-        ArrayList<GraphNode> nodes = data.getpathSecond();
+        /*
+         * Get the results array list according to current problems
+         */
+        ArrayList<GraphNode> results = getCurrentProblem() == Problem.ANT_COLONY ?
+                antColonyResult.getpathSecond() : dynamicProgrammingResult.getpathSecond();
 
-        for (GraphNode node : nodes) {
-            System.out.println(nodes.indexOf(node) + ": " + node.getIdentifier());
+        for (int i = 0; i < results.size() - 1; i++) {
+            source = results.get(i);
+            target = results.get(i + 1);
+
+            /*
+             * Get the edge connecting the two nodes together
+             */
+            NonDirectionalEdge edge = mainGraph.getTwoWayEdge(source, target);
+
+            /*
+             * Add node and edge to hash map
+             */
+            dataMap.put(target, edge);
+        }
+
+        try {
+            transitionManager.start(dataMap);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -1909,7 +2022,7 @@ public class App {
                  * Exit processing mode and hide loading
                  */
                 hideLoading();
-                exitProcessingMode(true);
+                exitProcessingMode();
 
                 break;
             case PLAYING:
@@ -1933,10 +2046,6 @@ public class App {
      */
 
     public void pressPlay() {
-//        if (getCurrentState() != State.PLAYING) {
-//            return;
-//        }
-
         if (this.paused) {
             resume();
         } else {
@@ -1966,8 +2075,8 @@ public class App {
      * Is playing
      */
 
-    public boolean isPlaying() {
-        return getCurrentState() == State.PLAYING && !paused;
+    public boolean isPaused() {
+        return paused;
     }
 
     /**
@@ -2637,6 +2746,11 @@ public class App {
             for (GraphNode node : nodes) {
                 deleteNode(node);
             }
+
+            /*
+             * Reset graph ID generator
+             */
+            mainGraph.resetID();
         } else {
             /*
              * Delete selected non-directional edges

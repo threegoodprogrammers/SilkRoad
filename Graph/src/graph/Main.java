@@ -1,14 +1,11 @@
 package graph;
 
-import elements.PannableCanvas;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class Main extends Application {
     public static App app;
@@ -17,6 +14,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         System.setProperty("prism.lcdtext", "false");
         System.setProperty("prism.vsync", "false");
+        System.setProperty("prism.forceGPU", "true");
         System.setProperty("prism.text", "t2k");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("main.fxml"));
         Parent root = loader.load();
