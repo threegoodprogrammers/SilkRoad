@@ -16,6 +16,7 @@ import java.util.HashMap;
  */
 public class TransitionManager {
     private App app;
+    private MenuManager menuManager;
     private boolean wait;
 
     public enum Part {
@@ -56,8 +57,9 @@ public class TransitionManager {
      * Instantiates a new Transition manager
      */
 
-    public TransitionManager(App app) {
+    public TransitionManager(App app, MenuManager menuManager) {
         this.app = app;
+        this.menuManager = menuManager;
 
         /*
          * Initialize transitions
@@ -179,6 +181,11 @@ public class TransitionManager {
                 }
             }
         }
+
+        /*
+         * Update runtime menu
+         */
+        menuManager.updateButtons(MenuManager.State.FINISHED_PLAYING);
 
         /*
          * Return if playing is stopped

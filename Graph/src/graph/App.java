@@ -662,7 +662,7 @@ public class App {
 
     private void startPlayingThread() {
         playingThread = new Thread(() -> {
-            this.transitionManager = new TransitionManager(this);
+            this.transitionManager = new TransitionManager(this, menuManager);
 
             switch (getCurrentProblem()) {
                 case SHORTEST_PATH:
@@ -1231,7 +1231,7 @@ public class App {
                 double weight = min == max ? min : Math.random() * (max - min) + min;
 
                 if (nonDirectional) {
-                    placeNewNonDirectionalEdge(Math.round(weight * 4) / 4f, sourceNode, node);
+                    placeNewNonDirectionalEdge(Math.round(weight), sourceNode, node);
                 } else {
                     placeNewEdge(Math.round(weight * 4) / 4f, sourceNode, node);
                 }
