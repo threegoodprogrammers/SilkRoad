@@ -104,10 +104,10 @@ public class TransitionManager {
 
     public void start(HashMap<GraphNode, CubicCurve> nodesAndEdges) throws InterruptedException {
         for (GraphNode node : nodesAndEdges.keySet()) {
-//            /*
-//             * Check pause
-//             */
-//            checkPause();
+            /*
+             * Check pause
+             */
+            checkPause();
 
             if (nodesAndEdges.get(node).getClass() == GraphEdge.class) {
                 /*
@@ -485,7 +485,7 @@ public class TransitionManager {
                 if (edgeType == EdgeType.DIRECTIONAL) {
                     partOneDirectional.playFromStart();
                 } else {
-                    partOneEdge.playFromStart();
+                    partThreeNonDirectional.playFromStart();
                 }
 
                 break;
@@ -493,7 +493,7 @@ public class TransitionManager {
                 if (edgeType == EdgeType.DIRECTIONAL) {
                     partTwoDirectional.playFromStart();
                 } else {
-                    partTwoEdge.playFromStart();
+                    partThreeNonDirectional.playFromStart();
                 }
 
                 break;
@@ -502,7 +502,7 @@ public class TransitionManager {
                 if (edgeType == EdgeType.DIRECTIONAL) {
                     partThreeDirectional.playFromStart();
                 } else {
-                    partThreeEdge.playFromStart();
+                    partThreeNonDirectional.playFromStart();
                 }
 
                 break;
