@@ -30,6 +30,7 @@ public class AntColonyAlgorithm {
         ArrayList<GraphNode> nodes = graph.getNodes();
         nodesCount = nodes.size();
         initMatrices(nodesCount);
+        int baseCityIndex = nodes.indexOf(baseNode);
         distanceMatrix = getDistanceMatrixFromObjects(new ArrayList<>(nodes));
         if (Validation.isComplete(graph)) {
             //---------------------------------------------------
@@ -54,29 +55,27 @@ public class AntColonyAlgorithm {
 
 
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {
-                int cityCounter = -1;
                 for (int i = 0; i < nodesCount; i++) {
                     for (int j = 0; j < nodesCount; j++) {
                         pheromoneMatrix[i][j] = 0;
                     }
                 }
                 for (int antNo = 0; antNo < antCount; antNo++) {
-                    int startCity = (++cityCounter) % nodesCount;
 
                     double loopLength = 0;
 
                     List<Integer> visitedCities = new ArrayList<>();
-                    visitedCities.add(startCity);
+                    visitedCities.add(baseCityIndex);
                     boolean[] citiesState = new boolean[nodesCount];
 
-                    int currentCity = startCity;
+                    int currentCity = baseCityIndex;
 
                     for (int e = 0; e < nodesCount; e++) {
                         if (e != nodesCount - 1) {
 
                             double sumProb = 0;
                             for (int i = 0; i < nodesCount; i++) {
-                                if (i == startCity || i == currentCity || citiesState[i])
+                                if (i == baseCityIndex || i == currentCity || citiesState[i])
                                     continue;
                                 sumProb += probabilityMatrix[currentCity][i];
                             }
@@ -84,7 +83,7 @@ public class AntColonyAlgorithm {
                             sumProb = 0.0;
 
                             for (int city = 0; city < nodesCount; city++) {
-                                if (currentCity != city && city != startCity && !citiesState[city]) {
+                                if (currentCity != city && city != baseCityIndex && !citiesState[city]) {
                                     sumProb += probabilityMatrix[currentCity][city];
                                     if (randNumber <= sumProb) {
                                         loopLength += distanceMatrix[currentCity][city];
@@ -96,10 +95,10 @@ public class AntColonyAlgorithm {
                                 }
                             }
                         } else {
-                            loopLength += distanceMatrix[currentCity][startCity];
-                            citiesState[startCity] = true;
-                            currentCity = startCity;
-                            visitedCities.add(startCity);
+                            loopLength += distanceMatrix[currentCity][baseCityIndex];
+                            citiesState[baseCityIndex] = true;
+                            currentCity = baseCityIndex;
+                            visitedCities.add(baseCityIndex);
                         }
                     }
 
@@ -139,48 +138,12 @@ public class AntColonyAlgorithm {
                 }
             }
 
-//            for (int i = 0; i < nodesCount; i++) {
-//                for (int j = 0; j < nodesCount; j++) {
-//                    System.out.println("[" + i + "][" + j + "]=" + probabilityMatrix[i][j]);
-//                }
-//
-//            }
-
-
-//            int currentCityIndex = nodes.indexOf(baseNode);
-//            boolean[] isVisited = new boolean[nodesCount];
-//            isVisited[currentCityIndex] = true;
-
             ArrayList<GraphNode> path = new ArrayList<>();
-            path.add(baseNode);
-
             for (int i : generalPath) {
                 path.add(nodes.get(i));
 
             }
 
-//            float distance = 0;
-//            for (int i = 0; i < nodesCount - 1; i++) {
-//
-//                double max = -1;
-//                int nextCity = -1;
-//                for (int j = 0; j < nodesCount; j++) {
-//
-//                    if (currentCityIndex != j && !isVisited[j]) {
-//                        if (probabilityMatrix[currentCityIndex][j] >= max) {
-//                            max = probabilityMatrix[currentCityIndex][j];
-//                            nextCity = j;
-//                        }
-//
-//                    }
-//                }
-//                isVisited[nextCity] = true;
-//                distance += distanceMatrix[currentCityIndex][nextCity];
-//                currentCityIndex = nextCity;
-//                path.add(nodes.get(currentCityIndex));
-//            }
-//            path.add(baseNode);
-//            distance += distanceMatrix[currentCityIndex][nodes.indexOf(baseNode)];
             return new TravellingSalesManData(path, (float) generalDistance);
         } else {
             //TODO: Show error that the the salesMan
