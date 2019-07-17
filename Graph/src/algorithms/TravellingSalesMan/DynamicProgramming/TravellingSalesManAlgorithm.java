@@ -17,28 +17,10 @@ public class TravellingSalesManAlgorithm {
     private static List<Integer> tour = new ArrayList<>();
     private static double minTourCost = Double.POSITIVE_INFINITY;
 
-    public static TravellingSalesManData findShortestCycle(GraphObject graph, NodeGraphObject baseNode) {
-        if (graph == null) return null;
-        double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), graph.getNodes().size());
-        if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
-            int nodesCount = graph.getNodes().size();
-
-            ArrayList<NodeGraphObject> path = new ArrayList<>();
-            for (int i : getTour(nodesCount, distanceMatrix, graph.getNodes().indexOf(baseNode))) {
-                path.add(graph.getNodes().get(i));
-            }
-            return new TravellingSalesManData(path, getTourCost(nodesCount, distanceMatrix, graph.getNodes().indexOf(baseNode)));
-        } else {
-            //TODO: Show error that the the salesMan
-            //TODO: cannot travel and get back home visiting the other cities just one time
-        }
-        return null;
-    }
-
     public static TravellingSalesManData findShortestCycle(Graph graph, GraphNode baseNode) {
         if (graph == null) return null;
         double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), graph.getNodes().size());
-        if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
+        if (Validation.isComplete(graph)) {
             int nodesCount = graph.getNodes().size();
 
             ArrayList<GraphNode> path = new ArrayList<>();

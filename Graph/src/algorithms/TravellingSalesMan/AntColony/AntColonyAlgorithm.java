@@ -31,7 +31,7 @@ public class AntColonyAlgorithm {
         nodesCount = nodes.size();
         initMatrices(nodesCount);
         distanceMatrix = getDistanceMatrixFromObjects(new ArrayList<>(nodes));
-        if (Validation.isComplete(distanceMatrix, distanceMatrix.length)) {
+        if (Validation.isComplete(graph)) {
             //---------------------------------------------------
             if (nodesCount == 0)
                 return null;
