@@ -1,6 +1,5 @@
 package algorithms.TravellingSalesMan.DynamicProgramming;
 
-import algorithms.GraphObject;
 import algorithms.NodeGraphObject;
 import algorithms.TravellingSalesMan.TravellingSalesManData;
 import algorithms.TravellingSalesMan.Validation;
@@ -18,6 +17,10 @@ public class TravellingSalesManAlgorithm {
     private static double minTourCost = Double.POSITIVE_INFINITY;
 
     public static TravellingSalesManData findShortestCycle(Graph graph, GraphNode baseNode) {
+        ranSolver = false;
+        tour = new ArrayList<>();
+        minTourCost = Double.POSITIVE_INFINITY;
+
         if (graph == null) return null;
         double[][] distanceMatrix = getDistanceMatrixFromObjects(graph.getNodes(), graph.getNodes().size());
         if (Validation.isComplete(graph)) {
