@@ -106,38 +106,38 @@ public class Arrow extends Path implements Cloneable {
 
     private void setStyle() {
         this.getStyleClass().add("edge-arrow");
-        idle();
+//        idle();
     }
 
-    /**
-     * Leave mouse and set the arrow to idle mode
-     */
-
-    public void idle() {
-        this.getStyleClass().remove("edge-arrow-select");
-        this.getStyleClass().remove("edge-arrow-hover");
-        this.getStyleClass().add("edge-arrow-idle");
-    }
-
-    /**
-     * Hover with mouse
-     */
-
-    public void hover() {
-        this.getStyleClass().remove("edge-arrow-idle");
-        this.getStyleClass().remove("edge-arrow-select");
-        this.getStyleClass().add("edge-arrow-hover");
-    }
-
-    /**
-     * Select edge with mouse click
-     */
-
-    public void select() {
-        this.getStyleClass().remove("edge-arrow-idle");
-        this.getStyleClass().remove("edge-arrow-hover");
-        this.getStyleClass().add("edge-arrow-select");
-    }
+//    /**
+//     * Leave mouse and set the arrow to idle mode
+//     */
+//
+//    public void idle() {
+//        this.getStyleClass().remove("edge-arrow-select");
+//        this.getStyleClass().remove("edge-arrow-hover");
+//        this.getStyleClass().add("edge-arrow-idle");
+//    }
+//
+//    /**
+//     * Hover with mouse
+//     */
+//
+//    public void hover() {
+//        this.getStyleClass().remove("edge-arrow-idle");
+//        this.getStyleClass().remove("edge-arrow-select");
+//        this.getStyleClass().add("edge-arrow-hover");
+//    }
+//
+//    /**
+//     * Select edge with mouse click
+//     */
+//
+//    public void select() {
+//        this.getStyleClass().remove("edge-arrow-idle");
+//        this.getStyleClass().remove("edge-arrow-hover");
+//        this.getStyleClass().add("edge-arrow-select");
+//    }
 
     /**
      * Evaluate the cubic curve at a parameter 0<=t<=1, returns a Point2D

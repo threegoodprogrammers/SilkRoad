@@ -1,7 +1,7 @@
 package elements;
 
-import graph.App;
 import graph.Main;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -104,6 +104,7 @@ public class GraphNode extends Button {
         this.isHighlighted = true;
 
         idle();
+        Platform.runLater(this::toFront);
     }
 
     /**
@@ -127,7 +128,7 @@ public class GraphNode extends Button {
             /*
              * Send all nodes to front
              */
-            App.sendNodesToFront();
+            Main.app.sendNodesToFront();
         }
     }
 

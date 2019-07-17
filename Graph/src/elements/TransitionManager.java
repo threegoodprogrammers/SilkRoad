@@ -33,7 +33,7 @@ public class TransitionManager {
     private NonDirectionalEdge nonDirectionalEdge;
     private Arrow edgeArrow;
 
-    private float baseDuration = 500;
+    private float baseDuration = 1000;
 
     private StrokeTransition partOneEdge;
     private StrokeTransition partOneArrow;
@@ -126,10 +126,9 @@ public class TransitionManager {
                 setAfterFinished(node);
 
                 /*
-                 * Set stroke on graph edge and highlight weight label
+                 * Set stroke on graph edge
                  */
                 edge.setStroke();
-                edge.highlight();
 
                 /*
                  * Iterate through animations
@@ -160,10 +159,9 @@ public class TransitionManager {
                 setAfterFinished(node);
 
                 /*
-                 * Set stroke on graph edge and highlight weight label
+                 * Set stroke on graph edge
                  */
                 edge.setStroke();
-                edge.highlight();
 
                 /*
                  * Iterate through animations
@@ -337,10 +335,7 @@ public class TransitionManager {
             case DIRECTIONAL:
                 setAfterFinished();
                 this.partThreeDirectional.setOnFinished(event -> {
-                    node.highlight();
-                    this.edge.resetStroke();
-                    this.edge.revertHighlight();
-                    this.edge.highlight();
+                    app.highlightNode(node);
                     goOn();
                 });
 
@@ -348,10 +343,7 @@ public class TransitionManager {
             case NON_DIRECTIONAL:
                 setAfterFinished();
                 this.partThreeNonDirectional.setOnFinished(event -> {
-                    node.highlight();
-                    this.nonDirectionalEdge.resetStroke();
-                    this.nonDirectionalEdge.revertHighlight();
-                    this.nonDirectionalEdge.highlight();
+                    app.highlightNode(node);
                     goOn();
                 });
 
@@ -366,12 +358,19 @@ public class TransitionManager {
     public void setAfterFinished() {
         switch (this.edgeType) {
             case DIRECTIONAL:
-                this.partOneDirectional.setOnFinished(event -> goOn());
+                this.partOneDirectional.setOnFinished(event -> {
+                    app.highlightEdge(this.edge);
+                    goOn();
+                });
+
                 this.partTwoDirectional.setOnFinished(event -> goOn());
 
                 break;
             case NON_DIRECTIONAL:
-                this.partOneNonDirectional.setOnFinished(event -> goOn());
+                this.partOneNonDirectional.setOnFinished(event -> {
+                    app.highlightNonDirEdge(this.nonDirectionalEdge);
+                    goOn();
+                });
                 this.partTwoNonDirectional.setOnFinished(event -> goOn());
 
                 break;

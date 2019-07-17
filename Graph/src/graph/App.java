@@ -9,7 +9,6 @@ import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
-import javafx.animation.FillTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
@@ -145,6 +144,14 @@ public class App {
     private volatile boolean countTimer = false;
     private volatile boolean paused = false;
     private float speed = 1;
+
+    /**
+     * Highlight array list
+     */
+
+    private ArrayList<GraphNode> highlightedNodes = new ArrayList<>();
+    private ArrayList<GraphEdge> highlightedEdges = new ArrayList<>();
+    private ArrayList<NonDirectionalEdge> highlightedNonDirEdges = new ArrayList<>();
 
     /**
      * Problems results
@@ -394,7 +401,7 @@ public class App {
                 Graph.EdgeOrientation.HORIZONTAL);
         this.newEdge.initialize();
         this.newEdge.hideEdge();
-        this.newEdge.setDashed();
+//        this.newEdge.setDashed();
         this.newEdge.hoverEdge();
 
         this.newEdgeVisible = false;
@@ -483,11 +490,82 @@ public class App {
     }
 
     /**
-     * Sets threads
+     * Highlight node
+     *
+     * @param node the node
      */
 
-    public void setThreads() {
+    public void highlightNode(GraphNode node) {
+        if (highlightedNodes.contains(node)) {
+            return;
+        }
 
+        highlightedNodes.add(node);
+        node.highlight();
+    }
+
+    /**
+     * Highlight edge
+     *
+     * @param edge the edge
+     */
+
+    public void highlightEdge(GraphEdge edge) {
+        if (highlightedEdges.contains(edge)) {
+            return;
+        }
+
+        highlightedEdges.add(edge);
+        edge.highlight();
+    }
+
+    /**
+     * Highlight non-directional edge
+     *
+     * @param edge the edge
+     */
+
+    public void highlightNonDirEdge(NonDirectionalEdge edge) {
+        if (highlightedNonDirEdges.contains(edge)) {
+            return;
+        }
+
+        highlightedNonDirEdges.add(edge);
+        edge.highlight();
+    }
+
+    /**
+     * Reset highlights
+     */
+
+    public void resetHighlights() {
+        /*
+         * Revert highlight for every node
+         */
+        for (GraphNode node : highlightedNodes) {
+            node.revertHighlight();
+        }
+
+        /*
+         * Revert highlight for every edge
+         */
+        for (GraphEdge edge : highlightedEdges) {
+            edge.revertHighlight();
+        }
+
+        /*
+         * Revert highlight for every non-directional edge
+         */
+        for (NonDirectionalEdge edge : highlightedNonDirEdges) {
+            edge.revertHighlight();
+        }
+
+        /*
+         * Clear highlight array lists
+         */
+        this.highlightedNonDirEdges.clear();
+        this.highlightedEdges.clear();
+        this.highlightedNodes.clear();
     }
 
     /**
@@ -3181,9 +3259,40 @@ public class App {
      * Send nodes to front
      */
 
-    public static void sendNodesToFront() {
+    public void sendNodesToFront() {
         for (GraphNode node : mainGraph.getNodes()) {
             node.toFront();
+        }
+
+        if (getCurrentState() == State.PLAYING) {
+            sendHighlightedToFront();
+        }
+    }
+
+    /**
+     * Send highlighted to front
+     */
+
+    public void sendHighlightedToFront() {
+        /*
+         * Send every highlighted edge to front
+         */
+        for (GraphEdge edge : highlightedEdges) {
+            edge.sendToFront();
+        }
+
+        /*
+         * Send every highlighted non-directional edge to front
+         */
+        for (NonDirectionalEdge edge : highlightedNonDirEdges) {
+            edge.sendToFront();
+        }
+
+        /*
+         * Send every highlighted node to front
+         */
+        for (GraphNode node : highlightedNodes) {
+            node.sendToFront();
         }
     }
 
