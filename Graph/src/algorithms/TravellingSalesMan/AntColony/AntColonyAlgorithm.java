@@ -49,8 +49,17 @@ public class AntColonyAlgorithm {
             }
             //---------------------------------------------------
 
+            double generalDistance = Double.MAX_VALUE;
+            List<Integer> generalPath = new ArrayList<>();
+
+
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {
                 int cityCounter = -1;
+                for (int i = 0; i < nodesCount; i++) {
+                    for (int j = 0; j < nodesCount; j++) {
+                        pheromoneMatrix[i][j] = 0;
+                    }
+                }
                 for (int antNo = 0; antNo < antCount; antNo++) {
                     int startCity = (++cityCounter) % nodesCount;
 
@@ -93,6 +102,13 @@ public class AntColonyAlgorithm {
                             visitedCities.add(startCity);
                         }
                     }
+
+                    if (generalDistance > loopLength) {
+                        generalDistance = loopLength;
+                        generalPath = new ArrayList<>(visitedCities);
+                    }
+
+
                     for (int node = 0; node < nodesCount - 1; node++) {
                         deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
                         deltaPheromoneMatrix[visitedCities.get(node + 1)][visitedCities.get(node)] += (1d / loopLength);
@@ -131,36 +147,41 @@ public class AntColonyAlgorithm {
 //            }
 
 
-            int currentCityIndex = nodes.indexOf(baseNode);
-            boolean[] isVisited = new boolean[nodesCount];
-            isVisited[currentCityIndex] = true;
+//            int currentCityIndex = nodes.indexOf(baseNode);
+//            boolean[] isVisited = new boolean[nodesCount];
+//            isVisited[currentCityIndex] = true;
 
             ArrayList<GraphNode> path = new ArrayList<>();
             path.add(baseNode);
 
-            float distance = 0;
-            for (int i = 0; i < nodesCount - 1; i++) {
+            for (int i : generalPath) {
+                path.add(nodes.get(i));
 
-                double max = -1;
-                int nextCity = -1;
-                for (int j = 0; j < nodesCount; j++) {
-
-                    if (currentCityIndex != j && !isVisited[j]) {
-                        if (probabilityMatrix[currentCityIndex][j] >= max) {
-                            max = probabilityMatrix[currentCityIndex][j];
-                            nextCity = j;
-                        }
-
-                    }
-                }
-                isVisited[nextCity] = true;
-                distance += distanceMatrix[currentCityIndex][nextCity];
-                currentCityIndex = nextCity;
-                path.add(nodes.get(currentCityIndex));
             }
-            path.add(baseNode);
-            distance += distanceMatrix[currentCityIndex][nodes.indexOf(baseNode)];
-            return new TravellingSalesManData(path, distance);
+
+//            float distance = 0;
+//            for (int i = 0; i < nodesCount - 1; i++) {
+//
+//                double max = -1;
+//                int nextCity = -1;
+//                for (int j = 0; j < nodesCount; j++) {
+//
+//                    if (currentCityIndex != j && !isVisited[j]) {
+//                        if (probabilityMatrix[currentCityIndex][j] >= max) {
+//                            max = probabilityMatrix[currentCityIndex][j];
+//                            nextCity = j;
+//                        }
+//
+//                    }
+//                }
+//                isVisited[nextCity] = true;
+//                distance += distanceMatrix[currentCityIndex][nextCity];
+//                currentCityIndex = nextCity;
+//                path.add(nodes.get(currentCityIndex));
+//            }
+//            path.add(baseNode);
+//            distance += distanceMatrix[currentCityIndex][nodes.indexOf(baseNode)];
+            return new TravellingSalesManData(path, (float) generalDistance);
         } else {
             //TODO: Show error that the the salesMan
             //TODO: cannot travel and get back home visiting the other cities just one time
