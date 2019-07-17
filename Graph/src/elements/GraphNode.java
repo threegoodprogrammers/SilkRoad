@@ -163,6 +163,8 @@ public class GraphNode extends Button {
                 style().remove("node-hover");
                 style().remove("node-source");
                 style().remove("node-source-hover");
+                style().remove("node-highlighted");
+                style().remove("node-highlighted-hover");
                 style().remove("node-target");
                 style().remove("node-target-hover");
                 style().remove("node-selected");

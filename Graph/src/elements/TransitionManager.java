@@ -139,7 +139,8 @@ public class TransitionManager {
                  * Return if playing is stopped
                  */
                 if (isStopped()) {
-                    app.pressStop();
+                    stop();
+                    app.stopPlaying();
                     return;
                 }
             } else {
@@ -172,11 +173,22 @@ public class TransitionManager {
                  * Return if playing is stopped
                  */
                 if (isStopped()) {
-                    app.pressStop();
+                    stop();
+                    app.stopPlaying();
                     return;
                 }
             }
         }
+
+        /*
+         * Return if playing is stopped
+         */
+        while (!isStopped()) {
+            Thread.sleep(10);
+        }
+
+        stop();
+        app.stopPlaying();
     }
 
     /**
@@ -434,6 +446,40 @@ public class TransitionManager {
                     partThreeDirectional.play();
                 } else {
                     partThreeNonDirectional.play();
+                }
+
+                break;
+        }
+    }
+
+    /**
+     * Stop animations
+     */
+
+    private void stop() {
+        switch (currentPart) {
+            case ONE:
+                if (edgeType == EdgeType.DIRECTIONAL) {
+                    partOneDirectional.stop();
+                } else {
+                    partOneNonDirectional.stop();
+                }
+
+                break;
+            case TWO:
+                if (edgeType == EdgeType.DIRECTIONAL) {
+                    partTwoDirectional.stop();
+                } else {
+                    partTwoNonDirectional.stop();
+                }
+
+                break;
+            case THREE:
+            default:
+                if (edgeType == EdgeType.DIRECTIONAL) {
+                    partThreeDirectional.stop();
+                } else {
+                    partThreeNonDirectional.stop();
                 }
 
                 break;

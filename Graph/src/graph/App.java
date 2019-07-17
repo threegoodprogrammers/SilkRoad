@@ -657,7 +657,7 @@ public class App {
     }
 
     /**
-     * Start ant colony thread
+     * Start playing thread
      */
 
     private void startPlayingThread() {
@@ -686,11 +686,26 @@ public class App {
     }
 
     /**
-     * Stop ant colony thread
+     * Stop playing
      */
 
-    private void stopPlayingThread() {
-        antColonyThread.stop();
+    public void stopPlaying() {
+        /*
+         * Exit processing mode
+         */
+        exitProcessingMode();
+
+        /*
+         * Reset highlights
+         */
+        resetHighlights();
+
+        /*
+         * Resume if paying is paused
+         */
+        if (paused) {
+            resume();
+        }
     }
 
     /**
@@ -1806,11 +1821,6 @@ public class App {
              * Start a new thread to process the shortest path
              */
             startShortestPathThread();
-
-            /*
-             * Set current state to running algorithm
-             */
-            setCurrentState(State.RUNNING_ALGORITHM);
         });
         wait.play();
     }
@@ -1855,11 +1865,6 @@ public class App {
              * Start a new thread to process dynamic programming
              */
             startDynamicProgrammingThread();
-
-            /*
-             * Set current state to running algorithm
-             */
-            setCurrentState(State.RUNNING_ALGORITHM);
         });
         wait.play();
     }
@@ -1904,11 +1909,6 @@ public class App {
              * Start a new thread to process ant colony
              */
             startAntColonyThread();
-
-            /*
-             * Set current state to running algorithm
-             */
-            setCurrentState(State.RUNNING_ALGORITHM);
         });
         wait.play();
     }
@@ -1918,6 +1918,11 @@ public class App {
      */
 
     private void enterProcessingMode() {
+        /*
+         * Set current state to running algorithm
+         */
+        setCurrentState(State.RUNNING_ALGORITHM);
+
         hideMenu();
         showRuntimeMenu();
         resetTimer();
@@ -1931,8 +1936,8 @@ public class App {
 
     private void exitProcessingMode() {
         hideRuntimeMenu();
-        showMenu();
         setCurrentState(State.IDLE);
+        showMenu();
         selectionManager.clear();
     }
 
@@ -2000,7 +2005,11 @@ public class App {
                 /*
                  * Wait for the fail icon to fade out then play the results
                  */
-                wait.setOnFinished(event -> playResults());
+                wait.setOnFinished(event -> {
+                    if (getCurrentState() == State.RUNNING_ALGORITHM) {
+                        playResults();
+                    }
+                });
                 wait.play();
 
                 break;
@@ -2105,12 +2114,9 @@ public class App {
                 break;
             case PLAYING:
                 /*
-                 * Stop the corresponding playing thread
+                 * Set the current state to idle
                  */
-
-                /**
-                 * @todo stop playing
-                 */
+                setCurrentState(State.IDLE);
 
                 break;
             default:
