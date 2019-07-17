@@ -67,6 +67,10 @@ public class NodeGestures {
                 break;
             case SELECT:
             default:
+                if (app.getCurrentState() == App.State.PLAYING || app.getCurrentState() == App.State.RUNNING_ALGORITHM) {
+                    break;
+                }
+
                 /*
                  * Set current state to moving node state
                  */
@@ -179,6 +183,10 @@ public class NodeGestures {
 
                         GraphNode node = (GraphNode) event.getSource();
 
+                        if (app.getCurrentState() == App.State.PLAYING || app.getCurrentState() == App.State.RUNNING_ALGORITHM) {
+                            return;
+                        }
+
                         app.select(node);
                     }
 
@@ -187,6 +195,10 @@ public class NodeGestures {
                 default:
 
                     break;
+            }
+
+            if (app.getCurrentState() == App.State.PLAYING || app.getCurrentState() == App.State.RUNNING_ALGORITHM) {
+                return;
             }
 
             /*

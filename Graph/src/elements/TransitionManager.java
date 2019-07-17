@@ -484,7 +484,7 @@ public class TransitionManager {
                 if (edgeType == EdgeType.DIRECTIONAL) {
                     partOneDirectional.playFromStart();
                 } else {
-                    partThreeNonDirectional.playFromStart();
+                    partOneNonDirectional.playFromStart();
                 }
 
                 break;
@@ -492,7 +492,7 @@ public class TransitionManager {
                 if (edgeType == EdgeType.DIRECTIONAL) {
                     partTwoDirectional.playFromStart();
                 } else {
-                    partThreeNonDirectional.playFromStart();
+                    partTwoNonDirectional.playFromStart();
                 }
 
                 break;
