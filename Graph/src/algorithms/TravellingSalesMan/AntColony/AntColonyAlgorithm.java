@@ -146,8 +146,6 @@ public class AntColonyAlgorithm {
 
             return new TravellingSalesManData(path, (float) generalDistance);
         } else {
-            //TODO: Show error that the the salesMan
-            //TODO: cannot travel and get back home visiting the other cities just one time
             return null;
         }
 

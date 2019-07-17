@@ -32,12 +32,9 @@ public class TravellingSalesManAlgorithm {
             }
             return new TravellingSalesManData(path, (float) getTourCost(nodesCount, distanceMatrix, graph.getNodes().indexOf(baseNode)));
         } else {
-            //TODO: Show error that the the salesMan
-            //TODO: cannot travel and get back home visiting the other cities just one time
+            return null;
         }
-        return null;
     }
-
 
     private static double[][] getDistanceMatrixFromObjects(ArrayList<NodeGraphObject> nodes, int nodesCount) {
         if (nodes == null) return null;
