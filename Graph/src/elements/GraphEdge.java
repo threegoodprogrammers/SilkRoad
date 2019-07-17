@@ -377,10 +377,7 @@ public class GraphEdge extends CubicCurve implements Cloneable {
                 /////     NORMAL     /////
                 //////////////////////////
 
-                setStroke(Color.valueOf("#66bde1"));
-                setOpacity(.5);
-                arrowHead.setStroke(Color.valueOf("#66bde1"));
-                arrowHead.setOpacity(.5);
+                setStroke();
                 weightLabel.style().remove("edge-weight-selected");
                 weightLabel.style().remove("edge-weight-hover");
                 weightLabel.style().remove("edge-weight-highlighted");
@@ -394,9 +391,7 @@ public class GraphEdge extends CubicCurve implements Cloneable {
                 /////////////////////////////
 
                 setStroke(Color.valueOf("#f49496"));
-                setOpacity(1);
                 arrowHead.setStroke(Color.valueOf("#f49496"));
-                arrowHead.setOpacity(1);
                 weightLabel.style().remove("edge-weight-selected");
                 weightLabel.style().remove("edge-weight-hover");
                 weightLabel.style().remove("edge-weight-idle");
@@ -724,8 +719,6 @@ public class GraphEdge extends CubicCurve implements Cloneable {
     public void setStroke() {
         this.setStroke(Color.valueOf("rgba(102, 189, 225, 0.5)"));
         this.arrowHead.setStroke(Color.valueOf("rgba(102, 189, 225, 0.5)"));
-        this.setOpacity(1);
-        this.arrowHead.setOpacity(1);
     }
 
     /**

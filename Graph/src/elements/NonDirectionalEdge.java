@@ -255,7 +255,6 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
              * If edge is SELECTED
              */
             setStroke(Color.valueOf("#f0dd4e"));
-            setOpacity(1);
             weightLabel.style().remove("edge-weight-idle");
             weightLabel.style().remove("edge-weight-hover");
 
@@ -271,8 +270,7 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
                 /////     NORMAL     /////
                 //////////////////////////
 
-                setStroke(Color.valueOf("#66bde1"));
-                setOpacity(.5);
+                setStroke();
                 weightLabel.style().remove("edge-weight-selected");
                 weightLabel.style().remove("edge-weight-hover");
                 weightLabel.style().remove("edge-weight-highlighted");
@@ -286,7 +284,6 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
                 /////////////////////////////
 
                 setStroke(Color.valueOf("#f49496"));
-                setOpacity(1);
                 weightLabel.style().remove("edge-weight-selected");
                 weightLabel.style().remove("edge-weight-hover");
                 weightLabel.style().remove("edge-weight-idle");
@@ -476,15 +473,6 @@ public class NonDirectionalEdge extends CubicCurve implements Cloneable {
 
     public void setStroke() {
         this.setStroke(Color.valueOf("rgba(102, 189, 225, 0.5)"));
-        this.setOpacity(1);
-    }
-
-    /**
-     * Reset fill
-     */
-
-    public void resetStroke() {
-        this.setStroke(null);
     }
 
     /**
