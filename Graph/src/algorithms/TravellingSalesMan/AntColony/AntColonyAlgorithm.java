@@ -14,7 +14,6 @@ public class AntColonyAlgorithm {
     private static double[][] pheromoneMatrix;
     private static double[][] deltaPheromoneMatrix;
     private static double[][] probabilityMatrix;
-    private static double randomFactor = 0.3;
     private static int nodesCount = -1;
 
 
@@ -25,7 +24,8 @@ public class AntColonyAlgorithm {
             double alpha,
             double beta,
             double vapor,
-            int antCount
+            int antCount,
+            double randomFactor
     ) {
         if (graph == null || baseNode == null || antCount < 1) return null;
         ArrayList<GraphNode> nodes = graph.getNodes();
@@ -130,7 +130,7 @@ public class AntColonyAlgorithm {
                                 for (int i = 0; i < nodesCount; i++) {
                                     if (!citiesState[i] && i != baseCityIndex && i != currentCity) {
                                         randomNumber--;
-                                        if(randomNumber == 0){
+                                        if (randomNumber == 0) {
                                             loopLength += distanceMatrix[currentCity][i];
                                             visitedCities.add(i);
                                             currentCity = i;
