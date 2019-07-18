@@ -14,21 +14,39 @@ import java.util.ArrayList;
 public class DijkstraAlgorithm {
 
     /**
-     * @return
+     * Find shortest path path data.
+     *
+     * @param graph                the graph
+     * @param sourceNodeIdentifier the source node identifier
+     * @param targetNodeIdentifier the target node identifier
+     * @return path data
+     * @throws ArrayStoreException the array store exception
      */
     public static PathData findShortestPath(Graph graph, String sourceNodeIdentifier, String targetNodeIdentifier) throws ArrayStoreException {
         return findShortestPath(graph, graph.getNode(sourceNodeIdentifier), graph.getNode(targetNodeIdentifier));
     }
 
     /**
-     * @return
+     * Find shortest path path data object.
+     *
+     * @param graph                the graph
+     * @param sourceNodeIdentifier the source node identifier
+     * @param targetNodeIdentifier the target node identifier
+     * @return path data object
+     * @throws ArrayStoreException the array store exception
      */
     public static PathDataObject findShortestPath(GraphObject graph, String sourceNodeIdentifier, String targetNodeIdentifier) throws ArrayStoreException {
         return findShortestPath(graph, graph.getNode(sourceNodeIdentifier), graph.getNode(targetNodeIdentifier));
     }
 
     /**
-     * @return
+     * Find shortest path path data.
+     *
+     * @param graph      the graph
+     * @param sourceNode the source node
+     * @param targetNode the target node
+     * @return path data
+     * @throws ArrayStoreException the array store exception
      */
     public static PathData findShortestPath(Graph graph, GraphNode sourceNode, GraphNode targetNode) throws ArrayStoreException {
         if (graph.getNodes().size() == 0) throw new ArrayStoreException();
@@ -37,12 +55,12 @@ public class DijkstraAlgorithm {
         PathData pathData = new PathData(nodes, sourceNode, targetNode);
 
         do {
-            GraphNode leastDistantNode = pathData.GetClosestNode(nodes);
+            GraphNode leastDistantNode = pathData.getClosestNode(nodes);
             nodes.remove(leastDistantNode);
             navigatedNodes.add(leastDistantNode);
             for (GraphNode adjacentNode : leastDistantNode.getOutgoingNodes().keySet()) {
-                double currentDistance = pathData.GetDistanceToNode(leastDistantNode) + leastDistantNode.getOutgoingNodes().get(adjacentNode).getWeight();
-                if (currentDistance < pathData.GetDistanceToNode(adjacentNode)) {
+                double currentDistance = pathData.getDistanceToNode(leastDistantNode) + leastDistantNode.getOutgoingNodes().get(adjacentNode).getWeight();
+                if (currentDistance < pathData.getDistanceToNode(adjacentNode)) {
                     pathData.distances.put(adjacentNode, currentDistance);
                     adjacentNode.setPreviousNodeInPath(leastDistantNode);
                 }
@@ -53,7 +71,13 @@ public class DijkstraAlgorithm {
     }
 
     /**
-     * @return
+     * Find shortest path path data object.
+     *
+     * @param graph      the graph
+     * @param sourceNode the source node
+     * @param targetNode the target node
+     * @return path data object
+     * @throws ArrayStoreException the array store exception
      */
     public static PathDataObject findShortestPath(GraphObject graph, NodeGraphObject sourceNode, NodeGraphObject targetNode) throws ArrayStoreException {
         if (graph.getNodes().size() == 0) throw new ArrayStoreException();

@@ -9,9 +9,17 @@ import java.util.HashMap;
  * A Type that contains and returns the path and distance from the source node to any other node in the graph that the source node is connected to(Including Target Node).
  */
 public class PathData {
-    GraphNode sourceNode;
-    GraphNode targetNode;
+    private GraphNode sourceNode;
+    private GraphNode targetNode;
     HashMap<GraphNode, Double> distances;
+
+    /**
+     * Instantiates a new Path data.
+     *
+     * @param nodes      the nodes
+     * @param sourceNode the source node
+     * @param targetNode the target node
+     */
 
     public PathData(ArrayList<GraphNode> nodes, GraphNode sourceNode, GraphNode targetNode) {
         this.sourceNode = sourceNode;
@@ -24,16 +32,23 @@ public class PathData {
     }
 
     /**
-     * @return
+     * Gets path nodes to target node.
+     *
+     * @return path nodes to target node
      */
-    public ArrayList<GraphNode> GetPathNodesToTargetNode() {
-        return GetPathNodesToNode(targetNode);
+
+    public ArrayList<GraphNode> getPathNodesToTargetNode() {
+        return getPathNodesToNode(targetNode);
     }
 
     /**
-     * @return
+     * Gets path nodes to node.
+     *
+     * @param node the node
+     * @return path nodes to node
      */
-    public ArrayList<GraphNode> GetPathNodesToNode(GraphNode node) {
+
+    public ArrayList<GraphNode> getPathNodesToNode(GraphNode node) {
         ArrayList<GraphNode> nodesInPath = new ArrayList<>();
         do {
             nodesInPath.add(0, node);
@@ -44,13 +59,34 @@ public class PathData {
 
 
     /**
-     * @return
+     * Gets distance to node.
+     *
+     * @param node the node
+     * @return distance to node
      */
-    public double GetDistanceToNode(GraphNode node) {
+
+    public double getDistanceToNode(GraphNode node) {
         return distances.get(node);
     }
 
-    public GraphNode GetClosestNode(ArrayList<GraphNode> nodes) {
+    /**
+     * Gets shortest distance
+     *
+     * @return the shortest distance
+     */
+
+    public double getShortestDistance() {
+        return getDistanceToNode(targetNode);
+    }
+
+    /**
+     * Gets closest node.
+     *
+     * @param nodes the nodes
+     * @return the closest node
+     */
+
+    public GraphNode getClosestNode(ArrayList<GraphNode> nodes) {
         double minDistance = Double.POSITIVE_INFINITY;
 
         GraphNode closestNode = nodes.get(0);
