@@ -77,8 +77,6 @@ public class AntColonyAlgorithm {
                 }
 
             }
-            //---------------------------------------------------
-
             double generalDistance = Double.MAX_VALUE;
             ArrayList<Integer> generalPath = new ArrayList<>();
 
@@ -148,7 +146,7 @@ public class AntColonyAlgorithm {
                     }
                     if (generalDistance > loopLength) {
                         generalDistance = loopLength;
-                        generalPath = (ArrayList<Integer>) ((ArrayList<Integer>) visitedCities).clone();
+                        generalPath = new ArrayList<>(visitedCities);
                     }
                     for (int node = 0; node < nodesCount - 1; node++) {
                         deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
@@ -180,23 +178,15 @@ public class AntColonyAlgorithm {
                 }
             }
 
-            for (int i = 0; i < generalPath.size(); i++) {
-                System.out.println(generalPath.get(i) + 1);
-
-            }
-
-
             ArrayList<GraphNode> path = new ArrayList<>();
             for (int i : generalPath) {
                 path.add(nodes.get(i));
 
             }
-
             return new TravellingSalesManData(path, (float) generalDistance);
         } else {
             return null;
         }
-
     }
 
 
