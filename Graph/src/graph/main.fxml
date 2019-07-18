@@ -635,7 +635,7 @@
                                            text="0:00"
                                            GridPane.rowIndex="1"/>
                                     <Label fx:id="distanceValue" layoutX="19.0" layoutY="8.0" styleClass="textSmallDark"
-                                           text="25"
+                                           text="0"
                                            GridPane.rowIndex="1" opacity="0"/>
                                 </children>
                                 <styleClass>
