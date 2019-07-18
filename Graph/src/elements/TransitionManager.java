@@ -16,6 +16,7 @@ import java.util.HashMap;
  */
 public class TransitionManager {
     private App app;
+    private MenuManager menuManager;
     private boolean wait;
 
     public enum Part {
@@ -33,7 +34,7 @@ public class TransitionManager {
     private NonDirectionalEdge nonDirectionalEdge;
     private Arrow edgeArrow;
 
-    private float baseDuration = 500;
+    private float baseDuration = 1000;
 
     private StrokeTransition partOneEdge;
     private StrokeTransition partOneArrow;
@@ -56,8 +57,9 @@ public class TransitionManager {
      * Instantiates a new Transition manager
      */
 
-    public TransitionManager(App app) {
+    public TransitionManager(App app, MenuManager menuManager) {
         this.app = app;
+        this.menuManager = menuManager;
 
         /*
          * Initialize transitions
@@ -126,10 +128,9 @@ public class TransitionManager {
                 setAfterFinished(node);
 
                 /*
-                 * Set stroke on graph edge and highlight weight label
+                 * Set stroke on graph edge
                  */
                 edge.setStroke();
-                edge.highlight();
 
                 /*
                  * Iterate through animations
@@ -140,7 +141,8 @@ public class TransitionManager {
                  * Return if playing is stopped
                  */
                 if (isStopped()) {
-                    app.pressStop();
+                    stop();
+                    app.stopPlaying();
                     return;
                 }
             } else {
@@ -160,10 +162,9 @@ public class TransitionManager {
                 setAfterFinished(node);
 
                 /*
-                 * Set stroke on graph edge and highlight weight label
+                 * Set stroke on graph edge
                  */
                 edge.setStroke();
-                edge.highlight();
 
                 /*
                  * Iterate through animations
@@ -174,11 +175,27 @@ public class TransitionManager {
                  * Return if playing is stopped
                  */
                 if (isStopped()) {
-                    app.pressStop();
+                    stop();
+                    app.stopPlaying();
                     return;
                 }
             }
         }
+
+        /*
+         * Update runtime menu
+         */
+        menuManager.updateButtons(MenuManager.State.FINISHED_PLAYING);
+
+        /*
+         * Return if playing is stopped
+         */
+        while (!isStopped()) {
+            Thread.sleep(10);
+        }
+
+        stop();
+        app.stopPlaying();
     }
 
     /**
@@ -337,10 +354,7 @@ public class TransitionManager {
             case DIRECTIONAL:
                 setAfterFinished();
                 this.partThreeDirectional.setOnFinished(event -> {
-                    node.highlight();
-                    this.edge.resetStroke();
-                    this.edge.revertHighlight();
-                    this.edge.highlight();
+                    app.highlightNode(node);
                     goOn();
                 });
 
@@ -348,10 +362,7 @@ public class TransitionManager {
             case NON_DIRECTIONAL:
                 setAfterFinished();
                 this.partThreeNonDirectional.setOnFinished(event -> {
-                    node.highlight();
-                    this.nonDirectionalEdge.resetStroke();
-                    this.nonDirectionalEdge.revertHighlight();
-                    this.nonDirectionalEdge.highlight();
+                    app.highlightNode(node);
                     goOn();
                 });
 
@@ -366,12 +377,19 @@ public class TransitionManager {
     public void setAfterFinished() {
         switch (this.edgeType) {
             case DIRECTIONAL:
-                this.partOneDirectional.setOnFinished(event -> goOn());
+                this.partOneDirectional.setOnFinished(event -> {
+                    app.highlightEdge(this.edge);
+                    goOn();
+                });
+
                 this.partTwoDirectional.setOnFinished(event -> goOn());
 
                 break;
             case NON_DIRECTIONAL:
-                this.partOneNonDirectional.setOnFinished(event -> goOn());
+                this.partOneNonDirectional.setOnFinished(event -> {
+                    app.highlightNonDirEdge(this.nonDirectionalEdge);
+                    goOn();
+                });
                 this.partTwoNonDirectional.setOnFinished(event -> goOn());
 
                 break;
@@ -442,6 +460,40 @@ public class TransitionManager {
     }
 
     /**
+     * Stop animations
+     */
+
+    private void stop() {
+        switch (currentPart) {
+            case ONE:
+                if (edgeType == EdgeType.DIRECTIONAL) {
+                    partOneDirectional.stop();
+                } else {
+                    partOneNonDirectional.stop();
+                }
+
+                break;
+            case TWO:
+                if (edgeType == EdgeType.DIRECTIONAL) {
+                    partTwoDirectional.stop();
+                } else {
+                    partTwoNonDirectional.stop();
+                }
+
+                break;
+            case THREE:
+            default:
+                if (edgeType == EdgeType.DIRECTIONAL) {
+                    partThreeDirectional.stop();
+                } else {
+                    partThreeNonDirectional.stop();
+                }
+
+                break;
+        }
+    }
+
+    /**
      * Pause
      */
 
@@ -485,7 +537,7 @@ public class TransitionManager {
                 if (edgeType == EdgeType.DIRECTIONAL) {
                     partOneDirectional.playFromStart();
                 } else {
-                    partThreeNonDirectional.playFromStart();
+                    partOneNonDirectional.playFromStart();
                 }
 
                 break;
@@ -493,7 +545,7 @@ public class TransitionManager {
                 if (edgeType == EdgeType.DIRECTIONAL) {
                     partTwoDirectional.playFromStart();
                 } else {
-                    partThreeNonDirectional.playFromStart();
+                    partTwoNonDirectional.playFromStart();
                 }
 
                 break;

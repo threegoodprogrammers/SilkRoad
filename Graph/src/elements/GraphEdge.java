@@ -2,6 +2,7 @@ package elements;
 
 import graph.App;
 import graph.Main;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
@@ -278,23 +279,92 @@ public class GraphEdge extends CubicCurve implements Cloneable {
      */
 
     public void idle() {
+//        if (isSelected) {
+//            /*
+//             * If edge is SELECTED
+//             */
+//            style().remove("edge-idle");
+//            style().remove("edge-hover");
+//            arrowHead.style().remove("edge-arrow-idle");
+//            arrowHead.style().remove("edge-arrow-hover");
+//            weightLabel.style().remove("edge-weight-idle");
+//            weightLabel.style().remove("edge-weight-hover");
+//
+//            if (!style().contains("edge-selected")) {
+//                style().add("edge-selected");
+//            }
+//            if (!arrowHead.style().contains("edge-arrow-selected")) {
+//                arrowHead.style().add("edge-arrow-selected");
+//            }
+//            if (!weightLabel.style().contains("edge-weight-selected")) {
+//                weightLabel.style().add("edge-weight-selected");
+//            }
+//        } else {
+//            /*
+//             * If edge is not SELECTED
+//             */
+//            if (!isHighlighted) {
+//                //////////////////////////
+//                /////     NORMAL     /////
+//                //////////////////////////
+//
+//                style().remove("edge-selected");
+//                style().remove("edge-hover");
+//                style().remove("edge-highlighted");
+//                arrowHead.style().remove("edge-arrow-selected");
+//                arrowHead.style().remove("edge-arrow-hover");
+//                arrowHead.style().remove("edge-arrow-highlighted");
+//                weightLabel.style().remove("edge-weight-selected");
+//                weightLabel.style().remove("edge-weight-hover");
+//                weightLabel.style().remove("edge-weight-highlighted");
+//
+//                if (!style().contains("edge-idle")) {
+//                    style().add("edge-idle");
+//                }
+//                if (!arrowHead.style().contains("edge-arrow-idle")) {
+//                    arrowHead.style().add("edge-arrow-idle");
+//                }
+//                if (!weightLabel.style().contains("edge-weight-idle")) {
+//                    weightLabel.style().add("edge-weight-idle");
+//                }
+//            } else {
+//                /////////////////////////////
+//                /////     HIGHLIGHT     /////
+//                /////////////////////////////
+//
+//                style().remove("edge-selected");
+//                style().remove("edge-hover");
+//                style().remove("edge-idle");
+//                arrowHead.style().remove("edge-arrow-selected");
+//                arrowHead.style().remove("edge-arrow-hover");
+//                arrowHead.style().remove("edge-arrow-idle");
+//                weightLabel.style().remove("edge-weight-selected");
+//                weightLabel.style().remove("edge-weight-hover");
+//                weightLabel.style().remove("edge-weight-idle");
+//
+//                if (!style().contains("edge-highlighted")) {
+//                    style().add("edge-highlighted");
+//                }
+//                if (!arrowHead.style().contains("edge-arrow-highlighted")) {
+//                    arrowHead.style().add("edge-arrow-highlighted");
+//                }
+//                if (!weightLabel.style().contains("edge-weight-highlighted")) {
+//                    weightLabel.style().add("edge-weight-highlighted");
+//                }
+//            }
+//        }
+
         if (isSelected) {
             /*
              * If edge is SELECTED
              */
-            style().remove("edge-idle");
-            style().remove("edge-hover");
-            arrowHead.style().remove("edge-arrow-idle");
-            arrowHead.style().remove("edge-arrow-hover");
+            setStroke(Color.valueOf("#f0dd4e"));
+            setOpacity(1);
+            arrowHead.setStroke(Color.valueOf("#f0dd4e"));
+            arrowHead.setOpacity(1);
             weightLabel.style().remove("edge-weight-idle");
             weightLabel.style().remove("edge-weight-hover");
 
-            if (!style().contains("edge-selected")) {
-                style().add("edge-selected");
-            }
-            if (!arrowHead.style().contains("edge-arrow-selected")) {
-                arrowHead.style().add("edge-arrow-selected");
-            }
             if (!weightLabel.style().contains("edge-weight-selected")) {
                 weightLabel.style().add("edge-weight-selected");
             }
@@ -307,22 +377,11 @@ public class GraphEdge extends CubicCurve implements Cloneable {
                 /////     NORMAL     /////
                 //////////////////////////
 
-                style().remove("edge-selected");
-                style().remove("edge-hover");
-                style().remove("edge-highlighted");
-                arrowHead.style().remove("edge-arrow-selected");
-                arrowHead.style().remove("edge-arrow-hover");
-                arrowHead.style().remove("edge-arrow-highlighted");
+                setStroke();
                 weightLabel.style().remove("edge-weight-selected");
                 weightLabel.style().remove("edge-weight-hover");
                 weightLabel.style().remove("edge-weight-highlighted");
 
-                if (!style().contains("edge-idle")) {
-                    style().add("edge-idle");
-                }
-                if (!arrowHead.style().contains("edge-arrow-idle")) {
-                    arrowHead.style().add("edge-arrow-idle");
-                }
                 if (!weightLabel.style().contains("edge-weight-idle")) {
                     weightLabel.style().add("edge-weight-idle");
                 }
@@ -331,22 +390,12 @@ public class GraphEdge extends CubicCurve implements Cloneable {
                 /////     HIGHLIGHT     /////
                 /////////////////////////////
 
-                style().remove("edge-selected");
-                style().remove("edge-hover");
-                style().remove("edge-idle");
-                arrowHead.style().remove("edge-arrow-selected");
-                arrowHead.style().remove("edge-arrow-hover");
-                arrowHead.style().remove("edge-arrow-idle");
+                setStroke(Color.valueOf("#f49496"));
+                arrowHead.setStroke(Color.valueOf("#f49496"));
                 weightLabel.style().remove("edge-weight-selected");
                 weightLabel.style().remove("edge-weight-hover");
                 weightLabel.style().remove("edge-weight-idle");
 
-                if (!style().contains("edge-highlighted")) {
-                    style().add("edge-highlighted");
-                }
-                if (!arrowHead.style().contains("edge-arrow-highlighted")) {
-                    arrowHead.style().add("edge-arrow-highlighted");
-                }
                 if (!weightLabel.style().contains("edge-weight-highlighted")) {
                     weightLabel.style().add("edge-weight-highlighted");
                 }
@@ -359,23 +408,39 @@ public class GraphEdge extends CubicCurve implements Cloneable {
      */
 
     public void hover() {
-        if (!isSelected) {
+//        if (!isSelected) {
+//            /*
+//             * If edge is not SELECTED
+//             */
+//            style().remove("edge-selected");
+//            style().remove("edge-idle");
+//            arrowHead.style().remove("edge-arrow-selected");
+//            arrowHead.style().remove("edge-arrow-idle");
+//            weightLabel.style().remove("edge-weight-selected");
+//            weightLabel.style().remove("edge-weight-idle");
+//
+//            if (!style().contains("edge-hover")) {
+//                style().add("edge-hover");
+//            }
+//            if (!arrowHead.style().contains("edge-arrow-hover")) {
+//                arrowHead.style().add("edge-arrow-hover");
+//            }
+//            if (!weightLabel.style().contains("edge-weight-hover")) {
+//                weightLabel.style().add("edge-weight-hover");
+//            }
+//        }
+
+        if (!isSelected && !isHighlighted) {
             /*
              * If edge is not SELECTED
              */
-            style().remove("edge-selected");
-            style().remove("edge-idle");
-            arrowHead.style().remove("edge-arrow-selected");
-            arrowHead.style().remove("edge-arrow-idle");
+            setStroke(Color.valueOf("#f39c12"));
+            setOpacity(1);
+            arrowHead.setStroke(Color.valueOf("#f39c12"));
+            arrowHead.setOpacity(1);
             weightLabel.style().remove("edge-weight-selected");
             weightLabel.style().remove("edge-weight-idle");
 
-            if (!style().contains("edge-hover")) {
-                style().add("edge-hover");
-            }
-            if (!arrowHead.style().contains("edge-arrow-hover")) {
-                arrowHead.style().add("edge-arrow-hover");
-            }
             if (!weightLabel.style().contains("edge-weight-hover")) {
                 weightLabel.style().add("edge-weight-hover");
             }
@@ -398,6 +463,7 @@ public class GraphEdge extends CubicCurve implements Cloneable {
         this.isHighlighted = true;
 
         idle();
+        Platform.runLater(this::toFront);
     }
 
     /**
@@ -651,17 +717,8 @@ public class GraphEdge extends CubicCurve implements Cloneable {
      */
 
     public void setStroke() {
-        this.setStroke(Color.valueOf("#66bde1"));
-        this.arrowHead.setStroke(Color.valueOf("#66bde1"));
-    }
-
-    /**
-     * Reset fill
-     */
-
-    public void resetStroke() {
-        this.setStroke(null);
-        this.arrowHead.setStroke(null);
+        this.setStroke(Color.valueOf("rgba(102, 189, 225, 0.5)"));
+        this.arrowHead.setStroke(Color.valueOf("rgba(102, 189, 225, 0.5)"));
     }
 
     /**
@@ -679,7 +736,7 @@ public class GraphEdge extends CubicCurve implements Cloneable {
         /*
          * Send all nodes to front
          */
-        App.sendNodesToFront();
+        Main.app.sendNodesToFront();
     }
 
     /**
@@ -722,7 +779,7 @@ public class GraphEdge extends CubicCurve implements Cloneable {
 
     private void addClickListeners() {
         EventHandler<MouseEvent> mouseClick = event -> {
-            if (Main.app.getCurrentMode() == App.Mode.SELECT) {
+            if (Main.app.getCurrentState() != App.State.PLAYING && Main.app.getCurrentMode() == App.Mode.SELECT) {
                 Main.app.select(this);
             }
             event.consume();

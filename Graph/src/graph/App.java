@@ -9,7 +9,6 @@ import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import elements.*;
-import javafx.animation.FillTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Bounds;
@@ -145,6 +144,14 @@ public class App {
     private volatile boolean countTimer = false;
     private volatile boolean paused = false;
     private float speed = 1;
+
+    /**
+     * Highlight array list
+     */
+
+    private ArrayList<GraphNode> highlightedNodes = new ArrayList<>();
+    private ArrayList<GraphEdge> highlightedEdges = new ArrayList<>();
+    private ArrayList<NonDirectionalEdge> highlightedNonDirEdges = new ArrayList<>();
 
     /**
      * Problems results
@@ -394,7 +401,7 @@ public class App {
                 Graph.EdgeOrientation.HORIZONTAL);
         this.newEdge.initialize();
         this.newEdge.hideEdge();
-        this.newEdge.setDashed();
+//        this.newEdge.setDashed();
         this.newEdge.hoverEdge();
 
         this.newEdgeVisible = false;
@@ -483,11 +490,82 @@ public class App {
     }
 
     /**
-     * Sets threads
+     * Highlight node
+     *
+     * @param node the node
      */
 
-    public void setThreads() {
+    public void highlightNode(GraphNode node) {
+        if (highlightedNodes.contains(node)) {
+            return;
+        }
 
+        highlightedNodes.add(node);
+        node.highlight();
+    }
+
+    /**
+     * Highlight edge
+     *
+     * @param edge the edge
+     */
+
+    public void highlightEdge(GraphEdge edge) {
+        if (highlightedEdges.contains(edge)) {
+            return;
+        }
+
+        highlightedEdges.add(edge);
+        edge.highlight();
+    }
+
+    /**
+     * Highlight non-directional edge
+     *
+     * @param edge the edge
+     */
+
+    public void highlightNonDirEdge(NonDirectionalEdge edge) {
+        if (highlightedNonDirEdges.contains(edge)) {
+            return;
+        }
+
+        highlightedNonDirEdges.add(edge);
+        edge.highlight();
+    }
+
+    /**
+     * Reset highlights
+     */
+
+    public void resetHighlights() {
+        /*
+         * Revert highlight for every node
+         */
+        for (GraphNode node : highlightedNodes) {
+            node.revertHighlight();
+        }
+
+        /*
+         * Revert highlight for every edge
+         */
+        for (GraphEdge edge : highlightedEdges) {
+            edge.revertHighlight();
+        }
+
+        /*
+         * Revert highlight for every non-directional edge
+         */
+        for (NonDirectionalEdge edge : highlightedNonDirEdges) {
+            edge.revertHighlight();
+        }
+
+        /*
+         * Clear highlight array lists
+         */
+        this.highlightedNonDirEdges.clear();
+        this.highlightedEdges.clear();
+        this.highlightedNodes.clear();
     }
 
     /**
@@ -579,12 +657,12 @@ public class App {
     }
 
     /**
-     * Start ant colony thread
+     * Start playing thread
      */
 
     private void startPlayingThread() {
         playingThread = new Thread(() -> {
-            this.transitionManager = new TransitionManager(this);
+            this.transitionManager = new TransitionManager(this, menuManager);
 
             switch (getCurrentProblem()) {
                 case SHORTEST_PATH:
@@ -608,11 +686,26 @@ public class App {
     }
 
     /**
-     * Stop ant colony thread
+     * Stop playing
      */
 
-    private void stopPlayingThread() {
-        antColonyThread.stop();
+    public void stopPlaying() {
+        /*
+         * Exit processing mode
+         */
+        exitProcessingMode();
+
+        /*
+         * Reset highlights
+         */
+        resetHighlights();
+
+        /*
+         * Resume if paying is paused
+         */
+        if (paused) {
+            resume();
+        }
     }
 
     /**
@@ -1138,7 +1231,7 @@ public class App {
                 double weight = min == max ? min : Math.random() * (max - min) + min;
 
                 if (nonDirectional) {
-                    placeNewNonDirectionalEdge(Math.round(weight * 4) / 4f, sourceNode, node);
+                    placeNewNonDirectionalEdge(Math.round(weight), sourceNode, node);
                 } else {
                     placeNewEdge(Math.round(weight * 4) / 4f, sourceNode, node);
                 }
@@ -1728,11 +1821,6 @@ public class App {
              * Start a new thread to process the shortest path
              */
             startShortestPathThread();
-
-            /*
-             * Set current state to running algorithm
-             */
-            setCurrentState(State.RUNNING_ALGORITHM);
         });
         wait.play();
     }
@@ -1777,11 +1865,6 @@ public class App {
              * Start a new thread to process dynamic programming
              */
             startDynamicProgrammingThread();
-
-            /*
-             * Set current state to running algorithm
-             */
-            setCurrentState(State.RUNNING_ALGORITHM);
         });
         wait.play();
     }
@@ -1826,11 +1909,6 @@ public class App {
              * Start a new thread to process ant colony
              */
             startAntColonyThread();
-
-            /*
-             * Set current state to running algorithm
-             */
-            setCurrentState(State.RUNNING_ALGORITHM);
         });
         wait.play();
     }
@@ -1840,6 +1918,11 @@ public class App {
      */
 
     private void enterProcessingMode() {
+        /*
+         * Set current state to running algorithm
+         */
+        setCurrentState(State.RUNNING_ALGORITHM);
+
         hideMenu();
         showRuntimeMenu();
         resetTimer();
@@ -1853,8 +1936,8 @@ public class App {
 
     private void exitProcessingMode() {
         hideRuntimeMenu();
-        showMenu();
         setCurrentState(State.IDLE);
+        showMenu();
         selectionManager.clear();
     }
 
@@ -1922,7 +2005,11 @@ public class App {
                 /*
                  * Wait for the fail icon to fade out then play the results
                  */
-                wait.setOnFinished(event -> playResults());
+                wait.setOnFinished(event -> {
+                    if (getCurrentState() == State.RUNNING_ALGORITHM) {
+                        playResults();
+                    }
+                });
                 wait.play();
 
                 break;
@@ -2027,12 +2114,9 @@ public class App {
                 break;
             case PLAYING:
                 /*
-                 * Stop the corresponding playing thread
+                 * Set the current state to idle
                  */
-
-                /**
-                 * @todo stop playing
-                 */
+                setCurrentState(State.IDLE);
 
                 break;
             default:
@@ -3181,9 +3265,40 @@ public class App {
      * Send nodes to front
      */
 
-    public static void sendNodesToFront() {
+    public void sendNodesToFront() {
         for (GraphNode node : mainGraph.getNodes()) {
             node.toFront();
+        }
+
+        if (getCurrentState() == State.PLAYING) {
+            sendHighlightedToFront();
+        }
+    }
+
+    /**
+     * Send highlighted to front
+     */
+
+    public void sendHighlightedToFront() {
+        /*
+         * Send every highlighted edge to front
+         */
+        for (GraphEdge edge : highlightedEdges) {
+            edge.sendToFront();
+        }
+
+        /*
+         * Send every highlighted non-directional edge to front
+         */
+        for (NonDirectionalEdge edge : highlightedNonDirEdges) {
+            edge.sendToFront();
+        }
+
+        /*
+         * Send every highlighted node to front
+         */
+        for (GraphNode node : highlightedNodes) {
+            node.sendToFront();
         }
     }
 

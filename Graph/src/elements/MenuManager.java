@@ -4,14 +4,15 @@ import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import graph.App;
 import javafx.animation.*;
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import javafx.util.Pair;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The type Menu manager.
@@ -110,7 +111,7 @@ public class MenuManager {
 
     public enum State {
         SELECTED_BOTH_NODES_AND_EDGES, SELECTED_SINGLE_DIRECTIONAL_EDGE, SELECTED_SINGLE_NON_DIRECTIONAL_EDGE,
-        SELECTED_MULTIPLE_EDGES, SELECTED_SINGLE_NODE, SELECTED_MULTIPLE_NODES, RUNNING_ALGORITHM, PLAYING, NOTHING_SELECTED
+        SELECTED_MULTIPLE_EDGES, SELECTED_SINGLE_NODE, SELECTED_MULTIPLE_NODES, RUNNING_ALGORITHM, PLAYING, FINISHED_PLAYING, NOTHING_SELECTED
     }
 
     /**
@@ -587,6 +588,30 @@ public class MenuManager {
                 map.put(stopButton, true);
                 map.put(speedUpButton, speedUpEnabled);
                 map.put(speedDownButton, speedDownEnabled);
+                map.put(antsCountButton, false);
+                map.put(alphaButton, false);
+                map.put(betaButton, false);
+                map.put(thresholdButton, false);
+                map.put(vaporButton, false);
+
+                break;
+            case FINISHED_PLAYING:
+                map.put(shortestPathButton, false);
+                map.put(travellingSalesmanButton, false);
+                map.put(setSourceNodeButton, false);
+                map.put(setTargetNodeButton, false);
+                map.put(setWeightButton, false);
+                map.put(setLabelButton, false);
+                map.put(changeDirectionButton, false);
+                map.put(removeButton, false);
+                map.put(nodeButton, false);
+                map.put(directionalEdgeButton, false);
+                map.put(nonDirectionalEdgeButton, false);
+                map.put(selectButton, false);
+                map.put(playButton, false);
+                map.put(stopButton, true);
+                map.put(speedUpButton, false);
+                map.put(speedDownButton, false);
                 map.put(antsCountButton, false);
                 map.put(alphaButton, false);
                 map.put(betaButton, false);

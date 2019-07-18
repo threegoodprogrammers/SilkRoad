@@ -106,7 +106,7 @@ Button, JFXButton {
     -fx-cursor: hand;
     -fx-fill: null;
     -fx-stroke-width: 6;
-    -fx-opacity: .5;
+    /*-fx-opacity: .5;*/
 }
 
 .edge-idle {
@@ -131,7 +131,7 @@ Button, JFXButton {
 .edge-arrow {
     -fx-stroke-width: 6;
     -fx-fill: null;
-    -fx-opacity: .5;
+    /*-fx-opacity: .5;*/
     -fx-cursor: hand;
 }
 
