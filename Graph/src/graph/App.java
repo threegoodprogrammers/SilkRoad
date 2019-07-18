@@ -973,7 +973,8 @@ public class App {
         } else {
             text = String.format("%.1f", distance);
         }
-        this.timerValue.setText(text);
+
+        Platform.runLater(() -> distanceValue.setText(text));
     }
 
     /**
