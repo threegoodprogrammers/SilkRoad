@@ -959,7 +959,8 @@ public class App {
         int min = seconds / 60;
         int sec = seconds % 60;
         String time = min + ":" + (sec >= 10 ? sec : "0" + sec);
-        this.timerValue.setText(time);
+
+        Platform.runLater(() -> this.timerValue.setText(time));
     }
 
     /**
@@ -974,7 +975,7 @@ public class App {
             text = String.format("%.1f", distance);
         }
 
-        Platform.runLater(() -> distanceValue.setText(text));
+        Platform.runLater(() -> this.distanceValue.setText(text));
     }
 
     /**
