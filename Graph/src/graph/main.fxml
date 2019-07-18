@@ -679,14 +679,14 @@
             <String fx:value="noMargin"/>
         </styleClass>
     </GridPane>
-    <GridPane fx:id="antColonyMenu" layoutX="10.0" layoutY="10.0" maxWidth="220.0" translateX="220" translateY="125"
+    <GridPane fx:id="antColonyMenu" layoutX="10.0" layoutY="10.0" maxWidth="220.0" translateX="220" translateY="80"
               GridPane.columnIndex="1">
         <columnConstraints>
             <ColumnConstraints minWidth="10.0" prefWidth="200.0"/>
             <ColumnConstraints prefWidth="20.0"/>
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints maxHeight="520.0" minHeight="10.0"/>
+            <RowConstraints maxHeight="610.0" minHeight="10.0"/>
         </rowConstraints>
         <children>
             <GridPane onMouseEntered="#hoverMenu" onMouseExited="#leaveMenu" GridPane.halignment="CENTER"
@@ -890,6 +890,45 @@
                                     <JFXButton fx:id="vaporButton">
                                         <tooltip>
                                             <Tooltip text="Change evaporation constant"/>
+                                        </tooltip>
+                                        <graphic>
+                                            <FontAwesomeIconView glyphName="PENCIL" glyphSize="32"/>
+                                        </graphic>
+                                        <styleClass>
+                                            <String fx:value="menu-button-general"/>
+                                            <String fx:value="menu-button-transparent"/>
+                                            <String fx:value="menu-button-hover-dark"/>
+                                        </styleClass>
+                                    </JFXButton>
+                                </children>
+                            </HBox>
+                            <HBox alignment="CENTER" spacing="20">
+                                <children>
+                                    <GridPane maxHeight="160.0" maxWidth="70.0">
+                                        <columnConstraints>
+                                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
+                                                               prefWidth="100.0"/>
+                                        </columnConstraints>
+                                        <rowConstraints>
+                                            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0"
+                                                            valignment="CENTER"/>
+                                            <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="ALWAYS"/>
+                                        </rowConstraints>
+                                        <children>
+                                            <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneDark"/>
+                                            <Label styleClass="menuTitleSmall" text="Factor"/>
+                                            <Label fx:id="randomFactorValue" layoutX="19.0" layoutY="8.0"
+                                                   styleClass="textSmallDark" text="0.3" GridPane.rowIndex="1"/>
+                                        </children>
+                                        <styleClass>
+                                            <String fx:value="menu"/>
+                                            <String fx:value="noPadding"/>
+                                            <String fx:value="noMargin"/>
+                                        </styleClass>
+                                    </GridPane>
+                                    <JFXButton fx:id="randomFactorButton">
+                                        <tooltip>
+                                            <Tooltip text="Change random factor"/>
                                         </tooltip>
                                         <graphic>
                                             <FontAwesomeIconView glyphName="PENCIL" glyphSize="32"/>

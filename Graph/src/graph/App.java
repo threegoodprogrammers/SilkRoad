@@ -78,11 +78,13 @@ public class App {
     public JFXButton betaButton;
     public JFXButton thresholdButton;
     public JFXButton vaporButton;
+    public JFXButton randomFactorButton;
     public Label antsCountValue;
     public Label alphaValue;
     public Label betaValue;
     public Label thresholdValue;
     public Label vaporValue;
+    public Label randomFactorValue;
     private boolean antColonyMenuVisible = false;
 
     /**
@@ -94,6 +96,7 @@ public class App {
     private double beta = 1.0;
     private int threshold = 40;
     private double vapor = .5;
+    private double randomFactor = .3;
 
     /**
      * Problems menu buttons
@@ -477,6 +480,7 @@ public class App {
         buttons.put(20, speedUpButton);
         buttons.put(21, speedDownButton);
         buttons.put(22, vaporButton);
+        buttons.put(23, randomFactorButton);
 
         /*
          * Instantiate menu manager object
@@ -633,7 +637,7 @@ public class App {
     private void startAntColonyThread() {
         antColonyThread = new Thread(() -> {
             this.antColonyResult = AntColonyAlgorithm.findShortestCycle(mainGraph, this.sourceNode,
-                    this.threshold, this.alpha, this.beta, this.vapor, this.antsCount);
+                    this.threshold, this.alpha, this.beta, this.vapor, this.antsCount, this.randomFactor);
 
             if (antColonyResult == null) {
                 finishProcessing(AlgorithmError.GRAPH_NOT_COMPLETE);
@@ -1397,6 +1401,21 @@ public class App {
 
         this.vapor = vapor;
         vaporValue.setText(String.valueOf(vapor));
+    }
+
+    /**
+     * Set random factor value
+     */
+
+    public void setRandomFactor() {
+        double randomFactor = showSmallNumberInputDialog("Random Factor Input...", "Enter random factor (between 0 and 1):");
+
+        if (randomFactor == -1) {
+            return;
+        }
+
+        this.randomFactor = randomFactor;
+        randomFactorValue.setText(String.valueOf(randomFactor));
     }
 
     /**

@@ -79,6 +79,7 @@ public class MenuManager {
     private JFXButton betaButton;
     private JFXButton thresholdButton;
     private JFXButton vaporButton;
+    private JFXButton randomFactorButton;
 
     /**
      * Ant colony menu elements
@@ -176,6 +177,7 @@ public class MenuManager {
         betaButton = buttons.get(16);
         thresholdButton = buttons.get(17);
         vaporButton = buttons.get(22);
+        randomFactorButton = buttons.get(23);
 
         /*
          * Runtime menu buttons
@@ -569,6 +571,7 @@ public class MenuManager {
                 map.put(betaButton, false);
                 map.put(thresholdButton, false);
                 map.put(vaporButton, false);
+                map.put(randomFactorButton, false);
 
                 break;
             case PLAYING:
@@ -593,6 +596,7 @@ public class MenuManager {
                 map.put(betaButton, false);
                 map.put(thresholdButton, false);
                 map.put(vaporButton, false);
+                map.put(randomFactorButton, false);
 
                 break;
             case FINISHED_PLAYING:
@@ -617,6 +621,7 @@ public class MenuManager {
                 map.put(betaButton, false);
                 map.put(thresholdButton, false);
                 map.put(vaporButton, false);
+                map.put(randomFactorButton, false);
 
                 break;
             case SELECTED_SINGLE_DIRECTIONAL_EDGE:
@@ -641,6 +646,7 @@ public class MenuManager {
                 map.put(betaButton, antColonyButtonsEnabled);
                 map.put(thresholdButton, antColonyButtonsEnabled);
                 map.put(vaporButton, antColonyButtonsEnabled);
+                map.put(randomFactorButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_SINGLE_NON_DIRECTIONAL_EDGE:
@@ -665,6 +671,7 @@ public class MenuManager {
                 map.put(betaButton, antColonyButtonsEnabled);
                 map.put(thresholdButton, antColonyButtonsEnabled);
                 map.put(vaporButton, antColonyButtonsEnabled);
+                map.put(randomFactorButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_SINGLE_NODE:
@@ -689,6 +696,7 @@ public class MenuManager {
                 map.put(betaButton, antColonyButtonsEnabled);
                 map.put(thresholdButton, antColonyButtonsEnabled);
                 map.put(vaporButton, antColonyButtonsEnabled);
+                map.put(randomFactorButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_MULTIPLE_EDGES:
@@ -713,6 +721,7 @@ public class MenuManager {
                 map.put(betaButton, antColonyButtonsEnabled);
                 map.put(thresholdButton, antColonyButtonsEnabled);
                 map.put(vaporButton, antColonyButtonsEnabled);
+                map.put(randomFactorButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_BOTH_NODES_AND_EDGES:
@@ -737,6 +746,7 @@ public class MenuManager {
                 map.put(betaButton, antColonyButtonsEnabled);
                 map.put(thresholdButton, antColonyButtonsEnabled);
                 map.put(vaporButton, antColonyButtonsEnabled);
+                map.put(randomFactorButton, antColonyButtonsEnabled);
 
                 break;
             case SELECTED_MULTIPLE_NODES:
@@ -761,6 +771,7 @@ public class MenuManager {
                 map.put(betaButton, antColonyButtonsEnabled);
                 map.put(thresholdButton, antColonyButtonsEnabled);
                 map.put(vaporButton, antColonyButtonsEnabled);
+                map.put(randomFactorButton, antColonyButtonsEnabled);
 
                 break;
             default:
@@ -785,6 +796,7 @@ public class MenuManager {
                 map.put(betaButton, antColonyButtonsEnabled);
                 map.put(thresholdButton, antColonyButtonsEnabled);
                 map.put(vaporButton, antColonyButtonsEnabled);
+                map.put(randomFactorButton, antColonyButtonsEnabled);
 
                 break;
         }
@@ -913,6 +925,7 @@ public class MenuManager {
         betaButton.setOnAction(event -> app.setBeta());
         thresholdButton.setOnAction(event -> app.setThreshold());
         vaporButton.setOnAction(event -> app.setVapor());
+        randomFactorButton.setOnAction(event -> app.setRandomFactor());
         playButton.setOnAction(event -> app.pressPlay());
         stopButton.setOnAction(event -> app.pressStop());
         speedUpButton.setOnAction(event -> app.increaseSpeed());
