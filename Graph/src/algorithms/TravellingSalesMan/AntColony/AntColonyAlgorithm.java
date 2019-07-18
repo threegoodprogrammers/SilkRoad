@@ -41,12 +41,40 @@ public class AntColonyAlgorithm {
             else if (nodesCount == 2) {
                 GraphNode source = nodes.get(0);
                 GraphNode target = nodes.get(1);
-                return new TravellingSalesManData(nodes, (float) (2 * source.getOutgoingNodes().get(target).getWeight()));
+                if (baseNode == source) {
+                    return new TravellingSalesManData(nodes, (float) (2 * source.getOutgoingNodes().get(target).getWeight()));
+                } else {
+                    ArrayList<GraphNode> newNodes = new ArrayList<>();
+                    newNodes.add(target);
+                    newNodes.add(source);
+                    newNodes.add(target);
+                    return new TravellingSalesManData(newNodes, (float) (2 * source.getOutgoingNodes().get(target).getWeight()));
+                }
             } else if (nodesCount == 3) {
                 GraphNode s1 = nodes.get(0);
                 GraphNode s2 = nodes.get(1);
                 GraphNode s3 = nodes.get(2);
-                return new TravellingSalesManData(nodes, (float) (s1.getOutgoingNodes().get(s2).getWeight() + s2.getOutgoingNodes().get(s3).getWeight() + s3.getOutgoingNodes().get(s1).getWeight()));
+                if (s1.equals(baseNode)) {
+                    nodes.add(s1);
+                    return new TravellingSalesManData(nodes, (float) (s1.getOutgoingNodes().get(s2).getWeight() + s2.getOutgoingNodes().get(s3).getWeight() + s3.getOutgoingNodes().get(s1).getWeight()));
+                } else if (s2.equals(baseNode)) {
+
+                    ArrayList<GraphNode> newNodes = new ArrayList<>();
+                    newNodes.add(s2);
+                    newNodes.add(s3);
+                    newNodes.add(s1);
+                    newNodes.add(s2);
+
+                    return new TravellingSalesManData(newNodes, (float) (s1.getOutgoingNodes().get(s2).getWeight() + s2.getOutgoingNodes().get(s3).getWeight() + s3.getOutgoingNodes().get(s1).getWeight()));
+                } else {
+                    ArrayList<GraphNode> newNodes = new ArrayList<>();
+                    newNodes.add(s3);
+                    newNodes.add(s1);
+                    newNodes.add(s2);
+                    newNodes.add(s3);
+                    return new TravellingSalesManData(newNodes, (float) (s1.getOutgoingNodes().get(s2).getWeight() + s2.getOutgoingNodes().get(s3).getWeight() + s3.getOutgoingNodes().get(s1).getWeight()));
+                }
+
             }
             //---------------------------------------------------
 
@@ -55,11 +83,11 @@ public class AntColonyAlgorithm {
 
 
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {
-                for (int i = 0; i < nodesCount; i++) {
-                    for (int j = 0; j < nodesCount; j++) {
-                        pheromoneMatrix[i][j] = 0;
-                    }
-                }
+//                for (int i = 0; i < nodesCount; i++) {
+//                    for (int j = 0; j < nodesCount; j++) {
+//                        pheromoneMatrix[i][j] = 0;
+//                    }
+//                }
                 for (int antNo = 0; antNo < antCount; antNo++) {
 
                     double loopLength = 0;
@@ -72,7 +100,6 @@ public class AntColonyAlgorithm {
 
                     for (int e = 0; e < nodesCount; e++) {
                         if (e != nodesCount - 1) {
-
                             double sumProb = 0;
                             for (int i = 0; i < nodesCount; i++) {
                                 if (i == baseCityIndex || i == currentCity || citiesState[i])
@@ -137,6 +164,12 @@ public class AntColonyAlgorithm {
                     }
                 }
             }
+
+            for (int i = 0; i < generalPath.size(); i++) {
+                System.out.println(generalPath.get(i));
+
+            }
+
 
             ArrayList<GraphNode> path = new ArrayList<>();
             for (int i : generalPath) {
