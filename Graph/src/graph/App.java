@@ -67,6 +67,9 @@ public class App {
     public JFXButton speedUpButton;
     public JFXButton speedDownButton;
     public Label timerValue;
+    public Label timeTitle;
+    public Label distanceValue;
+    public Label distanceTitle;
     private boolean runtimeMenuVisible = false;
 
     /**
@@ -491,6 +494,11 @@ public class App {
          * Set loading elements
          */
         menuManager.setLoading(loading, loadingStack, algorithmSuccessIcon, algorithmFailIcon);
+
+        /*
+         * Set runtime labels and title and theirs animations
+         */
+        menuManager.setRuntimeLabels(timeTitle, timerValue, distanceTitle, distanceValue);
     }
 
     /**
@@ -826,6 +834,63 @@ public class App {
     }
 
     /**
+     * Sets runtime titles animation thread.
+     */
+
+    public void setRuntimeAnimationsThread() {
+        Thread runtimeAnimationsThread = new Thread(() -> {
+            while (getCurrentState() == State.PLAYING) {
+                try {
+                    /*
+                     * Show time
+                     */
+                    menuManager.showTime();
+
+                    /*
+                     * Wait 4 seconds
+                     */
+                    for (int i = 0; i < 400; i++) {
+                        if (getCurrentState() != State.PLAYING) {
+                            break;
+                        }
+
+                        Thread.sleep(10);
+                    }
+
+                    /*
+                     * Show distance
+                     */
+                    menuManager.showDistance();
+
+                    /*
+                     * Wait 4 seconds again
+                     */
+                    for (int i = 0; i < 400; i++) {
+                        if (getCurrentState() != State.PLAYING) {
+                            break;
+                        }
+
+                        Thread.sleep(10);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            /*
+             * Stop the animations after finished
+             */
+            menuManager.stopRuntimeLabelsAnimations();
+
+        });
+
+        /*
+         * Start the thread
+         */
+        runtimeAnimationsThread.start();
+    }
+
+    /**
      * Start timer
      */
 
@@ -895,6 +960,31 @@ public class App {
         int sec = seconds % 60;
         String time = min + ":" + (sec >= 10 ? sec : "0" + sec);
         this.timerValue.setText(time);
+    }
+
+    /**
+     * Print distance on runtime menu
+     */
+
+    public void printDistance(double distance) {
+        String text;
+        if (distance % 1 == 0) {
+            text = String.valueOf((int) distance);
+        } else {
+            text = String.format("%.1f", distance);
+        }
+        this.timerValue.setText(text);
+    }
+
+    /**
+     * Reset runtime labels opacity
+     */
+
+    public void resetRuntimeLabels() {
+        timerValue.setOpacity(1);
+        timeTitle.setOpacity(1);
+        distanceValue.setOpacity(0);
+        distanceTitle.setOpacity(0);
     }
 
     /**
@@ -2070,6 +2160,22 @@ public class App {
         LinkedHashMap<GraphNode, CubicCurve> dataMap = new LinkedHashMap<>();
 
         /*
+         * Get the shortest distance from the results
+         */
+        double distance = getCurrentProblem() == Problem.ANT_COLONY ?
+                antColonyResult.getShortestDistance() : dynamicProgrammingResult.getShortestDistance();
+
+        /*
+         * Print the distance of the runtime menu
+         */
+        printDistance(distance);
+
+        /*
+         * Start runtime labels animations thread
+         */
+        setRuntimeAnimationsThread();
+
+        /*
          * Get the results array list according to current problems
          */
         ArrayList<GraphNode> results = getCurrentProblem() == Problem.ANT_COLONY ?
@@ -3159,6 +3265,7 @@ public class App {
             return;
         }
 
+        resetRuntimeLabels();
         menuManager.showRuntimeMenu();
         runtimeMenuVisible = true;
     }

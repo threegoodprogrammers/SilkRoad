@@ -628,10 +628,15 @@
                                 </rowConstraints>
                                 <children>
                                     <Pane prefHeight="200.0" prefWidth="200.0" styleClass="menuTitlePaneDark"/>
-                                    <Label styleClass="menuTitleSmall" text="Time"/>
+                                    <Label fx:id="timeTitle" styleClass="menuTitleSmall" text="Time" opacity="0"/>
+                                    <Label fx:id="distanceTitle" styleClass="menuTitleTooSmall" text="Distance"
+                                           opacity="0"/>
                                     <Label fx:id="timerValue" layoutX="19.0" layoutY="8.0" styleClass="textSmallDark"
                                            text="0:00"
                                            GridPane.rowIndex="1"/>
+                                    <Label fx:id="distanceValue" layoutX="19.0" layoutY="8.0" styleClass="textSmallDark"
+                                           text="25"
+                                           GridPane.rowIndex="1" opacity="0"/>
                                 </children>
                                 <styleClass>
                                     <String fx:value="menu"/>

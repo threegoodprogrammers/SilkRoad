@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import graph.App;
 import javafx.animation.*;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -91,6 +92,15 @@ public class MenuManager {
     private JFXButton speedDownButton;
 
     /**
+     * Runtime menu labels and titles
+     */
+
+    private Label timerValue;
+    private Label timeTitle;
+    private Label distanceValue;
+    private Label distanceTitle;
+
+    /**
      * Menu hide and show animations
      */
 
@@ -108,6 +118,8 @@ public class MenuManager {
     private TranslateTransition showAntColonyMenu;
     private ParallelTransition hideExpandingProblemsMenu;
     private ParallelTransition showExpandingProblemsMenu;
+    private ParallelTransition showTime;
+    private ParallelTransition showDistance;
     private boolean expandingProblemsMenuTransitionRunning = false;
 
     public enum State {
@@ -212,6 +224,98 @@ public class MenuManager {
          * Set loading animations
          */
         setLoadingAnimations();
+    }
+
+    /**
+     * Sets runtime labels
+     */
+
+    public void setRuntimeLabels(Label timeTitle, Label timerValue, Label distanceTitle, Label distanceValue) {
+        /*
+         * Set the labels
+         */
+        this.timeTitle = timeTitle;
+        this.timerValue = timerValue;
+        this.distanceTitle = distanceTitle;
+        this.distanceValue = distanceValue;
+
+        /*s
+         * Set the animations for the labels
+         */
+        setRuntimeLabelsAnimations();
+    }
+
+    /**
+     * Sets runtime labels animations
+     */
+
+    public void setRuntimeLabelsAnimations() {
+        /*
+         * Initialize time animations
+         */
+        FadeTransition fadeInTimeTitle = new FadeTransition(Duration.millis(1000), this.timeTitle);
+        FadeTransition fadeOutTimeTitle = new FadeTransition(Duration.millis(1000), this.timeTitle);
+        FadeTransition fadeInTimerValue = new FadeTransition(Duration.millis(1000), this.timerValue);
+        FadeTransition fadeOutTimerValue = new FadeTransition(Duration.millis(1000), this.timerValue);
+
+        /*
+         * Initialize distance animations
+         */
+        FadeTransition fadeInDistanceTitle = new FadeTransition(Duration.millis(1000), this.distanceTitle);
+        FadeTransition fadeInDistanceValue = new FadeTransition(Duration.millis(1000), this.distanceValue);
+        FadeTransition fadeOutDistanceTitle = new FadeTransition(Duration.millis(1000), this.distanceTitle);
+        FadeTransition fadeOutDistanceValue = new FadeTransition(Duration.millis(1000), this.distanceValue);
+
+        /*
+         * Set time animations
+         */
+        fadeInTimeTitle.setToValue(1);
+        fadeOutTimeTitle.setToValue(0);
+        fadeInTimerValue.setToValue(1);
+        fadeOutTimerValue.setToValue(0);
+
+        /*
+         * Set distance animations
+         */
+        fadeInDistanceTitle.setToValue(1);
+        fadeOutDistanceTitle.setToValue(0);
+        fadeInDistanceValue.setToValue(1);
+        fadeOutDistanceValue.setToValue(0);
+
+        /*
+         * Set the parallel animations
+         */
+        this.showTime = new ParallelTransition(fadeOutDistanceTitle, fadeOutDistanceValue,
+                fadeInTimeTitle, fadeInTimerValue);
+        this.showDistance = new ParallelTransition(fadeOutTimeTitle, fadeOutTimerValue,
+                fadeInDistanceTitle, fadeInDistanceValue);
+    }
+
+    /**
+     * Show time
+     */
+
+    public void showTime() {
+        showDistance.stop();
+        showTime.play();
+    }
+
+    /**
+     * Show distance
+     */
+
+    public void showDistance() {
+        showTime.stop();
+        showDistance.play();
+    }
+
+    /**
+     * Stop runtime labels animations
+     */
+
+    public void stopRuntimeLabelsAnimations() {
+        showTime.stop();
+        showDistance.stop();
     }
 
     /**

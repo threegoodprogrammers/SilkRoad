@@ -416,6 +416,9 @@ public class TransitionManager {
         /*
          * Pause and play from start
          */
+        if (app.isPaused()) {
+            app.pressPlay();
+        }
         pause();
         restart();
     }
@@ -468,8 +471,10 @@ public class TransitionManager {
             case ONE:
                 if (edgeType == EdgeType.DIRECTIONAL) {
                     partOneDirectional.stop();
+                    this.edge.idle();
                 } else {
                     partOneNonDirectional.stop();
+                    this.nonDirectionalEdge.idle();
                 }
 
                 break;
