@@ -7,13 +7,14 @@ import elements.GraphNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class AntColonyAlgorithm {
     private static double[][] distanceMatrix;
     private static double[][] pheromoneMatrix;
     private static double[][] deltaPheromoneMatrix;
     private static double[][] probabilityMatrix;
-
+    private static double randomFactor = 0.3;
     private static int nodesCount = -1;
 
 
@@ -79,15 +80,10 @@ public class AntColonyAlgorithm {
             //---------------------------------------------------
 
             double generalDistance = Double.MAX_VALUE;
-            List<Integer> generalPath = new ArrayList<>();
+            ArrayList<Integer> generalPath = new ArrayList<>();
 
 
             for (int iterationNo = 0; iterationNo < iterationThreshold; iterationNo++) {
-//                for (int i = 0; i < nodesCount; i++) {
-//                    for (int j = 0; j < nodesCount; j++) {
-//                        pheromoneMatrix[i][j] = 0;
-//                    }
-//                }
                 for (int antNo = 0; antNo < antCount; antNo++) {
 
                     double loopLength = 0;
@@ -100,24 +96,46 @@ public class AntColonyAlgorithm {
 
                     for (int e = 0; e < nodesCount; e++) {
                         if (e != nodesCount - 1) {
-                            double sumProb = 0;
-                            for (int i = 0; i < nodesCount; i++) {
-                                if (i == baseCityIndex || i == currentCity || citiesState[i])
-                                    continue;
-                                sumProb += probabilityMatrix[currentCity][i];
-                            }
-                            double randNumber = Math.random() * sumProb;
-                            sumProb = 0.0;
+                            if (randomFactor > Math.random()) {
+                                double sumProb = 0;
+                                for (int i = 0; i < nodesCount; i++) {
+                                    if (i == baseCityIndex || i == currentCity || citiesState[i])
+                                        continue;
+                                    sumProb += probabilityMatrix[currentCity][i];
+                                }
+                                double randNumber = new Random().nextDouble() * sumProb;
+                                sumProb = 0.0;
 
-                            for (int city = 0; city < nodesCount; city++) {
-                                if (currentCity != city && city != baseCityIndex && !citiesState[city]) {
-                                    sumProb += probabilityMatrix[currentCity][city];
-                                    if (randNumber <= sumProb) {
-                                        loopLength += distanceMatrix[currentCity][city];
-                                        visitedCities.add(city);
-                                        currentCity = city;
-                                        citiesState[city] = true;
-                                        break;
+                                for (int city = 0; city < nodesCount; city++) {
+                                    if (currentCity != city && city != baseCityIndex && !citiesState[city]) {
+                                        sumProb += probabilityMatrix[currentCity][city];
+                                        if (randNumber <= sumProb) {
+                                            loopLength += distanceMatrix[currentCity][city];
+                                            visitedCities.add(city);
+                                            currentCity = city;
+                                            citiesState[city] = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                int counter = 0;
+                                for (int i = 0; i < nodesCount; i++) {
+                                    if (!citiesState[i] && i != baseCityIndex && i != currentCity) {
+                                        counter++;
+                                    }
+                                }
+                                int randomNumber = (int) ((Math.random() * counter) + 1);
+
+                                for (int i = 0; i < nodesCount; i++) {
+                                    if (!citiesState[i] && i != baseCityIndex && i != currentCity) {
+                                        randomNumber--;
+                                        if(randomNumber == 0){
+                                            loopLength += distanceMatrix[currentCity][i];
+                                            visitedCities.add(i);
+                                            currentCity = i;
+                                            citiesState[i] = true;
+                                        }
                                     }
                                 }
                             }
@@ -128,13 +146,10 @@ public class AntColonyAlgorithm {
                             visitedCities.add(baseCityIndex);
                         }
                     }
-
                     if (generalDistance > loopLength) {
                         generalDistance = loopLength;
-                        generalPath = new ArrayList<>(visitedCities);
+                        generalPath = (ArrayList<Integer>) ((ArrayList<Integer>) visitedCities).clone();
                     }
-
-
                     for (int node = 0; node < nodesCount - 1; node++) {
                         deltaPheromoneMatrix[visitedCities.get(node)][visitedCities.get(node + 1)] += (1d / loopLength);
                         deltaPheromoneMatrix[visitedCities.get(node + 1)][visitedCities.get(node)] += (1d / loopLength);
@@ -166,7 +181,7 @@ public class AntColonyAlgorithm {
             }
 
             for (int i = 0; i < generalPath.size(); i++) {
-                System.out.println(generalPath.get(i));
+                System.out.println(generalPath.get(i) + 1);
 
             }
 
