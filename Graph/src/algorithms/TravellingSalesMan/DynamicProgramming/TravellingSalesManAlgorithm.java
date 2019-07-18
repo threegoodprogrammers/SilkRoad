@@ -1,6 +1,5 @@
 package algorithms.TravellingSalesMan.DynamicProgramming;
 
-import algorithms.NodeGraphObject;
 import algorithms.TravellingSalesMan.TravellingSalesManData;
 import algorithms.TravellingSalesMan.Validation;
 import elements.Graph;
@@ -34,26 +33,6 @@ public class TravellingSalesManAlgorithm {
         } else {
             return null;
         }
-    }
-
-    private static double[][] getDistanceMatrixFromObjects(ArrayList<NodeGraphObject> nodes, int nodesCount) {
-        if (nodes == null) return null;
-        double[][] distanceMatrix = new double[nodesCount][nodesCount];
-        for (int i = 0; i < nodesCount; i++) {
-            for (int j = 0; j < nodesCount; j++) {
-                distanceMatrix[i][j] = Double.MAX_VALUE;
-            }
-        }
-        for (int i = 0; i < nodesCount; i++) {
-            for (int j = 0; j < nodesCount; j++) {
-                NodeGraphObject source = nodes.get(i);
-                NodeGraphObject target = nodes.get(j);
-                if (source.getAttachedNodes().get(target) != null) {
-                    distanceMatrix[i][j] = source.getAttachedNodes().get(target).getWeight();
-                }
-            }
-        }
-        return distanceMatrix;
     }
 
     private static double[][] getDistanceMatrixFromObjects(List<GraphNode> nodes, int nodesCount) {
