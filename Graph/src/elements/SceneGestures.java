@@ -19,6 +19,7 @@ public class SceneGestures {
     private App app;
 
     private boolean isPanning = false;
+    private boolean enterPressed = false;
 
     public SceneGestures(PannableCanvas canvas, App app, PannableGridPane background) {
         this.canvas = canvas;
@@ -319,6 +320,16 @@ public class SceneGestures {
                     }
 
                     break;
+                case ENTER:
+                    /*
+                     * Press enter key
+                     */
+                    if (app.isCtrlPressed() && !enterPressed) {
+                        enterPressed = true;
+                        app.pressEnter();
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -346,12 +357,7 @@ public class SceneGestures {
 
                     break;
                 case ENTER:
-                    /*
-                     * Press enter key
-                     */
-                    if (app.isCtrlPressed()) {
-                        app.pressEnter();
-                    }
+                    enterPressed = false;
 
                     break;
 

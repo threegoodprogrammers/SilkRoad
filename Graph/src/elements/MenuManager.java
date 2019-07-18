@@ -114,6 +114,8 @@ public class MenuManager {
     private ParallelTransition hideFailIcon;
     private TranslateTransition hideRuntimeMenu;
     private TranslateTransition showRuntimeMenu;
+    private ParallelTransition shrinkRuntimeMenu;
+    private ParallelTransition expandRuntimeMenu;
     private TranslateTransition hideAntColonyMenu;
     private TranslateTransition showAntColonyMenu;
     private ParallelTransition hideExpandingProblemsMenu;
@@ -422,6 +424,24 @@ public class MenuManager {
          */
         hideFailIcon = new ParallelTransition(rotateOutFailIcon, scaleOutFailIcon);
         hideFailIcon.setOnFinished(event -> algorithmFailIcon.setVisible(false));
+
+        /*
+         * Set shrink and expand runtime menu animations
+         */
+        TranslateTransition pullUpRuntimeMenu = new TranslateTransition(Duration.millis(500), runtimeMenu);
+        pullUpRuntimeMenu.setToY(-120);
+        TranslateTransition pullDownRuntimeMenu = new TranslateTransition(Duration.millis(500), runtimeMenu);
+        pullDownRuntimeMenu.setToY(15);
+        FadeTransition fadeInRuntimeMenu = new FadeTransition(Duration.millis(500), runtimeMenu);
+        fadeInRuntimeMenu.setToValue(1);
+        FadeTransition fadeOutRuntimeMenu = new FadeTransition(Duration.millis(500), runtimeMenu);
+        fadeOutRuntimeMenu.setToValue(.5);
+
+        /*
+         * Set parallel transitions
+         */
+        this.shrinkRuntimeMenu = new ParallelTransition(pullUpRuntimeMenu, fadeOutRuntimeMenu);
+        this.expandRuntimeMenu = new ParallelTransition(pullDownRuntimeMenu, fadeInRuntimeMenu);
     }
 
     /**
@@ -534,6 +554,24 @@ public class MenuManager {
     public void hideRuntimeMenu() {
         showRuntimeMenu.stop();
         hideRuntimeMenu.play();
+    }
+
+    /**
+     * Expand runtime menu
+     */
+
+    public void expandRuntimeMenu() {
+        shrinkRuntimeMenu.stop();
+        expandRuntimeMenu.play();
+    }
+
+    /**
+     * Shrink runtime menu
+     */
+
+    public void shrinkRuntimeMenu() {
+        expandRuntimeMenu.stop();
+        shrinkRuntimeMenu.play();
     }
 
     /**

@@ -128,11 +128,6 @@ public class TransitionManager {
                 setAfterFinished(node);
 
                 /*
-                 * Set stroke on graph edge
-                 */
-                edge.setStroke();
-
-                /*
                  * Iterate through animations
                  */
                 iterateAnimations();
@@ -160,11 +155,6 @@ public class TransitionManager {
                  * Set after finished events
                  */
                 setAfterFinished(node);
-
-                /*
-                 * Set stroke on graph edge
-                 */
-                edge.setStroke();
 
                 /*
                  * Iterate through animations

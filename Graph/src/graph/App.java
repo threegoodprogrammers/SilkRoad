@@ -34,6 +34,7 @@ import javafx.util.Pair;
 import java.util.*;
 
 import static graph.Main.app;
+import static graph.Main.main;
 
 /**
  * The type App.
@@ -325,6 +326,11 @@ public class App {
         setTimerThread();
 
         /*
+         * Set runtime menu mouse listeners
+         */
+        setRuntimeMenuListeners();
+
+        /*
          * Set current mode to node mode
          */
         changeMode(Mode.SELECT);
@@ -423,7 +429,7 @@ public class App {
      * Sets selections
      */
 
-    public void setSelections() {
+    private void setSelections() {
         this.selectionManager = new SelectionManager(menuManager, this);
     }
 
@@ -434,6 +440,24 @@ public class App {
     private void setExpandingMenuListeners() {
         this.expandingProblemsMenu.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> hoverExpandingProblemsMenu());
         this.expandingProblemsMenu.addEventFilter(MouseEvent.MOUSE_EXITED, event -> leaveExpandingProblemsMenu());
+    }
+
+    /**
+     * Sets runtime menu listeners
+     */
+
+    private void setRuntimeMenuListeners() {
+        this.runtimeMenu.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
+            if (getCurrentState() == State.PLAYING) {
+                menuManager.expandRuntimeMenu();
+            }
+        });
+        this.runtimeMenu.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
+            if (getCurrentState() == State.PLAYING) {
+                menuManager.shrinkRuntimeMenu();
+            }
+        });
+
     }
 
     /**
@@ -676,19 +700,10 @@ public class App {
         playingThread = new Thread(() -> {
             this.transitionManager = new TransitionManager(this, menuManager);
 
-            switch (getCurrentProblem()) {
-                case SHORTEST_PATH:
-
-                    break;
-                case DYNAMIC_PROGRAMMING:
-                    playTravellingSalesman();
-
-                    break;
-                case ANT_COLONY:
-                    playTravellingSalesman();
-
-                    break;
-            }
+            /*
+             * Start traversing through nodes and edges
+             */
+            traverse();
         });
 
         /*
@@ -1329,7 +1344,7 @@ public class App {
                 if (nonDirectional) {
                     placeNewNonDirectionalEdge(Math.round(weight), sourceNode, node);
                 } else {
-                    placeNewEdge(Math.round(weight * 4) / 4f, sourceNode, node);
+                    placeNewEdge(Math.round(weight), sourceNode, node);
                 }
             }
         }
@@ -2138,6 +2153,7 @@ public class App {
          */
         setCurrentState(State.PLAYING);
         resetSpeed();
+        menuManager.shrinkRuntimeMenu();
 
         /*
          * Start the playing thread
@@ -2146,18 +2162,10 @@ public class App {
     }
 
     /**
-     * Play shortest path
-     */
-
-    private void playShortestPath(PathData pathData) {
-//        System.out.println("Distance: " + pathData.);
-    }
-
-    /**
      * Play travelling salesman
      */
 
-    private void playTravellingSalesman() {
+    private void traverse() {
         GraphNode source, target;
         LinkedHashMap<GraphNode, CubicCurve> dataMap = new LinkedHashMap<>();
 
@@ -2165,7 +2173,8 @@ public class App {
          * Get the shortest distance from the results
          */
         double distance = getCurrentProblem() == Problem.ANT_COLONY ?
-                antColonyResult.getShortestDistance() : dynamicProgrammingResult.getShortestDistance();
+                antColonyResult.getShortestDistance() : (getCurrentProblem() == Problem.DYNAMIC_PROGRAMMING ?
+                dynamicProgrammingResult.getShortestDistance() : shortestPathResult.getShortestDistance());
 
         /*
          * Print the distance of the runtime menu
@@ -2181,7 +2190,8 @@ public class App {
          * Get the results array list according to current problems
          */
         ArrayList<GraphNode> results = getCurrentProblem() == Problem.ANT_COLONY ?
-                antColonyResult.getpathSecond() : dynamicProgrammingResult.getpathSecond();
+                antColonyResult.getpathSecond() : (getCurrentProblem() == Problem.DYNAMIC_PROGRAMMING ?
+                dynamicProgrammingResult.getpathSecond() : shortestPathResult.getPathNodesToTargetNode());
 
         for (int i = 0; i < results.size() - 1; i++) {
             source = results.get(i);
@@ -2190,12 +2200,25 @@ public class App {
             /*
              * Get the edge connecting the two nodes together
              */
-            NonDirectionalEdge edge = mainGraph.getTwoWayEdge(source, target);
+            NonDirectionalEdge nonDirectionalEdge = mainGraph.getTwoWayEdge(source, target);
 
-            /*
-             * Add node and edge to hash map
-             */
-            dataMap.put(target, edge);
+            if (nonDirectionalEdge != null) {
+                /*
+                 * Add node and edge to hash map
+                 */
+                dataMap.put(target, nonDirectionalEdge);
+
+            } else {
+                /*
+                 * Check for directional edge between source and target
+                 */
+                GraphEdge directionalEdge = mainGraph.getOutgoingEdge(source, target);
+
+                /*
+                 * Add node and edge to hash map
+                 */
+                dataMap.put(target, directionalEdge);
+            }
         }
 
         try {
