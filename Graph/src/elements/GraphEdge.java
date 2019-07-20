@@ -463,7 +463,7 @@ public class GraphEdge extends CubicCurve implements Cloneable {
         this.isHighlighted = true;
 
         idle();
-        Platform.runLater(this::toFront);
+        Platform.runLater(this::sendToFront);
     }
 
     /**
