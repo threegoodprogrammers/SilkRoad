@@ -36,7 +36,8 @@
 3. **Non-directional Edge Mode:** Draw non-directional edge between two desired nodes with user-input edge weight. Non-directional edge acts as if two directional edges have been drawn between the two nodes in opposite direction.
 
    ```diff
-   - Note: This mode is disabled if the selected problem is Traveling Sales Person
+      - Note: This mode is disabled if the selected problem is Traveling Sales Person
    ```
 
 4. **Select Mode:** Select graph elements and move the nodes in the canvas.
+
