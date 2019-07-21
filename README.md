@@ -71,7 +71,9 @@ You can delete selected items like we said above, or delete everything by clicki
 
 - **Edit node ID:** You can select a node and press **Change ID** button in the tools menu on the left side, then enter the desired ID when prompted.
 
-![Edit node ID](https://user-images.githubusercontent.com/40715409/61591643-49c13900-abde-11e9-86b1-b8ab2a42fe5a.gif)
+  ![Edit node ID](https://user-images.githubusercontent.com/40715409/61591643-49c13900-abde-11e9-86b1-b8ab2a42fe5a.gif)
+
+
 
 - **Set source node:** You can set a node as **source** by selecting it and pressing **Set as Source** button in the tools menu on the left side. This will unset the previously selected source button if there is any.
 
