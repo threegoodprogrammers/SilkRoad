@@ -31,11 +31,11 @@
 
 1. **Node Mode:** Add new edges to the graph with automatically generated numeric ID.
 
-   ![Node mode]((https://user-images.githubusercontent.com/40715409/61590735-b0d8f080-abd2-11e9-912e-1ad87e761bf8.gif)
+   ![Node mode](https://user-images.githubusercontent.com/40715409/61590735-b0d8f080-abd2-11e9-912e-1ad87e761bf8.gif)
 
 2. **Directional Edge Mode:** Draw directional edge between two desired nodes with user-input edge weight.
 
-   ![Directional edge mode]((https://user-images.githubusercontent.com/40715409/61590751-d36b0980-abd2-11e9-985a-7320dfe36834.gif)
+   ![Directional edge mode](https://user-images.githubusercontent.com/40715409/61590751-d36b0980-abd2-11e9-985a-7320dfe36834.gif)
 
 3. **Non-directional Edge Mode:** Draw non-directional edge between two desired nodes with user-input edge weight. Non-directional edge acts as if two directional edges have been drawn between the two nodes in opposite direction.
 
@@ -43,8 +43,8 @@
       - Note: This mode is disabled if the selected problem is Traveling Sales Person
    ```
 
-   ![Non-directional edge mode]((https://user-images.githubusercontent.com/40715409/61590759-ec73ba80-abd2-11e9-8875-47b87e4a3125.gif)
+   ![Non-directional edge mode](https://user-images.githubusercontent.com/40715409/61590759-ec73ba80-abd2-11e9-8875-47b87e4a3125.gif)
 
 4. **Select Mode:** Select graph elements and move the nodes in the canvas.
 
-   ![Select mode]((https://user-images.githubusercontent.com/40715409/61590916-96077b80-abd4-11e9-8056-4affa14619e1.gif)
+   ![Select mode](https://user-images.githubusercontent.com/40715409/61590916-96077b80-abd4-11e9-8056-4affa14619e1.gif)
