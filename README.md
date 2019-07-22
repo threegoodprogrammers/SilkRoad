@@ -92,3 +92,66 @@ You can delete selected items like we said above, or delete everything by clicki
 - **Change edge direction:** You can change the direction of a single selected edge by pressing the **Change Edge Direction** button in the tools menu on the left side. This only applies to **directional edges**, when **no edge** exists between the two nodes in the **opposite direction**.
 
   ![Change edge direction](https://user-images.githubusercontent.com/40715409/61591899-3e234180-abe1-11e9-9a28-1394cc79495c.gif)
+
+
+
+#### Problems:
+
+**<u>Shortest Path</u>:** In this problem we need to find the shortest path between two specified nodes in a graph. To solve Shortest Path problem using this algorithm, do as follows:
+
+- Add nodes and draw edges between them as you desire
+
+- Specify a **source** and **destination** node in the canvas 
+
+- Press the **Shortest Path** problem button in problems menu on the top left side
+
+  ![Shortest path problem](https://user-images.githubusercontent.com/40715409/61615254-c99ce100-ac7a-11e9-8fa0-b41f41978236.gif)
+
+
+
+**<u>Traveling Sales Person</u>:** In this problem we need to find the shortest cycle in the graph which starts from and ends in the specified source node, traversing every node in the graph without visiting any node or edge more than once. We have implemented two algorithms to solve this problem:
+
+- **Dynamic Programming algorithm:**
+
+  - Add nodes and draw edges between them as you desire until the graph is complete
+
+  - Specify a **source** node in the canvas 
+
+  - Press the **Traveling Sales Person** problem button in problems menu on the top left side, so a mini-menu pops up.
+
+  - Press the Dynamic Programming button in the pop-up menu.
+
+    (**Note:** Graph must be complete for this problem!)
+
+    ![Dynamic programming](https://user-images.githubusercontent.com/40715409/61616336-63658d80-ac7d-11e9-8418-3cf531fa45e5.gif)
+
+  
+
+- **Ant Colony algorithm:**
+
+  - Add nodes and draw edges between them as you desire until the graph is complete
+
+  - Specify a **source** node in the canvas 
+
+  - Press the **Traveling Sales Person** problem button in problems menu on the top left side, so a mini-menu pops up.
+
+  - Press the Ant Colony button in the pop-up menu so another menu appears in the right side containing ant colony settings.
+
+  - Set the desired settings in ant colony settings menu
+
+    (**Note:** Graph must be complete for this problem!)
+
+     ![Ant colony](https://user-images.githubusercontent.com/40715409/61616478-c1927080-ac7d-11e9-891f-a95f1d9a6011.gif)
+
+    
+
+    **Ant Colony settings:**
+
+    ![Ant colony](https://user-images.githubusercontent.com/40715409/61616534-ee468800-ac7d-11e9-85ba-8e624f25b371.gif)
+
+
+
+
+
+
+
