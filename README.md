@@ -151,7 +151,27 @@ You can delete selected items like we said above, or delete everything by clicki
 
 
 
+#### Batch adding edges:
+
+Drawing every possible edge in order to make the graph complete can be exhausting especially when our graph grows larger. So we have implemented a feature named **Batch Add Edges** that draws edges from a specified node to every other possible nodes.
+
+With this feature you must just choose the desired node and enter a **Minimum** and **Maximum** value for weight, so the application chooses a random weight for each new edge between the two values you enter.
+
+To use this feature:
+
+- Go into **Directional Edge** or **Non-directional Edge** mode in the mode menu on the bottom left side
+- Hold **Shift** key on the keyboard and press any desired node on the canvas, so a a prompt dialog appears
+- Enter minimum and maximum value for the weight value in the dialog. Enter the **same value** in both text fields if you need a **specific weight** set for every edge, then press OK.
+
+![Batch add edges](https://user-images.githubusercontent.com/40715409/61617484-04edde80-ac80-11e9-8049-e952483f10d8.gif)
 
 
 
+#### Pan and Zoom:
 
+You can zoom-in, zoom-out or move the canvas if you need to.
+
+- **Move canvas:** Just hold the **Control** key on the keyboard, then press and hold left mouse click and drag   where you want.
+- **Zoom:** Zoom in the canvas using **mouse-wheel up** and zoom out using **mouse-wheel down**.
+
+![Pan and Zoom](https://user-images.githubusercontent.com/40715409/61618074-4c289f00-ac81-11e9-918b-c2a20f7e21d2.gif)
