@@ -5,8 +5,8 @@
 ​	**Silk Road Graph Analyzer** is an application in which you can draw you desired graph with arbitrary IDs and numbers, specify **source** and **destination** node and do the following:
 
 - Find the shortest path available between the source and destination node using **Dijkstra** algorithm
-- Solve the TSP (Traveling Sales Person) problem using **Dynamic Programming** algorithm
-- Solve the TSP (Traveling Sales Person) problem using **Ant Colony** algorithm.
+- Solve the TSP (Travelling Salesman Problem) problem using **Dynamic Programming** algorithm
+- Solve the TSP (Travelling Salesman Problem) problem using **Ant Colony** algorithm.
 
 
 
